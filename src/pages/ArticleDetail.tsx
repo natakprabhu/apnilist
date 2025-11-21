@@ -13,6 +13,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
 import ReactMarkdown from "react-markdown";
+import { getCategoryImage } from "@/lib/categoryImages";
 
 // --- NEW, CORRECTED INTERFACES ---
 
@@ -609,7 +610,7 @@ return (
             className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition"
           >
             <img
-              src={related.featured_image || "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100"}
+              src={related.featured_image || getCategoryImage(article?.category)}
               alt={related.title}
               className="w-16 h-16 rounded-md object-cover"
             />

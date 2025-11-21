@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import dayjs from "dayjs";
+import { getCategoryImage } from "@/lib/categoryImages";
 
 // --- ADD THIS IMPORT ---
 import { DynamicFilterGuide, SmartFilterMap } from "@/components/DynamicFilterGuide";
@@ -520,7 +521,7 @@ const SearchResults = () => {
                     {/* Featured Image */}
                     <div className="flex-shrink-0 w-28 h-20 overflow-hidden rounded-lg">
                       <img
-                        src={article.featured_image}
+                        src={article.featured_image || getCategoryImage(article.categories?.name)}
                         alt={article.title}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />

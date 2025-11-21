@@ -16,6 +16,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getCategoryImage } from "@/lib/categoryImages";
 
 // This is the new master product interface
 interface Product {
@@ -1062,7 +1063,7 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
               <CardContent className="p-6">
                 <div className="flex flex-col md:flex-row gap-6">
                   <img
-                    src={article.featured_image || "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400"}
+                    src={article.featured_image || getCategoryImage(article.category)}
                     alt={article.title}
                     className="w-full md:w-48 h-32 object-cover rounded-lg"
                   />
