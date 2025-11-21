@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import PriceTrackerCard from "@/components/PriceTrackerCard";
+import AddProductDialog from "@/components/AddProductDialog";
 import { Loader2 } from "lucide-react";
 
 interface TrackedProduct {
@@ -129,10 +130,15 @@ const PriceTracker = () => {
         <div className="container mx-auto px-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Price Tracker</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Monitor prices across Amazon, Flipkart and more. Get alerts when prices drop!
-              </p>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <CardTitle className="text-2xl">Price Tracker</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Monitor prices across Amazon, Flipkart and more. Get alerts when prices drop!
+                  </p>
+                </div>
+                <AddProductDialog onProductAdded={fetchTrackedProducts} />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
