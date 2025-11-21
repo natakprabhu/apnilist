@@ -21,16 +21,16 @@ import {
 
 interface Comment {
   id: string;
-  article_id: string;
-  user_name: string;
-  user_id: string;
-  comment_text: string;
-  created_at: string;
+  article_id: string | null;
+  user_name: string | null;
+  user_id: string | null;
+  comment_text: string | null;
+  created_at: string | null;
+  date_posted: string | null;
   parent_comment_id: string | null;
-  profiles: {
-    full_name: string;
+  profiles?: {
+    full_name: string | null;
   } | null;
-  replies?: Comment[];
 }
 
 interface CommentSectionProps {
@@ -67,7 +67,7 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
       if (commentsError) throw commentsError;
 
       // 2️⃣ Fetch profiles
-      const userIds = commentsData.map(c => c.user_id);
+      const userIds = commentsData.map(c => c.user_id).filter(Boolean) as string[];
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
         .select("id, full_name")
@@ -99,10 +99,11 @@ export const CommentSection = ({ articleId }: CommentSectionProps) => {
   }, [articleId]);
 
 const handleCommentSubmit = async () => {
+  if (!user) return;
 
   const { data, error } = await supabase.from("comments").insert({
     article_id: articleId,
-    user_name: user.email,
+    user_name: user.email || "Anonymous",
     user_id: user.id,
     comment_text: newComment,
     parent_comment_id: replyingToCommentId || null,
@@ -196,7 +197,7 @@ const handleCommentSubmit = async () => {
               {comment.profiles?.full_name || "Anonymous"}
             </h4>
             <span className="text-xs text-muted-foreground">
-              {new Date(comment.created_at).toLocaleDateString()}
+              {comment.created_at ? new Date(comment.created_at).toLocaleDateString() : ""}
             </span>
           </div>
 
@@ -213,7 +214,7 @@ const handleCommentSubmit = async () => {
               </div>
             </div>
           ) : (
-            <p className="text-sm">{comment.comment_text}</p>
+            <p className="text-sm">{comment.comment_text || ""}</p>
           )}
 
           <div className="flex items-center gap-2">

@@ -10,13 +10,9 @@ import { useToast } from "@/hooks/use-toast";
 
 type Product = {
   id: string;
-  title: string;
-  image_url: string | null;
-  price: number;
-  mrp: number | null;
-  discount_percent: number | null;
-  affiliate_url: string;
-  categories: { name: string } | null;
+  name: string;
+  image: string | null;
+  category_id: string | null;
 };
 
 const Deals = () => {
@@ -29,18 +25,7 @@ const Deals = () => {
       try {
         const { data, error } = await supabase
           .from("products")
-          .select(`
-            id,
-            title,
-            image_url,
-            price,
-            mrp,
-            discount_percent,
-            affiliate_url,
-            categories (name)
-          `)
-          .gte("discount_percent", 25)
-          .order("discount_percent", { ascending: false })
+          .select("id, name, image, category_id")
           .limit(12);
 
         if (error) throw error;
@@ -87,36 +72,18 @@ const Deals = () => {
                   <CardContent className="p-6">
                     <div className="relative mb-4">
                       <img
-                        src={deal.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"}
-                        alt={deal.title}
+                        src={deal.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"}
+                        alt={deal.name}
                         className="w-full h-48 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                       />
-                      <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
-                        {deal.discount_percent}% OFF
-                      </Badge>
                     </div>
                     
-                    <div className="text-xs font-medium text-primary mb-2">
-                      {deal.categories?.name || "Product"}
-                    </div>
-                    <h3 className="font-semibold text-lg mb-3 line-clamp-2">{deal.title}</h3>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-bold">₹{deal.price.toLocaleString()}</span>
-                        {deal.mrp && (
-                          <span className="text-sm text-muted-foreground line-through">
-                            ₹{deal.mrp.toLocaleString()}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                    <h3 className="font-semibold text-lg mb-3 line-clamp-2">{deal.name}</h3>
                     
                     <Button 
                       className="w-full"
-                      onClick={() => window.open(deal.affiliate_url, "_blank")}
                     >
-                      Buy Now
+                      View Product
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Button>
                   </CardContent>
