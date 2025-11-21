@@ -90,13 +90,25 @@ const PriceTrackerCard = ({
       };
     }
     
-    const threshold = lowestPrice * 1.05; // 5% above lowest
+    // Check if price dropped 10% below lowest price ever
+    const priceDropped10Percent = currentLowestPrice <= lowestPrice * 0.9;
     
-    if (currentLowestPrice <= threshold) {
+    // Check if target price is met
+    const targetPriceMet = targetPrice && currentLowestPrice <= Number(targetPrice);
+    
+    if (priceDropped10Percent) {
       return { 
         badge: "Best Time to Buy", 
         variant: "default" as const,
-        advice: `Current price is at or near the lowest. Great time to purchase!`
+        advice: `Price dropped 10% below lowest ever! Excellent deal - don't miss it!`
+      };
+    }
+    
+    if (targetPriceMet) {
+      return { 
+        badge: "Best Time to Buy", 
+        variant: "default" as const,
+        advice: `Your target price of ₹${targetPrice} has been met! Time to buy!`
       };
     }
     
@@ -104,7 +116,7 @@ const PriceTrackerCard = ({
     return { 
       badge: "Hold & Wait", 
       variant: "destructive" as const,
-      advice: `Current price is ${diff.toFixed(1)}% higher than lowest. Consider waiting for a better deal.`
+      advice: `Current price is ${diff.toFixed(1)}% above lowest. Wait for a better deal or set a target price.`
     };
   };
 

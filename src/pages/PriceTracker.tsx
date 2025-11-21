@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import PriceTrackerCard from "@/components/PriceTrackerCard";
@@ -31,7 +30,6 @@ interface TrackedProduct {
 const PriceTracker = () => {
   const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDays, setSelectedDays] = useState<7 | 15 | 30 | 60 | 90>(30);
   const { toast } = useToast();
 
   const fetchTrackedProducts = async () => {
@@ -61,14 +59,10 @@ const PriceTracker = () => {
 
       const productsWithHistory = await Promise.all(
         (wishlistItems || []).map(async (item: any) => {
-          const cutoffDate = new Date();
-          cutoffDate.setDate(cutoffDate.getDate() - selectedDays);
-
           const { data: history } = await supabase
             .from('product_price_history')
             .select('created_at, amazon_price, flipkart_price')
             .eq('product_id', item.product_id)
-            .gte('created_at', cutoffDate.toISOString())
             .order('created_at', { ascending: false });
 
           const { data: alert } = await supabase
@@ -102,7 +96,7 @@ const PriceTracker = () => {
 
   useEffect(() => {
     fetchTrackedProducts();
-  }, [selectedDays]);
+  }, []);
 
   const handleRemoveProduct = async (wishlistId: string) => {
     try {
@@ -141,42 +135,32 @@ const PriceTracker = () => {
               </p>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="30" onValueChange={(v) => setSelectedDays(Number(v) as any)}>
-                <TabsList className="mb-6">
-                  <TabsTrigger value="7">7 Days</TabsTrigger>
-                  <TabsTrigger value="15">15 Days</TabsTrigger>
-                  <TabsTrigger value="30">30 Days</TabsTrigger>
-                  <TabsTrigger value="60">60 Days</TabsTrigger>
-                  <TabsTrigger value="90">90 Days</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value={selectedDays.toString()} className="space-y-4">
-                  {loading ? (
-                    <div className="flex items-center justify-center py-12">
-                      <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </div>
-                  ) : trackedProducts.length === 0 ? (
-                    <div className="text-center py-12">
-                      <p className="text-muted-foreground mb-2">No products being tracked</p>
-                      <p className="text-sm text-muted-foreground">
-                        Add products to your wishlist to start tracking prices
-                      </p>
-                    </div>
-                  ) : (
-                    trackedProducts.map((item) => (
-                      <PriceTrackerCard
-                        key={item.id}
-                        product={item.product}
-                        priceHistory={item.priceHistory}
-                        targetPrice={item.alert?.target_price}
-                        alertEnabled={item.alert?.alert_enabled}
-                        onRemove={() => handleRemoveProduct(item.id)}
-                        onTargetPriceSet={fetchTrackedProducts}
-                      />
-                    ))
-                  )}
-                </TabsContent>
-              </Tabs>
+              <div className="space-y-4">
+                {loading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                  </div>
+                ) : trackedProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground mb-2">No products being tracked</p>
+                    <p className="text-sm text-muted-foreground">
+                      Add products to your wishlist to start tracking prices
+                    </p>
+                  </div>
+                ) : (
+                  trackedProducts.map((item) => (
+                    <PriceTrackerCard
+                      key={item.id}
+                      product={item.product}
+                      priceHistory={item.priceHistory}
+                      targetPrice={item.alert?.target_price}
+                      alertEnabled={item.alert?.alert_enabled}
+                      onRemove={() => handleRemoveProduct(item.id)}
+                      onTargetPriceSet={fetchTrackedProducts}
+                    />
+                  ))
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>

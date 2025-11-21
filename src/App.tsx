@@ -11,6 +11,7 @@ import ArticlePage from "./pages/ArticlePage";
 import SearchResults from "./pages/SearchResults";
 import Wishlist from "./pages/Wishlist";
 import PriceTracker from "./pages/PriceTracker";
+import AtYourPrice from "./pages/AtYourPrice";
 import Alerts from "./pages/Alerts";
 import Deals from "./pages/Deals";
 import Profile from "./pages/Profile";
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/search" element={<SearchResults />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/price-tracker" element={<PriceTracker />} />
+            <Route path="/at-your-price" element={<AtYourPrice />} />
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/deals" element={<Deals />} />
             <Route path="/profile" element={<Profile />} />
