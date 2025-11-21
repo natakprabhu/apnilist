@@ -48,6 +48,9 @@ const Header = () => {
             <Link to="/price-tracker" className="text-sm font-medium hover:text-primary transition-colors">
               Price Tracker
             </Link>
+            <Link to="/at-your-price" className="text-sm font-medium hover:text-primary transition-colors">
+              At Your Price
+            </Link>
             <Link to="/deals" className="text-sm font-medium hover:text-primary transition-colors">
               Daily Deals
             </Link>
@@ -160,6 +163,13 @@ const Header = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               Price Tracker
+            </Link>
+            <Link
+              to="/at-your-price"
+              className="block text-sm font-medium hover:text-primary transition-colors"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              At Your Price
             </Link>
             <Link
               to="/deals"
