@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import { Loader2, ExternalLink, TrendingDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PriceHistoryChart from "@/components/PriceHistoryChart";
@@ -37,6 +39,8 @@ const AtYourPrice = () => {
   const [products, setProducts] = useState<AtYourPriceProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
   const fetchQualifiedProducts = async () => {
     try {
@@ -151,8 +155,22 @@ const AtYourPrice = () => {
   };
 
   useEffect(() => {
-    fetchQualifiedProducts();
-  }, []);
+    if (!authLoading && !user) {
+      navigate('/auth');
+      return;
+    }
+    if (user) {
+      fetchQualifiedProducts();
+    }
+  }, [user, authLoading, navigate]);
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

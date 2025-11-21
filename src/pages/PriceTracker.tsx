@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 import PriceTrackerCard from "@/components/PriceTrackerCard";
 import AddProductDialog from "@/components/AddProductDialog";
 import { Loader2 } from "lucide-react";
@@ -32,6 +34,8 @@ const PriceTracker = () => {
   const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
   const fetchTrackedProducts = async () => {
     try {
@@ -96,8 +100,14 @@ const PriceTracker = () => {
   };
 
   useEffect(() => {
-    fetchTrackedProducts();
-  }, []);
+    if (!authLoading && !user) {
+      navigate('/auth');
+      return;
+    }
+    if (user) {
+      fetchTrackedProducts();
+    }
+  }, [user, authLoading, navigate]);
 
   const handleRemoveProduct = async (wishlistId: string) => {
     try {
@@ -122,6 +132,14 @@ const PriceTracker = () => {
       });
     }
   };
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
