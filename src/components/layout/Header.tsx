@@ -48,8 +48,19 @@ const Header = () => {
             <Link to="/price-tracker" className="text-sm font-medium hover:text-primary transition-colors">
               Price Tracker
             </Link>
-            <Link to="/at-your-price" className="text-sm font-medium hover:text-primary transition-colors">
-              At Your Price
+            <Link 
+              to="/at-your-price" 
+              className="relative text-sm font-medium hover:text-primary transition-colors group"
+            >
+              <span className="relative">
+                At Your Price
+                <span className="absolute -top-1 -right-6 flex h-5 w-5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-5 w-5 bg-primary items-center justify-center text-[10px] font-bold text-primary-foreground">
+                    🔥
+                  </span>
+                </span>
+              </span>
             </Link>
             <Link to="/deals" className="text-sm font-medium hover:text-primary transition-colors">
               Daily Deals
@@ -166,10 +177,15 @@ const Header = () => {
             </Link>
             <Link
               to="/at-your-price"
-              className="block text-sm font-medium hover:text-primary transition-colors"
+              className="block text-sm font-medium hover:text-primary transition-colors relative"
               onClick={() => setIsMenuOpen(false)}
             >
-              At Your Price
+              <span className="flex items-center gap-2">
+                At Your Price
+                <span className="inline-flex rounded-full h-5 w-5 bg-primary items-center justify-center text-[10px] font-bold text-primary-foreground animate-pulse">
+                  🔥
+                </span>
+              </span>
             </Link>
             <Link
               to="/deals"
