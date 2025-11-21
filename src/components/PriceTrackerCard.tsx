@@ -2,10 +2,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { TrendingDown, TrendingUp, Bell, Eye, Trash2 } from "lucide-react";
+import { TrendingDown, TrendingUp, Bell, Eye, Trash2, ExternalLink, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { format } from "date-fns";
 import {
   Dialog,
   DialogContent,
@@ -53,27 +54,67 @@ const PriceTrackerCard = ({
   const currentAmazonPrice = latestPrice?.amazon_price || 0;
   const currentFlipkartPrice = latestPrice?.flipkart_price || 0;
 
-  const lowestAmazon = Math.min(...priceHistory.map(p => p.amazon_price || Infinity).filter(p => p !== Infinity));
-  const lowestFlipkart = Math.min(...priceHistory.map(p => p.flipkart_price || Infinity).filter(p => p !== Infinity));
-  const lowestPrice = Math.min(lowestAmazon, lowestFlipkart);
+  // Find lowest prices and their dates
+  const amazonPrices = priceHistory.filter(p => p.amazon_price).map(p => ({ price: p.amazon_price!, date: p.created_at }));
+  const flipkartPrices = priceHistory.filter(p => p.flipkart_price).map(p => ({ price: p.flipkart_price!, date: p.created_at }));
+  
+  const lowestAmazonEntry = amazonPrices.length > 0 ? amazonPrices.reduce((min, curr) => curr.price < min.price ? curr : min) : null;
+  const lowestFlipkartEntry = flipkartPrices.length > 0 ? flipkartPrices.reduce((min, curr) => curr.price < min.price ? curr : min) : null;
+  
+  const lowestPrice = Math.min(
+    lowestAmazonEntry?.price || Infinity, 
+    lowestFlipkartEntry?.price || Infinity
+  );
+  
+  const lowestPriceDate = lowestPrice === lowestAmazonEntry?.price 
+    ? lowestAmazonEntry?.date 
+    : lowestFlipkartEntry?.date;
 
   const currentLowestPrice = Math.min(currentAmazonPrice || Infinity, currentFlipkartPrice || Infinity);
+  
+  // Determine cheapest store
+  const cheapestStore = currentAmazonPrice > 0 && currentFlipkartPrice > 0
+    ? (currentAmazonPrice < currentFlipkartPrice ? 'amazon' : 'flipkart')
+    : currentAmazonPrice > 0 ? 'amazon' : 'flipkart';
+  
   const dropPercentage = lowestPrice !== Infinity && currentLowestPrice !== Infinity 
-    ? ((lowestPrice - currentLowestPrice) / lowestPrice * 100).toFixed(1)
+    ? ((currentLowestPrice - lowestPrice) / lowestPrice * 100).toFixed(1)
     : "0";
 
   const getBuyingAdvice = () => {
-    if (currentLowestPrice === lowestPrice) {
-      return { text: "Best Time to Buy", variant: "default" as const };
+    if (lowestPrice === Infinity || currentLowestPrice === Infinity) {
+      return { 
+        badge: "No Data", 
+        variant: "outline" as const,
+        advice: "Insufficient price data to provide recommendation"
+      };
     }
+    
+    const threshold = lowestPrice * 1.05; // 5% above lowest
+    
+    if (currentLowestPrice <= threshold) {
+      return { 
+        badge: "Best Time to Buy", 
+        variant: "default" as const,
+        advice: `Current price is at or near the lowest. Great time to purchase!`
+      };
+    }
+    
     const diff = ((currentLowestPrice - lowestPrice) / lowestPrice) * 100;
-    if (diff < 10) {
-      return { text: "Good Deal", variant: "secondary" as const };
-    }
-    return { text: "Hold & Wait", variant: "outline" as const };
+    return { 
+      badge: "Hold & Wait", 
+      variant: "destructive" as const,
+      advice: `Current price is ${diff.toFixed(1)}% higher than lowest. Consider waiting for a better deal.`
+    };
   };
 
   const advice = getBuyingAdvice();
+
+  const handleTargetPriceChange = (increment: number) => {
+    const current = Number(targetPrice) || 0;
+    const newValue = Math.max(0, current + increment);
+    setTargetPrice(newValue.toString());
+  };
 
   const handleSetTargetPrice = async () => {
     if (!targetPrice || isNaN(Number(targetPrice))) {
@@ -121,17 +162,26 @@ const PriceTrackerCard = ({
   };
 
   return (
-    <Card className="p-4 hover:shadow-lg transition-shadow">
-      <div className="flex gap-4">
-        <img 
-          src={product.image || "/placeholder.svg"} 
-          alt={product.name}
-          className="w-24 h-24 object-cover rounded-lg"
-        />
+    <Card className="p-6 hover:shadow-lg transition-shadow">
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Product Image */}
+        <div className="flex-shrink-0">
+          <img 
+            src={product.image || "/placeholder.svg"} 
+            alt={product.name}
+            className="w-32 h-32 object-cover rounded-lg"
+          />
+        </div>
         
-        <div className="flex-1 space-y-2">
-          <div className="flex items-start justify-between">
-            <h3 className="font-semibold text-foreground line-clamp-2">{product.name}</h3>
+        <div className="flex-1 space-y-4">
+          {/* Header with Title and Recommendation Badge */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg text-foreground mb-2">{product.name}</h3>
+              <Badge variant={advice.variant} className="text-sm px-3 py-1">
+                {advice.badge}
+              </Badge>
+            </div>
             {onRemove && (
               <Button 
                 variant="ghost" 
@@ -144,69 +194,168 @@ const PriceTrackerCard = ({
             )}
           </div>
 
-          <div className="flex gap-4">
-            {currentAmazonPrice > 0 && (
-              <div>
-                <p className="text-xs text-muted-foreground">Amazon</p>
-                <p className="text-lg font-bold text-foreground">₹{currentAmazonPrice.toLocaleString()}</p>
-              </div>
-            )}
-            {currentFlipkartPrice > 0 && (
-              <div>
-                <p className="text-xs text-muted-foreground">Flipkart</p>
-                <p className="text-lg font-bold text-foreground">₹{currentFlipkartPrice.toLocaleString()}</p>
-              </div>
-            )}
-          </div>
+          {/* Buying Advice */}
+          <p className="text-sm text-muted-foreground">{advice.advice}</p>
 
-          <div className="flex items-center gap-2 flex-wrap">
+          {/* Current Prices and Lowest Price */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Current Price */}
+            <div className="space-y-1">
+              <p className="text-xs text-muted-foreground uppercase">Current Price</p>
+              <p className="text-2xl font-bold text-foreground">
+                ₹{currentLowestPrice !== Infinity ? currentLowestPrice.toLocaleString() : 'N/A'}
+              </p>
+            </div>
+
+            {/* Lowest Price */}
             {lowestPrice !== Infinity && (
-              <Badge variant="secondary" className="gap-1">
-                <TrendingDown className="h-3 w-3" />
-                Lowest: ₹{lowestPrice.toLocaleString()}
-              </Badge>
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground uppercase">Lowest Price</p>
+                <p className="text-2xl font-bold text-primary">₹{lowestPrice.toLocaleString()}</p>
+                {lowestPriceDate && (
+                  <p className="text-xs text-muted-foreground">
+                    on {format(new Date(lowestPriceDate), 'dd/MM/yyyy')}
+                  </p>
+                )}
+              </div>
             )}
-            {Number(dropPercentage) > 0 && (
-              <Badge variant="outline" className="gap-1">
-                <TrendingUp className="h-3 w-3" />
-                {dropPercentage}% from lowest
-              </Badge>
+
+            {/* Price Drop */}
+            {Number(dropPercentage) !== 0 && (
+              <div className="space-y-1">
+                <p className="text-xs text-muted-foreground uppercase">Price Change</p>
+                <div className="flex items-center gap-2">
+                  {Number(dropPercentage) < 0 ? (
+                    <>
+                      <TrendingDown className="h-5 w-5 text-primary" />
+                      <p className="text-2xl font-bold text-primary">{Math.abs(Number(dropPercentage))}%</p>
+                    </>
+                  ) : (
+                    <>
+                      <TrendingUp className="h-5 w-5 text-destructive" />
+                      <p className="text-2xl font-bold text-destructive">+{dropPercentage}%</p>
+                    </>
+                  )}
+                </div>
+              </div>
             )}
-            <Badge variant={advice.variant}>{advice.text}</Badge>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Input
-              type="number"
-              placeholder="Target price"
-              value={targetPrice}
-              onChange={(e) => setTargetPrice(e.target.value)}
-              className="max-w-32"
-            />
-            <Button 
-              onClick={handleSetTargetPrice}
-              disabled={isUpdating}
-              size="sm"
-              className="gap-1"
-            >
-              <Bell className="h-4 w-4" />
-              Set Alert
-            </Button>
-            
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-1">
-                  <Eye className="h-4 w-4" />
-                  Full Trend
+          {/* Store Comparison */}
+          <div className="border-t pt-4">
+            <p className="text-sm font-semibold mb-3">Buy from:</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {currentAmazonPrice > 0 && (
+                <div className={`p-3 rounded-lg border ${cheapestStore === 'amazon' ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Amazon</p>
+                      <p className="text-xl font-bold text-foreground">₹{currentAmazonPrice.toLocaleString()}</p>
+                    </div>
+                    {cheapestStore === 'amazon' && (
+                      <Badge variant="default" className="text-xs">Cheapest</Badge>
+                    )}
+                  </div>
+                  {product.amazon_link && (
+                    <Button 
+                      variant={cheapestStore === 'amazon' ? 'default' : 'outline'}
+                      size="sm" 
+                      className="w-full gap-2"
+                      asChild
+                    >
+                      <a href={product.amazon_link} target="_blank" rel="noopener noreferrer">
+                        Buy on Amazon
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              )}
+
+              {currentFlipkartPrice > 0 && (
+                <div className={`p-3 rounded-lg border ${cheapestStore === 'flipkart' ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Flipkart</p>
+                      <p className="text-xl font-bold text-foreground">₹{currentFlipkartPrice.toLocaleString()}</p>
+                    </div>
+                    {cheapestStore === 'flipkart' && (
+                      <Badge variant="default" className="text-xs">Cheapest</Badge>
+                    )}
+                  </div>
+                  {product.flipkart_link && (
+                    <Button 
+                      variant={cheapestStore === 'flipkart' ? 'default' : 'outline'}
+                      size="sm" 
+                      className="w-full gap-2"
+                      asChild
+                    >
+                      <a href={product.flipkart_link} target="_blank" rel="noopener noreferrer">
+                        Buy on Flipkart
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Target Price and Actions */}
+          <div className="border-t pt-4">
+            <p className="text-sm font-semibold mb-3">Set Price Alert</p>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleTargetPriceChange(-100)}
+                  className="h-9 w-9"
+                >
+                  <Minus className="h-4 w-4" />
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-3xl">
-                <DialogHeader>
-                  <DialogTitle>{product.name}</DialogTitle>
-                </DialogHeader>
-                <PriceHistoryChart data={priceHistory} />
-              </DialogContent>
-            </Dialog>
+                <Input
+                  type="number"
+                  placeholder="Target price"
+                  value={targetPrice}
+                  onChange={(e) => setTargetPrice(e.target.value)}
+                  className="w-32"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleTargetPriceChange(100)}
+                  className="h-9 w-9"
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <Button 
+                onClick={handleSetTargetPrice}
+                disabled={isUpdating}
+                size="default"
+                className="gap-2"
+              >
+                <Bell className="h-4 w-4" />
+                Set Alert
+              </Button>
+              
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="default" className="gap-2">
+                    <Eye className="h-4 w-4" />
+                    See Trend
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-3xl">
+                  <DialogHeader>
+                    <DialogTitle>{product.name}</DialogTitle>
+                  </DialogHeader>
+                  <PriceHistoryChart data={priceHistory} />
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
       </div>
