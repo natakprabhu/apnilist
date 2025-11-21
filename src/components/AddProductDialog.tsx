@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Plus, Loader2 } from "lucide-react";
@@ -13,28 +14,42 @@ interface AddProductDialogProps {
 
 const AddProductDialog = ({ onProductAdded }: AddProductDialogProps) => {
   const [open, setOpen] = useState(false);
-  const [productLink, setProductLink] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    image: "",
+    amazonLink: "",
+    flipkartLink: "",
+    amazonPrice: "",
+    flipkartPrice: "",
+    description: "",
+  });
 
   const handleAddProduct = async () => {
-    if (!productLink.trim()) {
+    if (!formData.name.trim()) {
       toast({
         title: "Error",
-        description: "Please enter a product link",
+        description: "Please enter product name",
         variant: "destructive",
       });
       return;
     }
 
-    // Validate if it's Amazon or Flipkart link
-    const isAmazon = productLink.includes('amazon.');
-    const isFlipkart = productLink.includes('flipkart.');
-    
-    if (!isAmazon && !isFlipkart) {
+    if (!formData.amazonLink && !formData.flipkartLink) {
       toast({
-        title: "Invalid Link",
-        description: "Please provide a valid Amazon or Flipkart product link",
+        title: "Error",
+        description: "Please provide at least one product link (Amazon or Flipkart)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formData.amazonPrice && !formData.flipkartPrice) {
+      toast({
+        title: "Error",
+        description: "Please provide at least one price",
         variant: "destructive",
       });
       return;
@@ -53,27 +68,11 @@ const AddProductDialog = ({ onProductAdded }: AddProductDialogProps) => {
         return;
       }
 
-      // Call edge function to scrape product details
-      const { data, error } = await supabase.functions.invoke('scrape-product', {
-        body: { 
-          url: productLink,
-          platform: isAmazon ? 'amazon' : 'flipkart'
-        }
-      });
-
-      if (error) throw error;
-
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to scrape product details');
-      }
-
-      const productData = data.product;
-
       // Check if product already exists by name or link
       const { data: existingProduct } = await supabase
         .from('products')
         .select('id')
-        .or(`name.eq.${productData.name},amazon_link.eq.${productData.amazon_link},flipkart_link.eq.${productData.flipkart_link}`)
+        .or(`name.eq.${formData.name}${formData.amazonLink ? `,amazon_link.eq.${formData.amazonLink}` : ''}${formData.flipkartLink ? `,flipkart_link.eq.${formData.flipkartLink}` : ''}`)
         .maybeSingle();
 
       let productId: string;
@@ -85,11 +84,11 @@ const AddProductDialog = ({ onProductAdded }: AddProductDialogProps) => {
         const { data: newProduct, error: productError } = await supabase
           .from('products')
           .insert({
-            name: productData.name,
-            image: productData.image,
-            amazon_link: isAmazon ? productLink : null,
-            flipkart_link: isFlipkart ? productLink : null,
-            short_description: productData.description,
+            name: formData.name,
+            image: formData.image || null,
+            amazon_link: formData.amazonLink || null,
+            flipkart_link: formData.flipkartLink || null,
+            short_description: formData.description || null,
           })
           .select()
           .single();
@@ -102,8 +101,8 @@ const AddProductDialog = ({ onProductAdded }: AddProductDialogProps) => {
           .from('product_price_history')
           .insert({
             product_id: productId,
-            amazon_price: isAmazon ? productData.price : null,
-            flipkart_price: isFlipkart ? productData.price : null,
+            amazon_price: formData.amazonPrice ? parseFloat(formData.amazonPrice) : null,
+            flipkart_price: formData.flipkartPrice ? parseFloat(formData.flipkartPrice) : null,
           });
       }
 
@@ -132,7 +131,15 @@ const AddProductDialog = ({ onProductAdded }: AddProductDialogProps) => {
         description: "Product added to your price tracker!",
       });
 
-      setProductLink("");
+      setFormData({
+        name: "",
+        image: "",
+        amazonLink: "",
+        flipkartLink: "",
+        amazonPrice: "",
+        flipkartPrice: "",
+        description: "",
+      });
       setOpen(false);
       onProductAdded();
     } catch (error) {
@@ -155,27 +162,101 @@ const AddProductDialog = ({ onProductAdded }: AddProductDialogProps) => {
           Add Product to Track
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Add Product for Price Tracking</DialogTitle>
           <DialogDescription>
-            Paste an Amazon or Flipkart product link to start tracking its price automatically
+            Enter product details manually to start tracking prices
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <Label htmlFor="product-link">Product Link</Label>
+            <Label htmlFor="name">Product Name *</Label>
             <Input
-              id="product-link"
-              placeholder="https://www.amazon.in/... or https://www.flipkart.com/..."
-              value={productLink}
-              onChange={(e) => setProductLink(e.target.value)}
+              id="name"
+              placeholder="e.g., iPhone 15 Pro 256GB"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               disabled={loading}
             />
-            <p className="text-xs text-muted-foreground">
-              We'll automatically extract product details and start tracking prices across platforms
-            </p>
           </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="image">Product Image URL</Label>
+            <Input
+              id="image"
+              placeholder="https://..."
+              value={formData.image}
+              onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+              disabled={loading}
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="description">Description</Label>
+            <Textarea
+              id="description"
+              placeholder="Brief product description..."
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              disabled={loading}
+              rows={2}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="amazon-link">Amazon Link</Label>
+              <Input
+                id="amazon-link"
+                placeholder="https://amazon.in/..."
+                value={formData.amazonLink}
+                onChange={(e) => setFormData({ ...formData, amazonLink: e.target.value })}
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="amazon-price">Amazon Price (₹)</Label>
+              <Input
+                id="amazon-price"
+                type="number"
+                placeholder="99999"
+                value={formData.amazonPrice}
+                onChange={(e) => setFormData({ ...formData, amazonPrice: e.target.value })}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="flipkart-link">Flipkart Link</Label>
+              <Input
+                id="flipkart-link"
+                placeholder="https://flipkart.com/..."
+                value={formData.flipkartLink}
+                onChange={(e) => setFormData({ ...formData, flipkartLink: e.target.value })}
+                disabled={loading}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="flipkart-price">Flipkart Price (₹)</Label>
+              <Input
+                id="flipkart-price"
+                type="number"
+                placeholder="99999"
+                value={formData.flipkartPrice}
+                onChange={(e) => setFormData({ ...formData, flipkartPrice: e.target.value })}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            * Required fields. Provide at least one platform link and price.
+          </p>
         </div>
         <div className="flex justify-end gap-3">
           <Button variant="outline" onClick={() => setOpen(false)} disabled={loading}>
