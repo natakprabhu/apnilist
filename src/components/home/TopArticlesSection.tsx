@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react"; // <-- IMPORT
 import { supabase } from "@/integrations/supabase/client"; // <-- IMPORT
 import { Skeleton } from "@/components/ui/skeleton"; // <-- IMPORT
+import { getCategoryImage } from "@/lib/categoryImages";
 
 // 1. Define the type for the article data
 type Article = {
@@ -98,7 +99,7 @@ const TopArticlesSection = () => {
                     <img
                       src={
                         article.featured_image ||
-                        "/test.jpg"
+                        getCategoryImage(article.categories?.name)
                       }
                       alt={article.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
