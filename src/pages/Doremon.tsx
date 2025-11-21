@@ -289,7 +289,16 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
       .order("created_at", { ascending: false });
 
     if (error) console.error(error);
-    else setArticles(data ?? []);
+    else {
+      const articlesWithDefaults = (data ?? []).map(article => ({
+        ...article,
+        status: article.status as "draft" | "published",
+        article_products: [],
+        smart_pick: { recommendation: "" },
+        related_articles: []
+      }));
+      setArticles(articlesWithDefaults);
+    }
   };
 
   const fetchCategories = async () => {
@@ -406,7 +415,8 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
         setSelectedArticle((prev) => prev ? {
           ...prev,
           ...data,
-          article_products: products, // Corrected
+          status: data.status as "draft" | "published",
+          article_products: products,
           smart_pick: smartPick,
           related_articles: relatedArticles
         } : null);
@@ -716,7 +726,13 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
             .eq("category_id", selectedArticle.category_id);
             
           if (error) throw error;
-          setCategoryProducts(data || []);
+          const formattedProducts = (data || []).map(p => ({
+            ...p,
+            pros: (Array.isArray(p.pros) ? p.pros : []) as string[],
+            cons: (Array.isArray(p.cons) ? p.cons : []) as string[],
+            tags: (Array.isArray(p.tags) ? p.tags : []) as string[]
+          }));
+          setCategoryProducts(formattedProducts);
         } catch (err: any) {
           console.error("Failed to fetch products:", err);
           toast({ variant: "destructive", title: "Failed to load products" });
@@ -773,8 +789,15 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
 
         if (error) throw error;
 
+        const formattedProduct = {
+          ...data,
+          pros: (Array.isArray(data.pros) ? data.pros : []) as string[],
+          cons: (Array.isArray(data.cons) ? data.cons : []) as string[],
+          tags: (Array.isArray(data.tags) ? data.tags : []) as string[]
+        };
+
         toast({ title: "Product Created!", description: data.name });
-        onProductSelect(data);
+        onProductSelect(formattedProduct);
       } catch (err: any) {
          console.error("Create product failed:", err);
         if (err.message.includes("duplicate key value violates unique constraint")) {

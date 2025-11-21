@@ -7,11 +7,8 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Product = {
   id: string;
-  title: string;
-  image_url: string | null;
-  price: number;
-  discount_percent: number | null;
-  affiliate_url: string;
+  name: string;
+  image: string | null;
 };
 
 const MostTrackedSection = () => {
@@ -21,9 +18,7 @@ const MostTrackedSection = () => {
     const fetchProducts = async () => {
       const { data } = await supabase
         .from("products")
-        .select("id, title, image_url, price, discount_percent, affiliate_url")
-        .not("discount_percent", "is", null)
-        .order("discount_percent", { ascending: false })
+        .select("id, name, image")
         .limit(3);
 
       if (data) setProducts(data);
@@ -43,25 +38,12 @@ const MostTrackedSection = () => {
               <CardContent className="p-6">
                 <div className="flex items-start space-x-4 mb-4">
                   <img
-                    src={product.image_url || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200"}
-                    alt={product.title}
+                    src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200"}
+                    alt={product.name}
                     className="w-20 h-20 object-cover rounded-lg"
                   />
                   <div className="flex-1">
-                    <h3 className="font-semibold text-sm mb-2 line-clamp-2">{product.title}</h3>
-                    {product.discount_percent && (
-                      <Badge variant="secondary" className="text-xs">
-                        <TrendingDown className="w-3 h-3 mr-1" />
-                        {product.discount_percent}% off
-                      </Badge>
-                    )}
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm pt-2 border-t border-border">
-                    <span className="text-muted-foreground">Current Price:</span>
-                    <span className="font-bold text-primary">₹{product.price.toLocaleString()}</span>
+                    <h3 className="font-semibold text-sm mb-2 line-clamp-2">{product.name}</h3>
                   </div>
                 </div>
 
@@ -69,12 +51,8 @@ const MostTrackedSection = () => {
                   <Button 
                     className="flex-1" 
                     size="sm"
-                    onClick={() => window.open(product.affiliate_url, "_blank")}
                   >
-                    Buy Now
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <Heart className="w-4 h-4" />
+                    View Product
                   </Button>
                 </div>
               </CardContent>

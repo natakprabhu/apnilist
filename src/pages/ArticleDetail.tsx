@@ -20,17 +20,17 @@ import ReactMarkdown from "react-markdown";
 interface Product {
   id: string;
   name: string;
-  slug: string;
-  short_description: string;
-  image: string;
+  slug: string | null;
+  short_description: string | null;
+  image: string | null;
   pros: string[];
   cons: string[];
-  amazon_link: string;
-  flipkart_link: string;
+  amazon_link: string | null;
+  flipkart_link: string | null;
   badge: string | null;
   category_id: string | null;
   tags: string[];
-  rating: number; // You may need to add 'rating' to your 'products' table. Using 4.5 as fallback.
+  rating?: number;
 }
 
 // This is the junction table data
@@ -44,11 +44,11 @@ interface ArticleProduct {
 interface PriceHistory {
   id: string;
   product_id: string;
-  created_at: string;
-  amazon_price: string;
-  flipkart_price: string;
-  amazon_discount: string | null;
-  flipkart_discount: string | null;
+  created_at: string | null;
+  amazon_price: number | null;
+  flipkart_price: number | null;
+  amazon_discount: number | null;
+  flipkart_discount: number | null;
 }
 
 // This is the final combined data structure we'll use
@@ -68,6 +68,9 @@ interface RelatedArticle {
   id: string;
   title: string;
   url: string;
+  slug?: string;
+  featured_image?: string | null;
+  excerpt?: string | null;
 }
 
 interface Article {
@@ -97,13 +100,10 @@ interface TopSaleItem {
 /**
  * Helper function to determine price change direction.
  */
-const getPriceChangeDirection = (currentPrice: string | null | undefined, previousPrice: string | null | undefined): "up" | "down" | undefined => {
+const getPriceChangeDirection = (currentPrice: number | null | undefined, previousPrice: number | null | undefined): "up" | "down" | undefined => {
   if (!previousPrice || !currentPrice) return undefined;
-  const current = parseFloat(currentPrice);
-  const previous = parseFloat(previousPrice);
-  if (isNaN(current) || isNaN(previous)) return undefined;
-  if (current < previous) return "down";
-  if (current > previous) return "up";
+  if (currentPrice < previousPrice) return "down";
+  if (currentPrice > previousPrice) return "up";
   return undefined;
 };
 
@@ -164,15 +164,26 @@ const ArticleDetail = () => {
         }
         
         // Set Article data
-        const fetchedArticle = {
+        const fetchedArticle: Article = {
             ...articleData,
-            category: articleData.categories?.name || null // Flatten category name
-        } as Article;
+            category: articleData.categories?.name || null,
+            date: articleData.date || articleData.created_at,
+            smart_pick_recommendations: null,
+            related_articles: null
+        };
 
         setArticle(fetchedArticle);
         setCategoryId(articleData.category_id || null);
-        setSmartPick(articleData.smart_pick_recommendations ? articleData.smart_pick_recommendations[0] : null);
-        setRelatedArticles(articleData.related_articles || []);
+        
+        const smartPickData = articleData.smart_pick_recommendations;
+        if (smartPickData && Array.isArray(smartPickData) && smartPickData.length > 0) {
+          setSmartPick(smartPickData[0] as SmartPick);
+        }
+        
+        const relatedData = articleData.related_articles;
+        if (relatedData && Array.isArray(relatedData)) {
+          setRelatedArticles(relatedData as RelatedArticle[]);
+        }
         if (articleData.category_id) {
           fetchTriviaForCategory(articleData.category_id);
         }
@@ -197,7 +208,19 @@ const ArticleDetail = () => {
         if (productsError) throw productsError;
         
         console.log(productsData);
-        const articleProducts = (productsData || []) as ArticleProduct[];
+        const articleProducts = (productsData || []).map(item => {
+          const products = item.products as any;
+          return {
+            rank: item.rank,
+            product_id: item.product_id,
+            products: {
+              ...products,
+              pros: Array.isArray(products.pros) ? products.pros : [],
+              cons: Array.isArray(products.cons) ? products.cons : [],
+              tags: Array.isArray(products.tags) ? products.tags : []
+            }
+          };
+        }) as ArticleProduct[];
         const productIds = articleProducts.map(p => p.product_id);
 
         if (productIds.length === 0) {
@@ -263,7 +286,15 @@ const fetchRelatedArticlesByCategory = async (categoryId: string, currentArticle
 
     if (error) throw error;
 
-    setRelatedArticles(data || []);
+    const formattedArticles: RelatedArticle[] = (data || []).map(article => ({
+      id: article.id,
+      title: article.title,
+      url: `/articles/${article.slug}`,
+      slug: article.slug,
+      featured_image: article.featured_image,
+      excerpt: article.excerpt
+    }));
+    setRelatedArticles(formattedArticles);
   } catch (err: any) {
     console.error("Error fetching related articles:", err.message);
     setRelatedArticles([]);
@@ -391,8 +422,8 @@ return (
                   {article.category || "Uncategorized"}
                 </Badge>
                  <div className="flex flex-wrap gap-2">
-                  {article.tags.map((tag) => (
-                    <Badge key={tag} variant="primary" className="text-sm">
+                  {article.tags && article.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-sm">
                       {tag}
                     </Badge>
                   ))}
@@ -467,15 +498,15 @@ return (
                   rank={rank}
                   name={product.slug}
                   image={product.image}
-                  rating={product.rating || 4.5} // Use product rating or fallback
+                  rating={product.rating || 4.5}
                   pros={product.pros}
                   cons={product.cons}
-                  amazonPrice={parseFloat(latestPrice?.amazon_price || "0")}
-                  amazonDiscount={parseFloat(latestPrice?.amazon_discount || "0")}
+                  amazonPrice={latestPrice?.amazon_price || 0}
+                  amazonDiscount={latestPrice?.amazon_discount || 0}
                   amazonPriceChange={getPriceChangeDirection(latestPrice?.amazon_price, previousPrice?.amazon_price)}
                   amazonLink={product.amazon_link}
-                  flipkartPrice={parseFloat(latestPrice?.flipkart_price || "0")}
-                  flipkartDiscount={parseFloat(latestPrice?.flipkart_discount || "0")}
+                  flipkartPrice={latestPrice?.flipkart_price || 0}
+                  flipkartDiscount={latestPrice?.flipkart_discount || 0}
                   flipkartPriceChange={getPriceChangeDirection(latestPrice?.flipkart_price, previousPrice?.flipkart_price)}
                   flipkartLink={product.flipkart_link}
                   badge={product.badge}

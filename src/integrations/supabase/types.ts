@@ -14,66 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
-      analytics_events: {
-        Row: {
-          created_at: string
-          event_type: string
-          id: string
-          metadata: Json | null
-          product_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          event_type: string
-          id?: string
-          metadata?: Json | null
-          product_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          event_type?: string
-          id?: string
-          metadata?: Json | null
-          product_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "analytics_events_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "analytics_events_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       article_products: {
         Row: {
           article_id: string
           id: string
-          position: number | null
           product_id: string
+          rank: number
         }
         Insert: {
           article_id: string
           id?: string
-          position?: number | null
           product_id: string
+          rank: number
         }
         Update: {
           article_id?: string
           id?: string
-          position?: number | null
           product_id?: string
+          rank?: number
         }
         Relationships: [
           {
@@ -94,43 +52,55 @@ export type Database = {
       }
       articles: {
         Row: {
+          author: string | null
           author_id: string | null
+          category: string | null
           category_id: string | null
           content: string
           created_at: string
+          date: string | null
           excerpt: string | null
           featured_image: string | null
           id: string
           slug: string
           status: string
+          tags: string[] | null
           title: string
           updated_at: string
           views: number | null
         }
         Insert: {
+          author?: string | null
           author_id?: string | null
+          category?: string | null
           category_id?: string | null
           content: string
           created_at?: string
+          date?: string | null
           excerpt?: string | null
           featured_image?: string | null
           id?: string
           slug: string
           status?: string
+          tags?: string[] | null
           title: string
           updated_at?: string
           views?: number | null
         }
         Update: {
+          author?: string | null
           author_id?: string | null
+          category?: string | null
           category_id?: string | null
           content?: string
           created_at?: string
+          date?: string | null
           excerpt?: string | null
           featured_image?: string | null
           id?: string
           slug?: string
           status?: string
+          tags?: string[] | null
           title?: string
           updated_at?: string
           views?: number | null
@@ -169,63 +139,78 @@ export type Database = {
         }
         Relationships: []
       }
-      price_history: {
+      comments: {
         Row: {
-          changed_at: string
+          article_id: string | null
+          comment_text: string | null
+          created_at: string | null
+          date_posted: string | null
           id: string
-          new_price: number
-          old_price: number
-          product_id: string
+          parent_comment_id: string | null
+          user_id: string | null
+          user_name: string | null
         }
         Insert: {
-          changed_at?: string
+          article_id?: string | null
+          comment_text?: string | null
+          created_at?: string | null
+          date_posted?: string | null
           id?: string
-          new_price: number
-          old_price: number
-          product_id: string
+          parent_comment_id?: string | null
+          user_id?: string | null
+          user_name?: string | null
         }
         Update: {
-          changed_at?: string
+          article_id?: string | null
+          comment_text?: string | null
+          created_at?: string | null
+          date_posted?: string | null
           id?: string
-          new_price?: number
-          old_price?: number
-          product_id?: string
+          parent_comment_id?: string | null
+          user_id?: string | null
+          user_name?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "price_history_product_id_fkey"
-            columns: ["product_id"]
+            foreignKeyName: "comments_article_id_fkey"
+            columns: ["article_id"]
             isOneToOne: false
-            referencedRelation: "products"
+            referencedRelation: "articles"
             referencedColumns: ["id"]
           },
         ]
       }
-      product_prices: {
+      product_price_history: {
         Row: {
-          checked_at: string
+          amazon_discount: number | null
+          amazon_price: number | null
+          created_at: string | null
+          flipkart_discount: number | null
+          flipkart_price: number | null
           id: string
-          price: number
           product_id: string
-          source: string
         }
         Insert: {
-          checked_at?: string
+          amazon_discount?: number | null
+          amazon_price?: number | null
+          created_at?: string | null
+          flipkart_discount?: number | null
+          flipkart_price?: number | null
           id?: string
-          price: number
           product_id: string
-          source: string
         }
         Update: {
-          checked_at?: string
+          amazon_discount?: number | null
+          amazon_price?: number | null
+          created_at?: string | null
+          flipkart_discount?: number | null
+          flipkart_price?: number | null
           id?: string
-          price?: number
           product_id?: string
-          source?: string
         }
         Relationships: [
           {
-            foreignKeyName: "product_prices_product_id_fkey"
+            foreignKeyName: "product_price_history_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
@@ -235,52 +220,49 @@ export type Database = {
       }
       products: {
         Row: {
-          affiliate_url: string
-          category_id: string
-          created_at: string
-          description: string | null
-          discount_percent: number | null
+          amazon_link: string | null
+          badge: string | null
+          category_id: string | null
+          cons: Json | null
+          created_at: string | null
+          flipkart_link: string | null
           id: string
-          image_url: string | null
-          in_stock: boolean
-          mrp: number | null
-          price: number
-          rating: number | null
-          store_id: string
-          title: string
-          updated_at: string
+          image: string | null
+          name: string
+          pros: Json | null
+          short_description: string | null
+          slug: string | null
+          tags: Json | null
         }
         Insert: {
-          affiliate_url: string
-          category_id: string
-          created_at?: string
-          description?: string | null
-          discount_percent?: number | null
+          amazon_link?: string | null
+          badge?: string | null
+          category_id?: string | null
+          cons?: Json | null
+          created_at?: string | null
+          flipkart_link?: string | null
           id?: string
-          image_url?: string | null
-          in_stock?: boolean
-          mrp?: number | null
-          price: number
-          rating?: number | null
-          store_id: string
-          title: string
-          updated_at?: string
+          image?: string | null
+          name: string
+          pros?: Json | null
+          short_description?: string | null
+          slug?: string | null
+          tags?: Json | null
         }
         Update: {
-          affiliate_url?: string
-          category_id?: string
-          created_at?: string
-          description?: string | null
-          discount_percent?: number | null
+          amazon_link?: string | null
+          badge?: string | null
+          category_id?: string | null
+          cons?: Json | null
+          created_at?: string | null
+          flipkart_link?: string | null
           id?: string
-          image_url?: string | null
-          in_stock?: boolean
-          mrp?: number | null
-          price?: number
-          rating?: number | null
-          store_id?: string
-          title?: string
-          updated_at?: string
+          image?: string | null
+          name?: string
+          pros?: Json | null
+          short_description?: string | null
+          slug?: string | null
+          tags?: Json | null
         }
         Relationships: [
           {
@@ -288,13 +270,6 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "products_store_id_fkey"
-            columns: ["store_id"]
-            isOneToOne: false
-            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -326,70 +301,130 @@ export type Database = {
         }
         Relationships: []
       }
-      search_logs: {
+      related_articles: {
         Row: {
-          created_at: string
+          article_id: string | null
           id: string
-          query: string
-          results_count: number
-          user_id: string | null
+          title: string | null
+          url: string | null
         }
         Insert: {
-          created_at?: string
+          article_id?: string | null
           id?: string
-          query: string
-          results_count?: number
-          user_id?: string | null
+          title?: string | null
+          url?: string | null
         }
         Update: {
-          created_at?: string
+          article_id?: string | null
           id?: string
-          query?: string
-          results_count?: number
-          user_id?: string | null
+          title?: string | null
+          url?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "search_logs_user_id_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "related_articles_article_id_fkey"
+            columns: ["article_id"]
             isOneToOne: false
-            referencedRelation: "profiles"
+            referencedRelation: "articles"
             referencedColumns: ["id"]
           },
         ]
       }
-      stores: {
+      smart_pick_recommendations: {
         Row: {
-          affiliate_base_url: string | null
+          article_id: string | null
+          filters: Json | null
+          id: string
+          recommendation: string | null
+        }
+        Insert: {
+          article_id?: string | null
+          filters?: Json | null
+          id?: string
+          recommendation?: string | null
+        }
+        Update: {
+          article_id?: string | null
+          filters?: Json | null
+          id?: string
+          recommendation?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "smart_pick_recommendations_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: true
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      top_sales: {
+        Row: {
+          category_id: string
           created_at: string
           id: string
-          logo_url: string | null
-          name: string
-          slug: string
-          status: string
+          model_name: string
+          sales_count: number
           updated_at: string
         }
         Insert: {
-          affiliate_base_url?: string | null
+          category_id: string
           created_at?: string
           id?: string
-          logo_url?: string | null
-          name: string
-          slug: string
-          status?: string
+          model_name: string
+          sales_count?: number
           updated_at?: string
         }
         Update: {
-          affiliate_base_url?: string | null
+          category_id?: string
           created_at?: string
           id?: string
-          logo_url?: string | null
-          name?: string
-          slug?: string
-          status?: string
+          model_name?: string
+          sales_count?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "top_sales_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trivia: {
+        Row: {
+          category_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          title: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          title?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trivia_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -432,13 +467,6 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "wishlist_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "wishlist_user_id_fkey"
             columns: ["user_id"]

@@ -151,7 +151,7 @@ const ArticlePage = () => {
             <Separator className="my-8" />
 
             {/* Comments */}
-            <CommentSection />
+            <CommentSection articleId="sample-article-id" />
           </div>
 
           {/* Right Sidebar */}
