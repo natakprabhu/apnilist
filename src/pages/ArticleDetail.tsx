@@ -496,6 +496,7 @@ return (
               return (
                 <ProductCard 
                   key={product.id}
+                  productId={product.id}
                   rank={rank}
                   name={product.slug}
                   image={product.image}

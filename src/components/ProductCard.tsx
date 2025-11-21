@@ -1,10 +1,14 @@
-import { ExternalLink, TrendingUp, TrendingDown } from "lucide-react";
+import { ExternalLink, TrendingUp, TrendingDown, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   rank: number;
+  productId?: string;
   name: string;
   image: string;
   rating: number;
@@ -23,6 +27,7 @@ interface ProductCardProps {
 
 export const ProductCard = ({
   rank,
+  productId,
   name,
   image,
   rating,
@@ -38,6 +43,66 @@ export const ProductCard = ({
   flipkartLink,
   badge,
 }: ProductCardProps) => {
+  const [isTracking, setIsTracking] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const { toast } = useToast();
+
+  const handleTrackPrice = async () => {
+    if (!productId) {
+      toast({
+        title: "Error",
+        description: "Product ID not available",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAdding(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to track prices",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('wishlist')
+        .insert({
+          user_id: user.id,
+          product_id: productId,
+        });
+
+      if (error) {
+        if (error.code === '23505') {
+          toast({
+            title: "Already Tracking",
+            description: "This product is already in your wishlist",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        setIsTracking(true);
+        toast({
+          title: "Success",
+          description: "Product added to price tracker",
+        });
+      }
+    } catch (error) {
+      console.error('Error tracking price:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add product to price tracker",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
   return (
     <Card className="relative hover:shadow-hover transition-all duration-300">
       {/* Rank Number Overlay */}
@@ -113,6 +178,21 @@ export const ProductCard = ({
               ))}
             </ul>
           </div>
+
+          {/* Track Price Button */}
+          {productId && (
+            <div className="pt-2">
+              <Button
+                onClick={handleTrackPrice}
+                disabled={isAdding || isTracking}
+                variant={isTracking ? "secondary" : "outline"}
+                className="w-full gap-2"
+              >
+                <Heart className={`w-4 h-4 ${isTracking ? 'fill-current' : ''}`} />
+                {isTracking ? "Tracking Price" : "Track Price"}
+              </Button>
+            </div>
+          )}
 
           {/* Pricing Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
