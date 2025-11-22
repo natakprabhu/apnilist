@@ -324,7 +324,7 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
 
     const newArticle: Article = {
       id: "", // No ID for a new article
-      title: "top LED TV 2025",
+      title: "Top",
       slug: "led-2025",
       content: "you should definetly buy a LED TV",
       excerpt: "",
@@ -453,6 +453,18 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
     if (!selectedArticle) return;
     try {
       let articleData;
+
+
+      // --- AUTO MERGE ARTICLE TAGS + PRODUCT TAGS ---
+      const productTags = selectedArticle.article_products
+        ?.flatMap(ap => ap.product?.tags || [])
+        .filter(Boolean) || [];
+
+      const uniqueMergedTags = Array.from(
+        new Set([ ...(selectedArticle.tags || []), ...productTags ])
+      );
+
+      // now add merged tags to payload
       const articlePayload = {
         title: selectedArticle.title,
         slug: selectedArticle.slug,
@@ -465,8 +477,10 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
         status: selectedArticle.status,
         views: selectedArticle.views,
         date: selectedArticle.date,
-        tags: selectedArticle.tags,
+        tags: uniqueMergedTags,   // <-- IMPORTANT PART
       };
+
+
 
       if (selectedArticle.id) {
         const { data, error } = await supabase
