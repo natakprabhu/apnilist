@@ -568,31 +568,53 @@ const saveArticleProducts = async (articleId: string, products: ArticleProduct[]
   try {
     if (!articleId) throw new Error("Missing articleId");
 
-    // --- Remove duplicate product_id entries ---
-    const uniqueProducts = Array.from(
-      new Map(products.map(p => [p.product_id, p])).values()
-    );
+    console.log("🔍 Raw products before cleaning:", products);
 
-    // --- Re-rank after removing duplicates ---
-    const normalized = reRankProducts(uniqueProducts);
+    // --- STEP 1: Remove duplicate product_ids ---
+    const uniqueProductsMap = new Map();
+    for (const p of products) {
+      if (!uniqueProductsMap.has(p.product_id)) {
+        uniqueProductsMap.set(p.product_id, p);
+      }
+    }
+    const uniqueProducts = Array.from(uniqueProductsMap.values());
 
+    console.log("🧹 Unique products:", uniqueProducts);
+
+    // --- STEP 2: Clean + re-rank ---
+    const normalized = uniqueProducts.map((p, index) => ({
+      ...p,
+      rank: index + 1
+    }));
+
+    console.log("📦 Final normalized list:", normalized);
+
+    // --- STEP 3: Completely delete first ---
     await deleteArticleProducts(articleId);
 
+    // --- STEP 4: Prepare clean payload ---
     const payload = normalized.map((ap) => ({
       article_id: articleId,
       product_id: ap.product_id,
       rank: ap.rank,
     }));
 
-    const { data, error } = await supabase.from("article_products").insert(payload);
+    console.log("🚚 Payload going to Supabase:", payload);
+
+    // --- STEP 5: Insert clean list ---
+    const { data, error } = await supabase
+      .from("article_products")
+      .insert(payload);
 
     if (error) throw error;
     return data;
+
   } catch (err) {
     console.error("saveArticleProducts error:", err);
     throw err;
   }
 };
+
 
   const handleDelete = async (articleId: string) => {
     try {
