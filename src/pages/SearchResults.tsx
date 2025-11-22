@@ -547,11 +547,11 @@ const SearchResults = () => {
                           {article.excerpt}
                         </p>
                         {/* Filter Labels */}
-                        <div className="overflow-x-auto max-h-20 mb-1">
-                          <div className="flex gap-1.5 pb-2">
+                        <div className="max-h-20 overflow-y-auto mb-1">
+                          <div className="flex flex-wrap gap-1.5">
                             {/* Show selected tags on the card */}
                             {article.tags && article.tags.map(tag => (
-                               <Badge key={tag} variant="outline" className="text-xs whitespace-nowrap flex-shrink-0">{tag}</Badge>
+                               <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>
                             ))}
                           </div>
                         </div>
