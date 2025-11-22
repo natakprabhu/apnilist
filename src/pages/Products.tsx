@@ -42,6 +42,7 @@ const Products = () => {
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
+    image: "",
     amazon_link: "",
     flipkart_link: "",
   });
@@ -127,6 +128,7 @@ const Products = () => {
     setFormData({
       name: product.name,
       slug: product.slug,
+      image: product.image || "",
       amazon_link: product.amazon_link || "",
       flipkart_link: product.flipkart_link || "",
     });
@@ -162,10 +164,10 @@ const Products = () => {
   const handleUpdate = async () => {
     if (!editingProduct) return;
 
-    if (!formData.name.trim() || !formData.slug.trim()) {
+    if (!formData.name.trim() || !formData.slug.trim() || !formData.image.trim()) {
       toast({
         title: "Error",
-        description: "Name and slug are required",
+        description: "Name, slug, and image are required",
         variant: "destructive",
       });
       return;
@@ -177,6 +179,7 @@ const Products = () => {
         .update({
           name: formData.name,
           slug: formData.slug,
+          image: formData.image || null,
           amazon_link: formData.amazon_link || null,
           flipkart_link: formData.flipkart_link || null,
         })
@@ -202,10 +205,10 @@ const Products = () => {
   };
 
   const handleAdd = async () => {
-    if (!formData.name.trim() || !formData.slug.trim()) {
+    if (!formData.name.trim() || !formData.slug.trim() || !formData.image.trim()) {
       toast({
         title: "Error",
-        description: "Name and slug are required",
+        description: "Name, slug, and image are required",
         variant: "destructive",
       });
       return;
@@ -217,6 +220,7 @@ const Products = () => {
         .insert({
           name: formData.name,
           slug: formData.slug,
+          image: formData.image || null,
           amazon_link: formData.amazon_link || null,
           flipkart_link: formData.flipkart_link || null,
         });
@@ -229,7 +233,7 @@ const Products = () => {
       });
 
       setIsAddDialogOpen(false);
-      setFormData({ name: "", slug: "", amazon_link: "", flipkart_link: "" });
+      setFormData({ name: "", slug: "", image: "", amazon_link: "", flipkart_link: "" });
       await fetchProducts();
     } catch (error: any) {
       toast({
@@ -295,6 +299,15 @@ const Products = () => {
                         />
                       </div>
                       <div className="space-y-2">
+                        <Label htmlFor="add-image">Image URL *</Label>
+                        <Input
+                          id="add-image"
+                          value={formData.image}
+                          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                          placeholder="https://example.com/image.jpg"
+                        />
+                      </div>
+                      <div className="space-y-2">
                         <Label htmlFor="add-amazon">Amazon Link</Label>
                         <Input
                           id="add-amazon"
@@ -339,7 +352,8 @@ const Products = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[40%]">Name</TableHead>
+                        <TableHead className="w-[10%]">Image</TableHead>
+                        <TableHead className="w-[30%]">Name</TableHead>
                         <TableHead className="w-[25%]">Slug</TableHead>
                         <TableHead className="w-[15%] text-center">Links</TableHead>
                         <TableHead className="w-[20%] text-right">Actions</TableHead>
@@ -348,13 +362,22 @@ const Products = () => {
                     <TableBody>
                       {currentProducts.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                             {searchQuery ? "No products found matching your search" : "No products available"}
                           </TableCell>
                         </TableRow>
                       ) : (
                         currentProducts.map((product) => (
                           <TableRow key={product.id}>
+                            <TableCell>
+                              {product.image ? (
+                                <img src={product.image} alt={product.name} className="h-12 w-12 object-cover rounded" />
+                              ) : (
+                                <div className="h-12 w-12 bg-muted rounded flex items-center justify-center text-xs">
+                                  No img
+                                </div>
+                              )}
+                            </TableCell>
                             <TableCell className="font-medium">{product.name}</TableCell>
                             <TableCell className="text-muted-foreground">{product.slug}</TableCell>
                             <TableCell className="text-center">
@@ -461,6 +484,15 @@ const Products = () => {
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="product-slug"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-image">Image URL *</Label>
+              <Input
+                id="edit-image"
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                placeholder="https://example.com/image.jpg"
               />
             </div>
             <div className="space-y-2">
