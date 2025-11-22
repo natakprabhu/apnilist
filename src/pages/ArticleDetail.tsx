@@ -151,7 +151,28 @@ const ArticleDetail = () => {
 
   const [trivia, setTrivia] = useState<{ title?: string; content: string } | null>(null);
   const [triviaLoading, setTriviaLoading] = useState(false);
+  
+  const [trackedProducts, setTrackedProducts] = useState<Set<string>>(new Set());
 
+
+  // Fetch tracked products for current user
+  useEffect(() => {
+    const fetchTrackedProducts = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("wishlist")
+        .select("product_id")
+        .eq("user_id", user.id);
+
+      if (!error && data) {
+        setTrackedProducts(new Set(data.map(item => item.product_id)));
+      }
+    };
+
+    fetchTrackedProducts();
+  }, []);
 
   // Fetch all article data using correct nested queries
   useEffect(() => {
@@ -527,7 +548,11 @@ return (
                     <Button
                       size="sm"
                       variant="outline"
-                      className="absolute top-4 right-4 z-10 gap-2"
+                      className={`absolute top-4 right-4 z-10 gap-2 ${
+                        trackedProducts.has(product.id) 
+                          ? "bg-red-50 border-red-500 text-red-600 hover:bg-red-100" 
+                          : ""
+                      }`}
                       onClick={async () => {
                         const { data: { user } } = await supabase.auth.getUser();
                         if (!user) {
@@ -539,35 +564,62 @@ return (
                           return;
                         }
                         
-                        const { error } = await supabase
-                          .from("wishlist")
-                          .insert({
-                            user_id: user.id,
-                            product_id: product.id,
-                          });
+                        const isTracked = trackedProducts.has(product.id);
+                        
+                        if (isTracked) {
+                          // Remove from tracking
+                          const { error } = await supabase
+                            .from("wishlist")
+                            .delete()
+                            .eq("user_id", user.id)
+                            .eq("product_id", product.id);
 
-                        if (error) {
-                          if (error.code === "23505") {
-                            toast({
-                              title: "Already Tracking",
-                              description: "This product is already in your wishlist",
-                            });
-                          } else {
+                          if (error) {
                             toast({
                               title: "Error",
-                              description: "Failed to add to wishlist",
+                              description: "Failed to remove from tracking",
                               variant: "destructive",
+                            });
+                          } else {
+                            setTrackedProducts(prev => {
+                              const newSet = new Set(prev);
+                              newSet.delete(product.id);
+                              return newSet;
+                            });
+                            toast({
+                              title: "Removed",
+                              description: "Product removed from tracking",
                             });
                           }
                         } else {
-                          toast({
-                            title: "Success",
-                            description: "Product added to wishlist",
-                          });
+                          // Add to tracking
+                          const { error } = await supabase
+                            .from("wishlist")
+                            .insert({
+                              user_id: user.id,
+                              product_id: product.id,
+                            });
+
+                          if (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to add to tracking",
+                              variant: "destructive",
+                            });
+                          } else {
+                            setTrackedProducts(prev => new Set([...prev, product.id]));
+                            toast({
+                              title: "Success",
+                              description: "Product added to tracking",
+                            });
+                          }
                         }
                       }}
                     >
-                      <Heart className="h-4 w-4" /> Track Price
+                      <Heart 
+                        className={`h-4 w-4 ${trackedProducts.has(product.id) ? "fill-red-600" : ""}`}
+                      /> 
+                      Track Price
                     </Button>
 
                     <div className="p-6 flex flex-col md:flex-row gap-6">
