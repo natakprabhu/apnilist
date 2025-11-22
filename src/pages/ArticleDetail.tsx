@@ -482,13 +482,20 @@ return (
               <p className="mt-4 text-white/90">
                 {article.excerpt}
               </p>
-              <div className="flex flex-wrap gap-2">
-                  {article.tags && article.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-sm">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+              <div
+                className="flex flex-wrap gap-2 h-[3.5rem] overflow-y-auto border-0"
+                style={{
+                  border: 'none',
+                  boxShadow: 'none' // (if you want to ensure no box-shadow either)
+                }}
+              >
+                {article.tags && article.tags.map((tag) => (
+                  <Badge key={tag} variant="secondary" className="text-sm">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+
             </header>
 
 {article.category_id && (
@@ -506,9 +513,15 @@ return (
         <p className="text-muted-foreground italic">Loading trivia...</p>
       )}
       {!triviaLoading && trivia && (
-        <div className="prose prose-neutral dark:prose-invert max-w-none text-sm md:text-base leading-relaxed">
-          <ReactMarkdown>{trivia.content}</ReactMarkdown>
-        </div>
+        // <div className="prose prose-neutral dark:prose-invert max-w-none text-sm md:text-base leading-relaxed">
+        //   <ReactMarkdown>{trivia.content}</ReactMarkdown>
+        // </div>
+
+        <div
+          className="prose prose-neutral dark:prose-invert max-w-none text-sm md:text-base leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: trivia.content }}
+        />
+
       )}
       {!triviaLoading && !trivia && (
         <p className="text-sm text-muted-foreground italic">
