@@ -6,9 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ProductCard } from "@/components/ProductCard";
 import { CommentSection } from "@/components/CommentSection";
-import { Calendar, User, Lightbulb, TrendingUp } from "lucide-react";
+import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
@@ -106,6 +105,26 @@ const getPriceChangeDirection = (currentPrice: number | null | undefined, previo
   if (currentPrice < previousPrice) return "down";
   if (currentPrice > previousPrice) return "up";
   return undefined;
+};
+
+/**
+ * Helper function to get the best price between Amazon and Flipkart
+ */
+const getBestPrice = (amazonPrice: number | null, flipkartPrice: number | null): number => {
+  if (!amazonPrice && !flipkartPrice) return 0;
+  if (!amazonPrice) return flipkartPrice || 0;
+  if (!flipkartPrice) return amazonPrice || 0;
+  return Math.min(amazonPrice, flipkartPrice);
+};
+
+/**
+ * Helper function to get the source of the best price
+ */
+const bestPriceSource = (amazonPrice: number | null, flipkartPrice: number | null): string => {
+  if (!amazonPrice && !flipkartPrice) return "N/A";
+  if (!amazonPrice) return "Flipkart";
+  if (!flipkartPrice) return "Amazon";
+  return amazonPrice <= flipkartPrice ? "Amazon" : "Flipkart";
 };
 
 
@@ -490,31 +509,157 @@ return (
           <section className="space-y-8">
             <h2 className="text-3xl font-bold">Detailed Reviews</h2>
             
-            {/* Map over the new 'displayProducts' state */}
-            {displayProducts.map((item) => {
-              const { product, latestPrice, previousPrice, rank } = item;
-              return (
-                <ProductCard 
-                  key={product.id}
-                  productId={product.id}
-                  rank={rank}
-                  name={product.slug}
-                  image={product.image}
-                  rating={product.rating || 4.5}
-                  pros={product.pros}
-                  cons={product.cons}
-                  amazonPrice={latestPrice?.amazon_price || 0}
-                  amazonDiscount={latestPrice?.amazon_discount || 0}
-                  amazonPriceChange={getPriceChangeDirection(latestPrice?.amazon_price, previousPrice?.amazon_price)}
-                  amazonLink={product.amazon_link}
-                  flipkartPrice={latestPrice?.flipkart_price || 0}
-                  flipkartDiscount={latestPrice?.flipkart_discount || 0}
-                  flipkartPriceChange={getPriceChangeDirection(latestPrice?.flipkart_price, previousPrice?.flipkart_price)}
-                  flipkartLink={product.flipkart_link}
-                  badge={product.badge}
-                />
-              )
-            })}
+            <div className="grid grid-cols-1 gap-8">
+              {displayProducts.map((item, index) => {
+                const { product, latestPrice, previousPrice, rank } = item;
+                const amazonPrice = latestPrice?.amazon_price || 0;
+                const flipkartPrice = latestPrice?.flipkart_price || 0;
+                
+                return (
+                  <Card key={product.id} className="overflow-hidden">
+                    <div className="p-6 flex flex-col md:flex-row gap-6">
+                      <div className="md:w-1/4">
+                        <div className="rounded-lg overflow-hidden bg-white aspect-square relative">
+                          <img 
+                            src={product.image || "/placeholder.svg"} 
+                            alt={product.name} 
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded">
+                            #{rank}
+                          </div>
+                          {product.badge && (
+                            <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs font-bold py-1 px-2 rounded">
+                              {product.badge}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div className="md:w-3/4">
+                        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                        <div className="flex items-center mb-3">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <span 
+                                key={i} 
+                                className={`text-lg ${i < Math.floor(product.rating || 0) ? "text-primary" : "text-muted"}`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <span className="ml-2 font-medium">{(product.rating || 0).toFixed(1)}</span>
+                        </div>
+                        
+                        {product.short_description && (
+                          <p className="text-muted-foreground mb-4">{product.short_description}</p>
+                        )}
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                          <div className="bg-secondary/20 p-4 rounded-lg">
+                            <h4 className="font-bold mb-2 text-green-600">Pros</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {product.pros.map((pro, i) => (
+                                <li key={i} className="text-sm">{pro}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div className="bg-secondary/20 p-4 rounded-lg">
+                            <h4 className="font-bold mb-2 text-red-600">Cons</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {product.cons.map((con, i) => (
+                                <li key={i} className="text-sm">{con}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-col md:flex-row justify-between gap-4">
+                          <div className="flex flex-wrap gap-3">
+                            {product.amazon_link && amazonPrice > 0 && (
+                              <a 
+                                href={product.amazon_link} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 bg-background border border-border px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                              >
+                                <ShoppingCart className="h-4 w-4" /> 
+                                Amazon: ₹{amazonPrice.toLocaleString()}
+                              </a>
+                            )}
+                            
+                            {product.flipkart_link && flipkartPrice > 0 && (
+                              <a 
+                                href={product.flipkart_link} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="inline-flex items-center gap-2 bg-background border border-border px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                              >
+                                <ShoppingCart className="h-4 w-4" /> 
+                                Flipkart: ₹{flipkartPrice.toLocaleString()}
+                              </a>
+                            )}
+                            
+                            {(amazonPrice > 0 || flipkartPrice > 0) && (
+                              <div className="inline-flex items-center gap-2 bg-background border border-green-300 px-3 py-2 rounded-md text-green-700">
+                                <span className="font-medium">Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()} 
+                                ({bestPriceSource(amazonPrice, flipkartPrice)})
+                              </div>
+                            )}
+                          </div>
+                          
+                          <button 
+                            onClick={async () => {
+                              const { data: { user } } = await supabase.auth.getUser();
+                              if (!user) {
+                                toast({
+                                  title: "Authentication Required",
+                                  description: "Please log in to track prices",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              
+                              const { error } = await supabase
+                                .from("wishlist")
+                                .insert({
+                                  user_id: user.id,
+                                  product_id: product.id,
+                                });
+
+                              if (error) {
+                                if (error.code === "23505") {
+                                  toast({
+                                    title: "Already Tracking",
+                                    description: "This product is already in your wishlist",
+                                  });
+                                } else {
+                                  toast({
+                                    title: "Error",
+                                    description: "Failed to add to wishlist",
+                                    variant: "destructive",
+                                  });
+                                }
+                              } else {
+                                toast({
+                                  title: "Success",
+                                  description: "Product added to wishlist",
+                                });
+                              }
+                            }}
+                            className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition-all hover:scale-105 font-medium"
+                          >
+                            <Heart className="h-4 w-4" /> Track Price
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           </section>
 
             <Separator className="my-8" />
