@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Bell, Heart, User, Menu, X, LogOut, Search } from "lucide-react";
+import { Bell, Heart, User, Menu, X, LogOut, Search, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +17,29 @@ import {
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .single();
+
+      setIsAdmin(!!data);
+    };
+
+    checkAdmin();
+  }, [user]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,6 +139,20 @@ const Header = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/alerts">Price Alerts</Link>
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/admin">Admin Dashboard</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/products">
+                          <Settings className="mr-2 h-4 w-4" />
+                          Manage Products
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -203,26 +239,47 @@ const Header = () => {
               Daily Deals
             </Link>
             {user && (
-              <div className="flex space-x-2 pt-2">
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/alerts">
-                    <Bell className="h-4 w-4 mr-2" />
-                    Alerts
-                  </Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/wishlist">
-                    <Heart className="h-4 w-4 mr-2" />
-                    Wishlist
-                  </Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/profile">
-                    <User className="h-4 w-4 mr-2" />
-                    Profile
-                  </Link>
-                </Button>
-              </div>
+              <>
+                <div className="flex space-x-2 pt-2">
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/alerts">
+                      <Bell className="h-4 w-4 mr-2" />
+                      Alerts
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/wishlist">
+                      <Heart className="h-4 w-4 mr-2" />
+                      Wishlist
+                    </Link>
+                  </Button>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to="/profile">
+                      <User className="h-4 w-4 mr-2" />
+                      Profile
+                    </Link>
+                  </Button>
+                </div>
+                {isAdmin && (
+                  <div className="pt-2 space-y-2 border-t border-border mt-2">
+                    <Link
+                      to="/admin"
+                      className="block text-sm font-medium hover:text-primary transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Admin Dashboard
+                    </Link>
+                    <Link
+                      to="/products"
+                      className="block text-sm font-medium hover:text-primary transition-colors"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Settings className="h-4 w-4 mr-2 inline" />
+                      Manage Products
+                    </Link>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
