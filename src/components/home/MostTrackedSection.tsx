@@ -9,6 +9,11 @@ type Product = {
   id: string;
   name: string;
   image: string | null;
+  amazon_link: string | null;
+  flipkart_link: string | null;
+  rating: number | null;
+  amazon_price?: number | null;
+  flipkart_price?: number | null;
 };
 
 const MostTrackedSection = () => {
@@ -16,12 +21,32 @@ const MostTrackedSection = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data } = await supabase
+      const { data: productsData } = await supabase
         .from("products")
-        .select("id, name, image")
+        .select("id, name, image, amazon_link, flipkart_link, rating")
         .limit(3);
 
-      if (data) setProducts(data);
+      if (productsData) {
+        // Fetch latest prices for each product
+        const productsWithPrices = await Promise.all(
+          productsData.map(async (product) => {
+            const { data: priceData } = await supabase
+              .from("product_price_history")
+              .select("amazon_price, flipkart_price")
+              .eq("product_id", product.id)
+              .order("created_at", { ascending: false })
+              .limit(1)
+              .maybeSingle();
+
+            return {
+              ...product,
+              amazon_price: priceData?.amazon_price,
+              flipkart_price: priceData?.flipkart_price,
+            };
+          })
+        );
+        setProducts(productsWithPrices);
+      }
     };
 
     fetchProducts();
@@ -35,25 +60,60 @@ const MostTrackedSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {products.map((product) => (
             <Card key={product.id} className="hover:shadow-hover transition-all duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-start space-x-4 mb-4">
+              <CardContent className="p-4">
+                <div className="flex flex-col space-y-3">
                   <img
                     src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200"}
                     alt={product.name}
-                    className="w-20 h-20 object-cover rounded-lg"
+                    className="w-full h-40 object-cover rounded-lg"
                   />
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-sm mb-2 line-clamp-2">{product.name}</h3>
+                  <div>
+                    <h3 className="font-semibold text-sm line-clamp-2 mb-2">{product.name}</h3>
+                    {product.rating && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <span>⭐</span>
+                        <span>{product.rating}</span>
+                      </div>
+                    )}
                   </div>
-                </div>
 
-                <div className="flex space-x-2">
-                  <Button 
-                    className="flex-1" 
-                    size="sm"
-                  >
-                    View Product
-                  </Button>
+                  <div className="space-y-2">
+                    {product.amazon_price && product.amazon_link && (
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Amazon</p>
+                          <p className="font-bold text-sm">₹{product.amazon_price.toLocaleString()}</p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          asChild
+                        >
+                          <a href={product.amazon_link} target="_blank" rel="noopener noreferrer">
+                            Buy
+                          </a>
+                        </Button>
+                      </div>
+                    )}
+
+                    {product.flipkart_price && product.flipkart_link && (
+                      <div className="flex items-center justify-between p-2 bg-muted/50 rounded">
+                        <div>
+                          <p className="text-xs text-muted-foreground">Flipkart</p>
+                          <p className="font-bold text-sm">₹{product.flipkart_price.toLocaleString()}</p>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          asChild
+                        >
+                          <a href={product.flipkart_link} target="_blank" rel="noopener noreferrer">
+                            Buy
+                          </a>
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
