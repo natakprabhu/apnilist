@@ -7,7 +7,9 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CommentSection } from "@/components/CommentSection";
-import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart } from "lucide-react";
+import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
@@ -519,7 +521,54 @@ return (
                 const flipkartPrice = latestPrice?.flipkart_price || 0;
                 
                 return (
-                  <Card key={product.id} className="overflow-hidden">
+                  <Card key={product.id} className="overflow-hidden relative">
+                    {/* Track Price Button - Top Right */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="absolute top-4 right-4 z-10 gap-2"
+                      onClick={async () => {
+                        const { data: { user } } = await supabase.auth.getUser();
+                        if (!user) {
+                          toast({
+                            title: "Authentication Required",
+                            description: "Please log in to track prices",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        const { error } = await supabase
+                          .from("wishlist")
+                          .insert({
+                            user_id: user.id,
+                            product_id: product.id,
+                          });
+
+                        if (error) {
+                          if (error.code === "23505") {
+                            toast({
+                              title: "Already Tracking",
+                              description: "This product is already in your wishlist",
+                            });
+                          } else {
+                            toast({
+                              title: "Error",
+                              description: "Failed to add to wishlist",
+                              variant: "destructive",
+                            });
+                          }
+                        } else {
+                          toast({
+                            title: "Success",
+                            description: "Product added to wishlist",
+                          });
+                        }
+                      }}
+                    >
+                      <Heart className="h-4 w-4" /> Track Price
+                    </Button>
+
                     <div className="p-6 flex flex-col md:flex-row gap-6">
                       <div className="md:w-1/4">
                         <div className="rounded-lg overflow-hidden bg-white aspect-square relative">
@@ -531,16 +580,19 @@ return (
                           <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded">
                             #{rank}
                           </div>
-                          {product.badge && (
-                            <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs font-bold py-1 px-2 rounded">
-                              {product.badge}
-                            </div>
-                          )}
                         </div>
                       </div>
                       
                       <div className="md:w-3/4">
-                        <h3 className="text-xl font-bold mb-2">{product.name}</h3>
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <h3 className="text-xl font-bold">{product.name}</h3>
+                          {product.badge && (
+                            <Badge variant="default" className="bg-primary text-primary-foreground">
+                              {product.badge}
+                            </Badge>
+                          )}
+                        </div>
+                        
                         <div className="flex items-center mb-3">
                           <div className="flex">
                             {[...Array(5)].map((_, i) => (
@@ -579,94 +631,67 @@ return (
                           </div>
                         </div>
                         
-                        <div className="flex flex-col md:flex-row justify-between gap-4">
-                          <div className="flex flex-wrap gap-3">
-                            {product.amazon_link && amazonPrice > 0 && (
-                              <a 
-                                href={product.amazon_link} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 bg-background border border-border px-3 py-2 rounded-md hover:bg-accent transition-colors"
-                              >
-                                <ShoppingCart className="h-4 w-4" /> 
-                                Amazon: ₹{amazonPrice.toLocaleString()}
-                              </a>
-                            )}
-                            
-                            {product.flipkart_link && flipkartPrice > 0 && (
-                              <a 
-                                href={product.flipkart_link} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="inline-flex items-center gap-2 bg-background border border-border px-3 py-2 rounded-md hover:bg-accent transition-colors"
-                              >
-                                <ShoppingCart className="h-4 w-4" /> 
-                                Flipkart: ₹{flipkartPrice.toLocaleString()}
-                              </a>
-                            )}
-                            
-                            {(amazonPrice > 0 || flipkartPrice > 0) && (
-                              <div className="inline-flex items-center gap-2 bg-background border border-green-300 px-3 py-2 rounded-md text-green-700">
-                                <span className="font-medium">Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()} 
-                                ({bestPriceSource(amazonPrice, flipkartPrice)})
-                              </div>
-                            )}
-                          </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          {/* Best Price Display */}
+                          {(amazonPrice > 0 || flipkartPrice > 0) && (
+                            <div className="inline-flex items-center gap-2 bg-background border border-green-300 px-4 py-2 rounded-md text-green-700 font-semibold">
+                              <span>Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()}
+                            </div>
+                          )}
                           
-                          <button 
-                            onClick={async () => {
-                              const { data: { user } } = await supabase.auth.getUser();
-                              if (!user) {
-                                toast({
-                                  title: "Authentication Required",
-                                  description: "Please log in to track prices",
-                                  variant: "destructive",
-                                });
-                                return;
-                              }
-                              
-                              const { error } = await supabase
-                                .from("wishlist")
-                                .insert({
-                                  user_id: user.id,
-                                  product_id: product.id,
-                                });
-
-                              if (error) {
-                                if (error.code === "23505") {
-                                  toast({
-                                    title: "Already Tracking",
-                                    description: "This product is already in your wishlist",
-                                  });
-                                } else {
-                                  toast({
-                                    title: "Error",
-                                    description: "Failed to add to wishlist",
-                                    variant: "destructive",
-                                  });
-                                }
-                              } else {
-                                toast({
-                                  title: "Success",
-                                  description: "Product added to wishlist",
-                                });
-                              }
-                            }}
-                            className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md transition-all hover:scale-105 font-medium"
-                          >
-                            <Heart className="h-4 w-4" /> Track Price
-                          </button>
+                          {/* Amazon Button */}
+                          {product.amazon_link && amazonPrice > 0 && (
+                            <a 
+                              href={product.amazon_link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-[#FF9900] hover:bg-[#FF9900]/90 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                            >
+                              <ShoppingCart className="h-4 w-4" /> 
+                              Amazon ₹{amazonPrice.toLocaleString()}
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                          
+                          {/* Flipkart Button */}
+                          {product.flipkart_link && flipkartPrice > 0 && (
+                            <a 
+                              href={product.flipkart_link} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="inline-flex items-center gap-2 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                            >
+                              <ShoppingCart className="h-4 w-4" /> 
+                              Flipkart ₹{flipkartPrice.toLocaleString()}
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                          
+                          {/* Price Trend Dialog */}
+                          {priceHistory.length > 0 && (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="gap-2">
+                                  <TrendingUp className="h-4 w-4" />
+                                  Price Trend
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl">
+                                <DialogHeader>
+                                  <DialogTitle className="flex items-center gap-2">
+                                    <TrendingUp className="h-5 w-5" />
+                                    Price History - {product.name}
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <div className="mt-4">
+                                  <PriceHistoryChart data={priceHistory} />
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          )}
                         </div>
                       </div>
                     </div>
-                    
-                    {/* Price History Chart */}
-                    {priceHistory.length > 0 && (
-                      <div className="px-6 pb-6">
-                        <h4 className="text-lg font-semibold mb-2">Price History</h4>
-                        <PriceHistoryChart data={priceHistory} />
-                      </div>
-                    )}
                   </Card>
                 );
               })}
