@@ -75,7 +75,7 @@ const Header = () => {
                 <Link to="/at-your-price">
                   <Button 
                     variant="ghost"
-                    className="neon-button-teal text-sm font-medium px-4 py-2 h-9"
+                    className="premium-button text-sm px-4 py-2 h-9 rounded-full"
                   >
                     At Your Price 🔥
                   </Button>
@@ -217,7 +217,7 @@ const Header = () => {
                 >
                   <Button 
                     variant="ghost"
-                    className="neon-button-teal text-sm font-medium w-full justify-start"
+                    className="premium-button text-sm w-full justify-start rounded-full"
                   >
                     At Your Price 🔥
                   </Button>
