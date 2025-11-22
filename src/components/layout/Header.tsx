@@ -77,7 +77,7 @@ const Header = () => {
                     variant="ghost"
                     className="premium-button text-sm px-4 py-2 h-9 rounded-full"
                   >
-                    At Your Price 🔥
+                    At Your Price
                   </Button>
                 </Link>
               </>
@@ -130,14 +130,11 @@ const Header = () => {
                   <DropdownMenuItem asChild>
                     <Link to="/wishlist">Wishlist</Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/alerts">Price Alerts</Link>
-                  </DropdownMenuItem>
                   {isAdmin && (
                     <>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link to="/admin">Admin Dashboard</Link>
+                        <Link to="/doremon">Admin Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link to="/products">
