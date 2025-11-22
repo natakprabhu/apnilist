@@ -6,13 +6,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ProductCard } from "@/components/ProductCard";
 import { CommentSection } from "@/components/CommentSection";
-import { Calendar, User, Lightbulb, TrendingUp } from "lucide-react";
+import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
 import ReactMarkdown from "react-markdown";
+import { getCategoryImage } from "@/lib/categoryImages";
+import PriceHistoryChart from "@/components/PriceHistoryChart";
 
 // --- NEW, CORRECTED INTERFACES ---
 
@@ -57,6 +60,7 @@ interface DisplayProduct {
   product: Product;
   latestPrice: PriceHistory | null;
   previousPrice: PriceHistory | null;
+  priceHistory: PriceHistory[];
 }
 
 interface SmartPick {
@@ -105,6 +109,26 @@ const getPriceChangeDirection = (currentPrice: number | null | undefined, previo
   if (currentPrice < previousPrice) return "down";
   if (currentPrice > previousPrice) return "up";
   return undefined;
+};
+
+/**
+ * Helper function to get the best price between Amazon and Flipkart
+ */
+const getBestPrice = (amazonPrice: number | null, flipkartPrice: number | null): number => {
+  if (!amazonPrice && !flipkartPrice) return 0;
+  if (!amazonPrice) return flipkartPrice || 0;
+  if (!flipkartPrice) return amazonPrice || 0;
+  return Math.min(amazonPrice, flipkartPrice);
+};
+
+/**
+ * Helper function to get the source of the best price
+ */
+const bestPriceSource = (amazonPrice: number | null, flipkartPrice: number | null): string => {
+  if (!amazonPrice && !flipkartPrice) return "N/A";
+  if (!amazonPrice) return "Flipkart";
+  if (!flipkartPrice) return "Amazon";
+  return amazonPrice <= flipkartPrice ? "Amazon" : "Flipkart";
 };
 
 
@@ -247,12 +271,13 @@ const ArticleDetail = () => {
         }
 
         const finalDisplayProducts: DisplayProduct[] = articleProducts.map(ap => {
-            const history = priceHistoryMap.get(ap.product_id);
+            const history = priceHistoryMap.get(ap.product_id) || [];
             return {
                 rank: ap.rank,
                 product: ap.products,
-                latestPrice: history ? history[0] : null,     // Most recent price
-                previousPrice: history ? history[1] : null, // Second most recent price
+                latestPrice: history[0] || null,     // Most recent price
+                previousPrice: history[1] || null,   // Second most recent price
+                priceHistory: history.slice(0, 30),  // Last 30 data points for chart
             };
         });
 
@@ -489,30 +514,188 @@ return (
           <section className="space-y-8">
             <h2 className="text-3xl font-bold">Detailed Reviews</h2>
             
-            {/* Map over the new 'displayProducts' state */}
-            {displayProducts.map((item) => {
-              const { product, latestPrice, previousPrice, rank } = item;
-              return (
-                <ProductCard 
-                  key={product.id}
-                  rank={rank}
-                  name={product.slug}
-                  image={product.image}
-                  rating={product.rating || 4.5}
-                  pros={product.pros}
-                  cons={product.cons}
-                  amazonPrice={latestPrice?.amazon_price || 0}
-                  amazonDiscount={latestPrice?.amazon_discount || 0}
-                  amazonPriceChange={getPriceChangeDirection(latestPrice?.amazon_price, previousPrice?.amazon_price)}
-                  amazonLink={product.amazon_link}
-                  flipkartPrice={latestPrice?.flipkart_price || 0}
-                  flipkartDiscount={latestPrice?.flipkart_discount || 0}
-                  flipkartPriceChange={getPriceChangeDirection(latestPrice?.flipkart_price, previousPrice?.flipkart_price)}
-                  flipkartLink={product.flipkart_link}
-                  badge={product.badge}
-                />
-              )
-            })}
+            <div className="grid grid-cols-1 gap-8">
+              {displayProducts.map((item, index) => {
+                const { product, latestPrice, previousPrice, rank, priceHistory } = item;
+                const amazonPrice = latestPrice?.amazon_price || 0;
+                const flipkartPrice = latestPrice?.flipkart_price || 0;
+                
+                return (
+                  <Card key={product.id} className="overflow-hidden relative">
+                    {/* Track Price Button - Top Right */}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="absolute top-4 right-4 z-10 gap-2"
+                      onClick={async () => {
+                        const { data: { user } } = await supabase.auth.getUser();
+                        if (!user) {
+                          toast({
+                            title: "Authentication Required",
+                            description: "Please log in to track prices",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        const { error } = await supabase
+                          .from("wishlist")
+                          .insert({
+                            user_id: user.id,
+                            product_id: product.id,
+                          });
+
+                        if (error) {
+                          if (error.code === "23505") {
+                            toast({
+                              title: "Already Tracking",
+                              description: "This product is already in your wishlist",
+                            });
+                          } else {
+                            toast({
+                              title: "Error",
+                              description: "Failed to add to wishlist",
+                              variant: "destructive",
+                            });
+                          }
+                        } else {
+                          toast({
+                            title: "Success",
+                            description: "Product added to wishlist",
+                          });
+                        }
+                      }}
+                    >
+                      <Heart className="h-4 w-4" /> Track Price
+                    </Button>
+
+                    <div className="p-6 flex flex-col md:flex-row gap-6">
+                      <div className="md:w-1/4">
+                        <div className="rounded-lg overflow-hidden bg-white aspect-square relative">
+                          <img 
+                            src={product.image || "/placeholder.svg"} 
+                            alt={product.name} 
+                            className="absolute inset-0 w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded">
+                            #{rank}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="md:w-3/4">
+                        <div className="flex items-center gap-2 mb-2 flex-wrap">
+                          <h3 className="text-xl font-bold">{product.name}</h3>
+                          {product.badge && (
+                            <Badge variant="default" className="bg-primary text-primary-foreground">
+                              {product.badge}
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center mb-3">
+                          <div className="flex">
+                            {[...Array(5)].map((_, i) => (
+                              <span 
+                                key={i} 
+                                className={`text-lg ${i < Math.floor(product.rating || 0) ? "text-primary" : "text-muted"}`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                          <span className="ml-2 font-medium">{(product.rating || 0).toFixed(1)}</span>
+                        </div>
+                        
+                        {product.short_description && (
+                          <p className="text-muted-foreground mb-4">{product.short_description}</p>
+                        )}
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                          <div className="bg-secondary/20 p-4 rounded-lg">
+                            <h4 className="font-bold mb-2 text-green-600">Pros</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {product.pros.map((pro, i) => (
+                                <li key={i} className="text-sm">{pro}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          
+                          <div className="bg-secondary/20 p-4 rounded-lg">
+                            <h4 className="font-bold mb-2 text-red-600">Cons</h4>
+                            <ul className="list-disc list-inside space-y-1">
+                              {product.cons.map((con, i) => (
+                                <li key={i} className="text-sm">{con}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-3">
+                          {/* Best Price Display */}
+                          {(amazonPrice > 0 || flipkartPrice > 0) && (
+                            <div className="inline-flex items-center gap-2 bg-background border border-green-300 px-4 py-2 rounded-md text-green-700 font-semibold">
+                              <span>Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()}
+                            </div>
+                          )}
+                          
+                          {/* Amazon Button */}
+                          {product.amazon_link && amazonPrice > 0 && (
+                            <a 
+                              href={product.amazon_link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-[#FF9900] hover:bg-[#FF9900]/90 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                            >
+                              <ShoppingCart className="h-4 w-4" /> 
+                              Amazon ₹{amazonPrice.toLocaleString()}
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                          
+                          {/* Flipkart Button */}
+                          {product.flipkart_link && flipkartPrice > 0 && (
+                            <a 
+                              href={product.flipkart_link} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="inline-flex items-center gap-2 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-4 py-2 rounded-md transition-colors font-medium"
+                            >
+                              <ShoppingCart className="h-4 w-4" /> 
+                              Flipkart ₹{flipkartPrice.toLocaleString()}
+                              <ExternalLink className="h-3 w-3" />
+                            </a>
+                          )}
+                          
+                          {/* Price Trend Dialog */}
+                          {priceHistory.length > 0 && (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm" className="gap-2">
+                                  <TrendingUp className="h-4 w-4" />
+                                  Price Trend
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-4xl">
+                                <DialogHeader>
+                                  <DialogTitle className="flex items-center gap-2">
+                                    <TrendingUp className="h-5 w-5" />
+                                    Price History - {product.name}
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <div className="mt-4">
+                                  <PriceHistoryChart data={priceHistory} />
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           </section>
 
             <Separator className="my-8" />
@@ -609,7 +792,7 @@ return (
             className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition"
           >
             <img
-              src={related.featured_image || "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100"}
+              src={related.featured_image || getCategoryImage(article?.category)}
               alt={related.title}
               className="w-16 h-16 rounded-md object-cover"
             />

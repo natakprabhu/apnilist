@@ -180,6 +180,54 @@ export type Database = {
           },
         ]
       }
+      price_alerts: {
+        Row: {
+          alert_enabled: boolean | null
+          created_at: string | null
+          id: string
+          last_notified_at: string | null
+          product_id: string
+          target_price: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          alert_enabled?: boolean | null
+          created_at?: string | null
+          id?: string
+          last_notified_at?: string | null
+          product_id: string
+          target_price: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          alert_enabled?: boolean | null
+          created_at?: string | null
+          id?: string
+          last_notified_at?: string | null
+          product_id?: string
+          target_price?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "price_alerts_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "price_alerts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_price_history: {
         Row: {
           amazon_discount: number | null
@@ -230,6 +278,7 @@ export type Database = {
           image: string | null
           name: string
           pros: Json | null
+          rating: number | null
           short_description: string | null
           slug: string | null
           tags: Json | null
@@ -245,6 +294,7 @@ export type Database = {
           image?: string | null
           name: string
           pros?: Json | null
+          rating?: number | null
           short_description?: string | null
           slug?: string | null
           tags?: Json | null
@@ -260,6 +310,7 @@ export type Database = {
           image?: string | null
           name?: string
           pros?: Json | null
+          rating?: number | null
           short_description?: string | null
           slug?: string | null
           tags?: Json | null
@@ -276,27 +327,39 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
+          daily_deals_alerts: boolean | null
           email: string | null
+          email_notifications: boolean | null
           full_name: string | null
           id: string
           phone: string | null
+          price_drop_alerts: boolean | null
           updated_at: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
+          daily_deals_alerts?: boolean | null
           email?: string | null
+          email_notifications?: boolean | null
           full_name?: string | null
           id: string
           phone?: string | null
+          price_drop_alerts?: boolean | null
           updated_at?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
+          daily_deals_alerts?: boolean | null
           email?: string | null
+          email_notifications?: boolean | null
           full_name?: string | null
           id?: string
           phone?: string | null
+          price_drop_alerts?: boolean | null
           updated_at?: string | null
         }
         Relationships: []
@@ -467,6 +530,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "wishlist_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "wishlist_user_id_fkey"
             columns: ["user_id"]
