@@ -98,25 +98,22 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Teal neon button with fluctuating glow */
-  .neon-button-teal {
-    @apply relative bg-teal-500/20 text-teal-400 border border-teal-400/50 hover:bg-teal-500/30;
-    animation: neon-glow-teal 2s ease-in-out infinite;
-    text-shadow: 0 0 5px rgba(20, 184, 166, 0.5);
+  /* Elegant premium button using website's color palette */
+  .premium-button {
+    @apply relative bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold;
+    @apply shadow-[0_0_20px_rgba(216,71,39,0.3)] hover:shadow-[0_0_30px_rgba(216,71,39,0.5)];
+    @apply transition-all duration-300;
+    animation: subtle-pulse 3s ease-in-out infinite;
   }
 
-  @keyframes neon-glow-teal {
+  @keyframes subtle-pulse {
     0%, 100% {
-      box-shadow: 0 0 5px rgba(20, 184, 166, 0.5),
-                  0 0 10px rgba(20, 184, 166, 0.3),
-                  0 0 15px rgba(20, 184, 166, 0.2);
-      border-color: rgba(20, 184, 166, 0.5);
+      transform: scale(1);
+      box-shadow: 0 0 20px rgba(216, 71, 39, 0.3), 0 4px 15px rgba(216, 71, 39, 0.2);
     }
     50% {
-      box-shadow: 0 0 10px rgba(20, 184, 166, 0.8),
-                  0 0 20px rgba(20, 184, 166, 0.6),
-                  0 0 30px rgba(20, 184, 166, 0.4);
-      border-color: rgba(20, 184, 166, 0.8);
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(216, 71, 39, 0.5), 0 6px 20px rgba(216, 71, 39, 0.3);
     }
   }
 }
