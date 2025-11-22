@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
 import ReactMarkdown from "react-markdown";
 import { getCategoryImage } from "@/lib/categoryImages";
+import PriceHistoryChart from "@/components/PriceHistoryChart";
 
 // --- NEW, CORRECTED INTERFACES ---
 
@@ -57,6 +58,7 @@ interface DisplayProduct {
   product: Product;
   latestPrice: PriceHistory | null;
   previousPrice: PriceHistory | null;
+  priceHistory: PriceHistory[];
 }
 
 interface SmartPick {
@@ -267,12 +269,13 @@ const ArticleDetail = () => {
         }
 
         const finalDisplayProducts: DisplayProduct[] = articleProducts.map(ap => {
-            const history = priceHistoryMap.get(ap.product_id);
+            const history = priceHistoryMap.get(ap.product_id) || [];
             return {
                 rank: ap.rank,
                 product: ap.products,
-                latestPrice: history ? history[0] : null,     // Most recent price
-                previousPrice: history ? history[1] : null, // Second most recent price
+                latestPrice: history[0] || null,     // Most recent price
+                previousPrice: history[1] || null,   // Second most recent price
+                priceHistory: history.slice(0, 30),  // Last 30 data points for chart
             };
         });
 
@@ -511,7 +514,7 @@ return (
             
             <div className="grid grid-cols-1 gap-8">
               {displayProducts.map((item, index) => {
-                const { product, latestPrice, previousPrice, rank } = item;
+                const { product, latestPrice, previousPrice, rank, priceHistory } = item;
                 const amazonPrice = latestPrice?.amazon_price || 0;
                 const flipkartPrice = latestPrice?.flipkart_price || 0;
                 
@@ -656,6 +659,14 @@ return (
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Price History Chart */}
+                    {priceHistory.length > 0 && (
+                      <div className="px-6 pb-6">
+                        <h4 className="text-lg font-semibold mb-2">Price History</h4>
+                        <PriceHistoryChart data={priceHistory} />
+                      </div>
+                    )}
                   </Card>
                 );
               })}
