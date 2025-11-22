@@ -593,6 +593,21 @@ return (
                           )}
                         </div>
                         
+                        {/* Product Tags */}
+                        {product.tags && product.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {product.tags.map((tag, tagIndex) => (
+                              <Badge 
+                                key={tagIndex} 
+                                variant="outline" 
+                                className="text-xs bg-secondary/50"
+                              >
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                        
                         <div className="flex items-center mb-3">
                           <div className="flex">
                             {[...Array(5)].map((_, i) => (
