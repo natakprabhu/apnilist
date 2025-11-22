@@ -56,7 +56,7 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="ApniList" className="h-10 w-auto" />
+            <img src="/logo.png" alt="ApniList" className="h-14 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
