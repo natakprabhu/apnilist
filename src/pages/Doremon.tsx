@@ -542,28 +542,57 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
   };
 
   // Saves the new set of product links for an article
-  const saveArticleProducts = async (articleId: string, products: ArticleProduct[]) => {
-    try {
-      if (!articleId) throw new Error("Missing articleId");
+  // const saveArticleProducts = async (articleId: string, products: ArticleProduct[]) => {
+  //   try {
+  //     if (!articleId) throw new Error("Missing articleId");
 
-      const normalized = reRankProducts(products);
-      await deleteArticleProducts(articleId);
+  //     const normalized = reRankProducts(products);
+  //     await deleteArticleProducts(articleId);
 
-      const payload = normalized.map((ap) => ({
-        article_id: articleId,
-        product_id: ap.product_id,
-        rank: ap.rank,
-      }));
+  //     const payload = normalized.map((ap) => ({
+  //       article_id: articleId,
+  //       product_id: ap.product_id,
+  //       rank: ap.rank,
+  //     }));
 
-      const { data, error } = await supabase.from("article_products").insert(payload);
+  //     const { data, error } = await supabase.from("article_products").insert(payload);
 
-      if (error) throw error;
-      return data;
-    } catch (err) {
-      console.error("saveArticleProducts error:", err);
-      throw err;
-    }
-  };
+  //     if (error) throw error;
+  //     return data;
+  //   } catch (err) {
+  //     console.error("saveArticleProducts error:", err);
+  //     throw err;
+  //   }
+  // };
+const saveArticleProducts = async (articleId: string, products: ArticleProduct[]) => {
+  try {
+    if (!articleId) throw new Error("Missing articleId");
+
+    // --- Remove duplicate product_id entries ---
+    const uniqueProducts = Array.from(
+      new Map(products.map(p => [p.product_id, p])).values()
+    );
+
+    // --- Re-rank after removing duplicates ---
+    const normalized = reRankProducts(uniqueProducts);
+
+    await deleteArticleProducts(articleId);
+
+    const payload = normalized.map((ap) => ({
+      article_id: articleId,
+      product_id: ap.product_id,
+      rank: ap.rank,
+    }));
+
+    const { data, error } = await supabase.from("article_products").insert(payload);
+
+    if (error) throw error;
+    return data;
+  } catch (err) {
+    console.error("saveArticleProducts error:", err);
+    throw err;
+  }
+};
 
   const handleDelete = async (articleId: string) => {
     try {

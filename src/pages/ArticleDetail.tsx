@@ -443,16 +443,9 @@ return (
             {/* Article Header */}
             <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 rounded-lg shadow-md">
               <div className="flex flex-wrap gap-2 mb-4">
-                <Badge variant="secondary" className="bg-primary-foreground text-primary">
+                {/*<Badge variant="secondary" className="bg-primary-foreground text-primary">
                   {article.category || "Uncategorized"}
-                </Badge>
-                 <div className="flex flex-wrap gap-2">
-                  {article.tags && article.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-sm">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
+                </Badge>*/}
               </div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{article.title}</h1>
               <div className="flex flex-wrap gap-4 text-sm">
@@ -468,6 +461,13 @@ return (
               <p className="mt-4 text-white/90">
                 {article.excerpt}
               </p>
+              <div className="flex flex-wrap gap-2">
+                  {article.tags && article.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-sm">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
             </header>
 
 {article.category_id && (
@@ -503,6 +503,7 @@ return (
             
 
           {/* --- Article Content --- */}
+<h2 className="text-3xl font-bold">Overall Summary</h2>
             <div
               className="prose prose-orange max-w-none"
               dangerouslySetInnerHTML={{ __html: article.content }}
