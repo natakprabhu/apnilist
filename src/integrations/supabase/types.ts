@@ -324,27 +324,39 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_url: string | null
           created_at: string | null
+          daily_deals_alerts: boolean | null
           email: string | null
+          email_notifications: boolean | null
           full_name: string | null
           id: string
           phone: string | null
+          price_drop_alerts: boolean | null
           updated_at: string | null
         }
         Insert: {
+          avatar_url?: string | null
           created_at?: string | null
+          daily_deals_alerts?: boolean | null
           email?: string | null
+          email_notifications?: boolean | null
           full_name?: string | null
           id: string
           phone?: string | null
+          price_drop_alerts?: boolean | null
           updated_at?: string | null
         }
         Update: {
+          avatar_url?: string | null
           created_at?: string | null
+          daily_deals_alerts?: boolean | null
           email?: string | null
+          email_notifications?: boolean | null
           full_name?: string | null
           id?: string
           phone?: string | null
+          price_drop_alerts?: boolean | null
           updated_at?: string | null
         }
         Relationships: []
