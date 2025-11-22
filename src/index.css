@@ -96,3 +96,27 @@ All colors MUST be HSL.
     transition: var(--transition-smooth);
   }
 }
+
+@layer components {
+  /* Teal neon button with fluctuating glow */
+  .neon-button-teal {
+    @apply relative bg-teal-500/20 text-teal-400 border border-teal-400/50 hover:bg-teal-500/30;
+    animation: neon-glow-teal 2s ease-in-out infinite;
+    text-shadow: 0 0 5px rgba(20, 184, 166, 0.5);
+  }
+
+  @keyframes neon-glow-teal {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(20, 184, 166, 0.5),
+                  0 0 10px rgba(20, 184, 166, 0.3),
+                  0 0 15px rgba(20, 184, 166, 0.2);
+      border-color: rgba(20, 184, 166, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 10px rgba(20, 184, 166, 0.8),
+                  0 0 20px rgba(20, 184, 166, 0.6),
+                  0 0 30px rgba(20, 184, 166, 0.4);
+      border-color: rgba(20, 184, 166, 0.8);
+    }
+  }
+}

@@ -144,30 +144,30 @@ const PriceTracker = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="flex-1 py-8">
+      <main className="flex-1 py-4">
         <div className="container mx-auto px-4">
           <Card>
-            <CardHeader>
-              <div className="flex items-start justify-between gap-4">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between gap-2">
                 <div>
-                  <CardTitle className="text-2xl">Price Tracker</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Monitor prices across Amazon, Flipkart and more. Get alerts when prices drop!
+                  <CardTitle className="text-xl">Price Tracker</CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Monitor prices and get alerts when they drop!
                   </p>
                 </div>
                 <AddProductDialog onProductAdded={fetchTrackedProducts} />
               </div>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
+            <CardContent className="pt-0">
+              <div className="space-y-3">
                 {loading ? (
-                  <div className="flex items-center justify-center py-12">
+                  <div className="flex items-center justify-center py-8">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   </div>
                 ) : trackedProducts.length === 0 ? (
-                  <div className="text-center py-12">
-                    <p className="text-muted-foreground mb-2">No products being tracked</p>
-                    <p className="text-sm text-muted-foreground">
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground mb-1 text-sm">No products being tracked</p>
+                    <p className="text-xs text-muted-foreground">
                       Add products to your wishlist to start tracking prices
                     </p>
                   </div>

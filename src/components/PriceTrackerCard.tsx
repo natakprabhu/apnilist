@@ -175,23 +175,23 @@ const PriceTrackerCard = ({
   };
 
   return (
-    <Card className="p-6 hover:shadow-lg transition-shadow">
-      <div className="flex flex-col md:flex-row gap-6">
+    <Card className="p-3 hover:shadow-lg transition-shadow">
+      <div className="flex flex-col md:flex-row gap-3">
         {/* Product Image */}
         <div className="flex-shrink-0">
           <img 
             src={product.image || "/placeholder.svg"} 
             alt={product.name}
-            className="w-32 h-32 object-cover rounded-lg"
+            className="w-20 h-20 object-cover rounded-lg"
           />
         </div>
         
-        <div className="flex-1 space-y-4">
+        <div className="flex-1 space-y-2">
           {/* Header with Title and Recommendation Badge */}
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start justify-between gap-2">
             <div className="flex-1">
-              <h3 className="font-semibold text-lg text-foreground mb-2">{product.name}</h3>
-              <Badge variant={advice.variant} className="text-sm px-3 py-1">
+              <h3 className="font-semibold text-base text-foreground mb-1">{product.name}</h3>
+              <Badge variant={advice.variant} className="text-xs px-2 py-0.5">
                 {advice.badge}
               </Badge>
             </div>
@@ -200,34 +200,34 @@ const PriceTrackerCard = ({
                 variant="ghost" 
                 size="icon"
                 onClick={onRemove}
-                className="text-muted-foreground hover:text-destructive"
+                className="text-muted-foreground hover:text-destructive h-7 w-7"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3 w-3" />
               </Button>
             )}
           </div>
 
           {/* Buying Advice */}
-          <p className="text-sm text-muted-foreground">{advice.advice}</p>
+          <p className="text-xs text-muted-foreground">{advice.advice}</p>
 
           {/* Current Prices and Lowest Price */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
             {/* Current Price */}
-            <div className="space-y-1">
-              <p className="text-xs text-muted-foreground uppercase">Current Price</p>
-              <p className="text-2xl font-bold text-foreground">
+            <div className="space-y-0.5">
+              <p className="text-[10px] text-muted-foreground uppercase">Current</p>
+              <p className="text-lg font-bold text-foreground">
                 ₹{currentLowestPrice !== Infinity ? currentLowestPrice.toLocaleString() : 'N/A'}
               </p>
             </div>
 
             {/* Lowest Price */}
             {lowestPrice !== Infinity && (
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase">Lowest Price</p>
-                <p className="text-2xl font-bold text-primary">₹{lowestPrice.toLocaleString()}</p>
+              <div className="space-y-0.5">
+                <p className="text-[10px] text-muted-foreground uppercase">Lowest</p>
+                <p className="text-lg font-bold text-primary">₹{lowestPrice.toLocaleString()}</p>
                 {lowestPriceDate && (
-                  <p className="text-xs text-muted-foreground">
-                    on {format(new Date(lowestPriceDate), 'dd/MM/yyyy')}
+                  <p className="text-[10px] text-muted-foreground">
+                    {format(new Date(lowestPriceDate), 'dd/MM/yy')}
                   </p>
                 )}
               </div>
@@ -235,18 +235,18 @@ const PriceTrackerCard = ({
 
             {/* Price Drop */}
             {Number(dropPercentage) !== 0 && (
-              <div className="space-y-1">
-                <p className="text-xs text-muted-foreground uppercase">Price Change</p>
-                <div className="flex items-center gap-2">
+              <div className="space-y-0.5">
+                <p className="text-[10px] text-muted-foreground uppercase">Change</p>
+                <div className="flex items-center gap-1">
                   {Number(dropPercentage) < 0 ? (
                     <>
-                      <TrendingDown className="h-5 w-5 text-primary" />
-                      <p className="text-2xl font-bold text-primary">{Math.abs(Number(dropPercentage))}%</p>
+                      <TrendingDown className="h-4 w-4 text-primary" />
+                      <p className="text-lg font-bold text-primary">{Math.abs(Number(dropPercentage))}%</p>
                     </>
                   ) : (
                     <>
-                      <TrendingUp className="h-5 w-5 text-destructive" />
-                      <p className="text-2xl font-bold text-destructive">+{dropPercentage}%</p>
+                      <TrendingUp className="h-4 w-4 text-destructive" />
+                      <p className="text-lg font-bold text-destructive">+{dropPercentage}%</p>
                     </>
                   )}
                 </div>
@@ -255,30 +255,30 @@ const PriceTrackerCard = ({
           </div>
 
           {/* Store Comparison */}
-          <div className="border-t pt-4">
-            <p className="text-sm font-semibold mb-3">Buy from:</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="border-t pt-2">
+            <p className="text-xs font-semibold mb-2">Buy from:</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {currentAmazonPrice > 0 && (
-                <div className={`p-3 rounded-lg border ${cheapestStore === 'amazon' ? 'border-primary bg-primary/5' : 'border-border'}`}>
-                  <div className="flex items-center justify-between mb-2">
+                <div className={`p-2 rounded-lg border ${cheapestStore === 'amazon' ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                  <div className="flex items-center justify-between mb-1">
                     <div>
-                      <p className="text-xs text-muted-foreground">Amazon</p>
-                      <p className="text-xl font-bold text-foreground">₹{currentAmazonPrice.toLocaleString()}</p>
+                      <p className="text-[10px] text-muted-foreground">Amazon</p>
+                      <p className="text-sm font-bold text-foreground">₹{currentAmazonPrice.toLocaleString()}</p>
                     </div>
                     {cheapestStore === 'amazon' && (
-                      <Badge variant="default" className="text-xs">Cheapest</Badge>
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0">Cheapest</Badge>
                     )}
                   </div>
                   {product.amazon_link && (
                     <Button 
                       variant={cheapestStore === 'amazon' ? 'default' : 'outline'}
                       size="sm" 
-                      className="w-full gap-2"
+                      className="w-full gap-1 h-7 text-xs"
                       asChild
                     >
                       <a href={product.amazon_link} target="_blank" rel="noopener noreferrer">
-                        Buy on Amazon
-                        <ExternalLink className="h-3 w-3" />
+                        Buy
+                        <ExternalLink className="h-2.5 w-2.5" />
                       </a>
                     </Button>
                   )}
@@ -286,26 +286,26 @@ const PriceTrackerCard = ({
               )}
 
               {currentFlipkartPrice > 0 && (
-                <div className={`p-3 rounded-lg border ${cheapestStore === 'flipkart' ? 'border-primary bg-primary/5' : 'border-border'}`}>
-                  <div className="flex items-center justify-between mb-2">
+                <div className={`p-2 rounded-lg border ${cheapestStore === 'flipkart' ? 'border-primary bg-primary/5' : 'border-border'}`}>
+                  <div className="flex items-center justify-between mb-1">
                     <div>
-                      <p className="text-xs text-muted-foreground">Flipkart</p>
-                      <p className="text-xl font-bold text-foreground">₹{currentFlipkartPrice.toLocaleString()}</p>
+                      <p className="text-[10px] text-muted-foreground">Flipkart</p>
+                      <p className="text-sm font-bold text-foreground">₹{currentFlipkartPrice.toLocaleString()}</p>
                     </div>
                     {cheapestStore === 'flipkart' && (
-                      <Badge variant="default" className="text-xs">Cheapest</Badge>
+                      <Badge variant="default" className="text-[10px] px-1.5 py-0">Cheapest</Badge>
                     )}
                   </div>
                   {product.flipkart_link && (
                     <Button 
                       variant={cheapestStore === 'flipkart' ? 'default' : 'outline'}
                       size="sm" 
-                      className="w-full gap-2"
+                      className="w-full gap-1 h-7 text-xs"
                       asChild
                     >
                       <a href={product.flipkart_link} target="_blank" rel="noopener noreferrer">
-                        Buy on Flipkart
-                        <ExternalLink className="h-3 w-3" />
+                        Buy
+                        <ExternalLink className="h-2.5 w-2.5" />
                       </a>
                     </Button>
                   )}
@@ -315,50 +315,50 @@ const PriceTrackerCard = ({
           </div>
 
           {/* Target Price and Actions */}
-          <div className="border-t pt-4">
-            <p className="text-sm font-semibold mb-3">Set Price Alert</p>
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="flex items-center gap-1">
+          <div className="border-t pt-2">
+            <p className="text-xs font-semibold mb-2">Set Price Alert</p>
+            <div className="flex flex-wrap items-center gap-1">
+              <div className="flex items-center gap-0.5">
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => handleTargetPriceChange(-100)}
-                  className="h-9 w-9"
+                  className="h-7 w-7"
                 >
-                  <Minus className="h-4 w-4" />
+                  <Minus className="h-3 w-3" />
                 </Button>
                 <Input
                   type="number"
-                  placeholder="Target price"
+                  placeholder="Target"
                   value={targetPrice}
                   onChange={(e) => setTargetPrice(e.target.value)}
-                  className="w-32"
+                  className="w-24 h-7 text-xs"
                 />
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => handleTargetPriceChange(100)}
-                  className="h-9 w-9"
+                  className="h-7 w-7"
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className="h-3 w-3" />
                 </Button>
               </div>
               
               <Button 
                 onClick={handleSetTargetPrice}
                 disabled={isUpdating}
-                size="default"
-                className="gap-2"
+                size="sm"
+                className="gap-1 h-7 text-xs"
               >
-                <Bell className="h-4 w-4" />
-                Set Alert
+                <Bell className="h-3 w-3" />
+                Set
               </Button>
               
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" size="default" className="gap-2">
-                    <Eye className="h-4 w-4" />
-                    See Trend
+                  <Button variant="outline" size="sm" className="gap-1 h-7 text-xs">
+                    <Eye className="h-3 w-3" />
+                    Trend
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-3xl">
@@ -374,7 +374,7 @@ const PriceTrackerCard = ({
                 currentPrice={currentLowestPrice !== Infinity ? currentLowestPrice : 0}
                 mrp={lowestPrice !== Infinity ? Math.max(lowestPrice * 1.3, currentLowestPrice) : undefined}
                 variant="outline"
-                size="default"
+                size="sm"
               />
             </div>
           </div>
