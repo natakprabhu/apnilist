@@ -278,6 +278,7 @@ export type Database = {
           image: string | null
           name: string
           pros: Json | null
+          rating: number | null
           short_description: string | null
           slug: string | null
           tags: Json | null
@@ -293,6 +294,7 @@ export type Database = {
           image?: string | null
           name: string
           pros?: Json | null
+          rating?: number | null
           short_description?: string | null
           slug?: string | null
           tags?: Json | null
@@ -308,6 +310,7 @@ export type Database = {
           image?: string | null
           name?: string
           pros?: Json | null
+          rating?: number | null
           short_description?: string | null
           slug?: string | null
           tags?: Json | null
