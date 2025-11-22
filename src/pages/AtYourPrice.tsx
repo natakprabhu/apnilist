@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Loader2, ExternalLink, TrendingDown } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import PriceHistoryChart from "@/components/PriceHistoryChart";
+import ShareButton from "@/components/ShareButton";
 
 interface AtYourPriceProduct {
   id: string;
@@ -287,6 +288,13 @@ const AtYourPrice = () => {
                                   <PriceHistoryChart data={item.priceHistory} />
                                 </DialogContent>
                               </Dialog>
+
+                              <ShareButton
+                                productName={item.product.name}
+                                currentPrice={item.currentPrice}
+                                mrp={item.mrp}
+                                variant="outline"
+                              />
                             </div>
                           </div>
                         </div>

@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import PriceHistoryChart from "./PriceHistoryChart";
+import ShareButton from "./ShareButton";
 
 interface PriceHistory {
   created_at: string;
@@ -367,6 +368,14 @@ const PriceTrackerCard = ({
                   <PriceHistoryChart data={priceHistory} />
                 </DialogContent>
               </Dialog>
+
+              <ShareButton
+                productName={product.name}
+                currentPrice={currentLowestPrice !== Infinity ? currentLowestPrice : 0}
+                mrp={lowestPrice !== Infinity ? Math.max(lowestPrice * 1.3, currentLowestPrice) : undefined}
+                variant="outline"
+                size="default"
+              />
             </div>
           </div>
         </div>
