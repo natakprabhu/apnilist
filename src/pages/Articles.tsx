@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -111,6 +112,11 @@ const categories: Category[] = [
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO 
+        title="Explore Products & Reviews"
+        description="Explore articles featuring curated top 10 product lists or search for recommendations across categories like mobile, laptop, TV, microwave, and more."
+        canonical="/articles"
+      />
       <Header />
       <main className="flex-1 py-16 bg-muted/10">
         <div className="container mx-auto px-4 text-center">

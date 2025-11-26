@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +48,11 @@ const Deals = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO 
+        title="Today's Best Deals"
+        description="Discover today's best deals on electronics, home appliances, and more. Find the latest discounts and offers from top brands."
+        canonical="/deals"
+      />
       <Header />
       
       <main className="flex-1 py-12">
