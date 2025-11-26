@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CommentSection } from "@/components/CommentSection";
@@ -454,6 +455,19 @@ const fetchTriviaForCategory = async (categoryId: string) => {
 
 return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO 
+        title={article.title}
+        description={article.excerpt || article.title}
+        canonical={`/articles/${article.slug}`}
+        image={article.featured_image || undefined}
+        type="article"
+        article={{
+          publishedTime: article.created_at,
+          modifiedTime: article.created_at,
+          author: article.author || undefined,
+          tags: article.tags || undefined,
+        }}
+      />
       <Header />
 
       {/* Main Content */}

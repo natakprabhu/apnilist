@@ -2,3 +2,9 @@ project_id = "alyidbbieegylgvdqmis"
 
 [functions.send-price-alert]
 verify_jwt = false
+
+[functions.generate-sitemap]
+verify_jwt = false
+
+[functions.submit-sitemap]
+verify_jwt = false

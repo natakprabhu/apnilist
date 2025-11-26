@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -143,6 +144,11 @@ const PriceTracker = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO 
+        title="Price Tracker"
+        description="Monitor product prices from Amazon & Flipkart. Get alerts when prices drop on your tracked products and never miss a deal."
+        canonical="/price-tracker"
+      />
       <Header />
       <main className="flex-1 py-4">
         <div className="container mx-auto px-4">
