@@ -8,7 +8,7 @@ import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CommentSection } from "@/components/CommentSection";
-import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink } from "lucide-react";
+import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink, TrendingDown, Info, ThumbsUp, ThumbsDown, CheckCircle2, AlertCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCategoryImage } from "@/lib/categoryImages";
 import PriceHistoryChart from "@/components/PriceHistoryChart";
+import { Progress } from "@/components/ui/progress"; // Make sure to have this component or use standard HTML progress
 
 // --- INTERFACES ---
 
@@ -51,12 +52,25 @@ interface PriceHistory {
   flipkart_discount: number | null;
 }
 
+interface DealAnalysis {
+  score: number; // 0-100
+  verdict: string; // e.g., "Deal Mirage", "Great Deal"
+  reasons: { label: string; value: number | string; isGood: boolean }[];
+  stats: {
+    highest: number;
+    lowest: number;
+    average: number;
+    current: number;
+  };
+}
+
 interface DisplayProduct {
   rank: number;
   product: Product;
   latestPrice: PriceHistory | null;
   previousPrice: PriceHistory | null;
   priceHistory: PriceHistory[];
+  analysis: DealAnalysis | null;
 }
 
 interface SmartPick {
@@ -95,24 +109,87 @@ interface TopSaleItem {
   sales_count: number;
 }
 
-/**
- * Helper function to determine price change direction.
- */
-const getPriceChangeDirection = (currentPrice: number | null | undefined, previousPrice: number | null | undefined): "up" | "down" | undefined => {
-  if (!previousPrice || !currentPrice) return undefined;
-  if (currentPrice < previousPrice) return "down";
-  if (currentPrice > previousPrice) return "up";
-  return undefined;
-};
+// --- HELPER FUNCTIONS ---
 
-/**
- * Helper function to get the best price between Amazon and Flipkart
- */
 const getBestPrice = (amazonPrice: number | null, flipkartPrice: number | null): number => {
   if (!amazonPrice && !flipkartPrice) return 0;
   if (!amazonPrice) return flipkartPrice || 0;
   if (!flipkartPrice) return amazonPrice || 0;
   return Math.min(amazonPrice, flipkartPrice);
+};
+
+const calculateDealAnalysis = (history: PriceHistory[], currentPrice: number): DealAnalysis | null => {
+  if (!history || history.length === 0 || currentPrice <= 0) return null;
+
+  // Flatten all prices from history to get stats
+  const allPrices = history
+    .flatMap(h => [h.amazon_price, h.flipkart_price])
+    .filter((p): p is number => p !== null && p > 0);
+
+  if (allPrices.length === 0) return null;
+
+  const minPrice = Math.min(...allPrices);
+  const maxPrice = Math.max(...allPrices);
+  const avgPrice = Math.round(allPrices.reduce((a, b) => a + b, 0) / allPrices.length);
+  
+  // Basic Logic for Deal Score (Mock logic based on request)
+  // In a real scenario, this would be more complex
+  let score = 50; 
+  const reasons: { label: string; value: number | string; isGood: boolean }[] = [];
+
+  // Compare with Last Sale (Mocking "Last Sale" as the previous price entry for simplicity)
+  // Ideally, "Last Sale" refers to a specific sales event price.
+  const previousEntry = history[1]; // 0 is current, 1 is previous
+  const lastSalePrice = previousEntry ? Math.min(previousEntry.amazon_price || Infinity, previousEntry.flipkart_price || Infinity) : avgPrice;
+  const validLastSalePrice = lastSalePrice === Infinity ? avgPrice : lastSalePrice;
+
+  if (currentPrice > validLastSalePrice) {
+    score -= 20;
+    reasons.push({ label: "Higher than Last Sale", value: `₹${validLastSalePrice.toLocaleString()}`, isGood: false });
+  } else if (currentPrice < validLastSalePrice) {
+    score += 20;
+    reasons.push({ label: "Lower than Last Sale", value: `₹${validLastSalePrice.toLocaleString()}`, isGood: true });
+  } else {
+    reasons.push({ label: "Equal to Last Sale", value: `₹${validLastSalePrice.toLocaleString()}`, isGood: false }); // Neutral
+  }
+
+  // Compare with All Time Low
+  if (currentPrice > minPrice) {
+    score -= 10;
+    reasons.push({ label: "Above All Time Low", value: `₹${minPrice.toLocaleString()}`, isGood: false });
+  } else if (currentPrice <= minPrice) {
+    score += 30;
+    reasons.push({ label: "All Time Low Price!", value: `₹${minPrice.toLocaleString()}`, isGood: true });
+  }
+
+  // Compare with Average
+  if (currentPrice > avgPrice) {
+    score -= 10;
+    reasons.push({ label: "Above Average Price", value: `₹${avgPrice.toLocaleString()}`, isGood: false });
+  } else {
+    score += 10;
+    reasons.push({ label: "Below Average Price", value: `₹${avgPrice.toLocaleString()}`, isGood: true });
+  }
+
+  // Clamp Score
+  score = Math.max(0, Math.min(100, score));
+
+  let verdict = "Average Deal";
+  if (score < 30) verdict = "Deal Mirage 🌵";
+  else if (score > 70) verdict = "Great Deal 🔥";
+  else if (score > 50) verdict = "Good Deal 👍";
+
+  return {
+    score,
+    verdict,
+    reasons,
+    stats: {
+      highest: maxPrice,
+      lowest: minPrice,
+      average: avgPrice,
+      current: currentPrice
+    }
+  };
 };
 
 const ArticleDetail = () => {
@@ -286,12 +363,16 @@ const ArticleDetail = () => {
                 };
             }
 
+            const currentPrice = getBestPrice(compositeLatestPrice?.amazon_price || null, compositeLatestPrice?.flipkart_price || null);
+            const analysis = calculateDealAnalysis(history, currentPrice);
+
             return {
                 rank: ap.rank,
                 product: ap.products,
                 latestPrice: compositeLatestPrice, 
                 previousPrice: history[1] || null,
                 priceHistory: history.slice(0, 30),
+                analysis
             };
         });
 
@@ -447,8 +528,6 @@ const ArticleDetail = () => {
         <div className="container mx-auto px-4 grid grid-cols-12 gap-8">
           <div className="col-span-12 md:col-span-8 space-y-8">
             <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 rounded-lg shadow-md">
-              <div className="flex flex-wrap gap-2 mb-4">
-              </div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{article.title}</h1>
               <div className="flex flex-wrap gap-4 text-sm">
                 <div className="flex items-center gap-2">
@@ -513,19 +592,25 @@ const ArticleDetail = () => {
               
               <div className="grid grid-cols-1 gap-8">
                 {displayProducts.map((item) => {
-                  const { product, latestPrice, priceHistory, rank } = item;
+                  const { product, latestPrice, priceHistory, rank, analysis } = item;
                   const amazonPrice = latestPrice?.amazon_price || 0;
                   const flipkartPrice = latestPrice?.flipkart_price || 0;
+                  const bestPrice = getBestPrice(amazonPrice, flipkartPrice);
+                  const discount = amazonPrice > 0 && flipkartPrice > 0 
+                    ? Math.max(latestPrice?.amazon_discount || 0, latestPrice?.flipkart_discount || 0)
+                    : (latestPrice?.amazon_discount || latestPrice?.flipkart_discount || 0);
                   
                   return (
-                    <Card key={product.id} className="overflow-hidden relative">
+                    <Card key={product.id} className="overflow-hidden relative border-t-4 border-t-primary shadow-lg hover:shadow-xl transition-shadow duration-300">
+                      
+                      {/* Track Price Button */}
                       <Button
                         size="sm"
                         variant="outline"
                         className={`absolute top-4 right-4 z-10 gap-2 ${
                           trackedProducts.has(product.id) 
                             ? "bg-red-50 border-red-500 text-red-600 hover:bg-red-100" 
-                            : ""
+                            : "bg-background/80 backdrop-blur-sm"
                         }`}
                         onClick={async () => {
                           const { data: { user } } = await supabase.auth.getUser();
@@ -537,149 +622,198 @@ const ArticleDetail = () => {
                             });
                             return;
                           }
-                          
                           const isTracked = trackedProducts.has(product.id);
-                          
                           if (isTracked) {
                             const { error } = await supabase
                               .from("wishlist")
                               .delete()
                               .eq("user_id", user.id)
                               .eq("product_id", product.id);
-
-                            if (error) {
-                              toast({
-                                title: "Error",
-                                description: "Failed to remove from tracking",
-                                variant: "destructive",
-                              });
-                            } else {
+                            if (!error) {
                               setTrackedProducts(prev => {
                                 const newSet = new Set(prev);
                                 newSet.delete(product.id);
                                 return newSet;
                               });
-                              toast({
-                                title: "Removed",
-                                description: "Product removed from tracking",
-                              });
+                              toast({ title: "Removed", description: "Product removed from tracking" });
                             }
                           } else {
                             const { error } = await supabase
                               .from("wishlist")
-                              .insert({
-                                user_id: user.id,
-                                product_id: product.id,
-                              });
-
-                            if (error) {
-                              toast({
-                                title: "Error",
-                                description: "Failed to add to tracking",
-                                variant: "destructive",
-                              });
-                            } else {
+                              .insert({ user_id: user.id, product_id: product.id });
+                            if (!error) {
                               setTrackedProducts(prev => new Set([...prev, product.id]));
-                              toast({
-                                title: "Success",
-                                description: "Product added to tracking",
-                              });
+                              toast({ title: "Success", description: "Product added to tracking" });
                             }
                           }
                         }}
                       >
                         <Heart className={`h-4 w-4 ${trackedProducts.has(product.id) ? "fill-red-600" : ""}`} /> 
-                        Track Price
+                        <span className="hidden sm:inline">Track</span>
                       </Button>
 
                       <div className="p-6 flex flex-col md:flex-row gap-6">
-                        <div className="md:w-1/4">
-                          <div className="rounded-lg overflow-hidden bg-white aspect-square relative">
+                        {/* Image & Deal Score Column */}
+                        <div className="md:w-1/3 lg:w-1/4 flex flex-col gap-4">
+                          <div className="rounded-lg overflow-hidden bg-white aspect-square relative border">
                             <img 
                               src={product.image || "/placeholder.svg"} 
                               alt={product.name} 
-                              className="absolute inset-0 w-full h-full object-cover"
+                              className="absolute inset-0 w-full h-full object-contain p-4"
                             />
-                            <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded">
+                            <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded shadow-md">
                               #{rank}
                             </div>
                           </div>
+                          
+                          {/* Deal Analysis Card */}
+                          {analysis && (
+                            <div className="bg-white rounded-xl border shadow-sm p-4 text-sm space-y-3">
+                              <div className="text-center">
+                                <h5 className="font-bold text-lg mb-1">{analysis.verdict}</h5>
+                                <div className="flex items-center gap-2 justify-center">
+                                  <span className="text-xs font-bold text-muted-foreground">Deal Score</span>
+                                  <span className={`text-2xl font-black ${
+                                    analysis.score < 30 ? "text-red-500" : analysis.score > 70 ? "text-green-500" : "text-yellow-500"
+                                  }`}>
+                                    {analysis.score}
+                                  </span>
+                                </div>
+                                <Progress value={analysis.score} className="h-2 mt-2" />
+                              </div>
+                              
+                              <Separator />
+                              
+                              <div className="space-y-2">
+                                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Score Breakup</p>
+                                {analysis.reasons.map((reason, idx) => (
+                                  <div key={idx} className="flex justify-between items-center text-xs">
+                                    <span className="text-muted-foreground">{reason.label}</span>
+                                    <span className={reason.isGood ? "text-green-600 font-medium" : "text-red-600 font-medium"}>
+                                      {reason.value}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+
+                              <Separator />
+
+                              <div className="space-y-2 pt-1">
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-muted-foreground">Highest Price</span>
+                                  <span className="font-medium">₹{analysis.stats.highest.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-muted-foreground">Average Price</span>
+                                  <span className="font-medium">₹{analysis.stats.average.toLocaleString()}</span>
+                                </div>
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-muted-foreground">Lowest Price</span>
+                                  <span className="font-medium text-green-600">₹{analysis.stats.lowest.toLocaleString()}</span>
+                                </div>
+                              </div>
+                              
+                              <p className="text-[10px] text-muted-foreground text-center pt-2 border-t mt-2">
+                                *We analyse past prices to tell you if it’s truly a smart deal.
+                              </p>
+                            </div>
+                          )}
                         </div>
                         
-                        <div className="md:w-3/4 flex flex-col">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2 flex-wrap">
-                              <h3 className="text-xl font-bold">{product.name}</h3>
+                        {/* Details Column */}
+                        <div className="md:w-2/3 lg:w-3/4 flex flex-col">
+                          
+                          {/* Title Header */}
+                          <div className="mb-4">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
                               {product.badge && (
                                 <Badge variant="default" className="bg-primary text-primary-foreground">
                                   {product.badge}
                                 </Badge>
                               )}
+                              <div className="flex items-center gap-1 bg-yellow-50 px-2 py-0.5 rounded border border-yellow-200">
+                                <span className="text-yellow-600 text-sm">★</span>
+                                <span className="font-bold text-sm text-yellow-700">{(product.rating || 0).toFixed(1)}</span>
+                              </div>
                             </div>
+                            <h3 className="text-2xl font-bold leading-tight">{product.name}</h3>
                             
                             {product.tags && product.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mb-3">
+                              <div className="flex flex-wrap gap-2 mt-2">
                                 {product.tags.map((tag, tagIndex) => (
-                                  <Badge key={tagIndex} variant="outline" className="text-xs bg-secondary/50">
+                                  <Badge key={tagIndex} variant="outline" className="text-xs text-muted-foreground">
                                     {tag}
                                   </Badge>
                                 ))}
                               </div>
                             )}
-                            
-                            <div className="flex items-center mb-3">
-                              <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                  <span 
-                                    key={i} 
-                                    className={`text-lg ${i < Math.floor(product.rating || 0) ? "text-primary" : "text-muted"}`}
-                                  >
-                                    ★
-                                  </span>
+                          </div>
+
+                          {/* Short Description */}
+                          {product.short_description && (
+                            <p className="text-muted-foreground text-sm mb-6 leading-relaxed border-l-2 pl-4 border-primary/30">
+                              {product.short_description}
+                            </p>
+                          )}
+                          
+                          {/* Pros & Cons as "Features" */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div className="bg-green-50/50 p-4 rounded-lg border border-green-100">
+                              <h4 className="font-semibold mb-3 text-green-800 flex items-center gap-2">
+                                <ThumbsUp className="h-4 w-4" /> Key Features
+                              </h4>
+                              <ul className="space-y-2">
+                                {product.pros.slice(0, 4).map((pro, i) => (
+                                  <li key={i} className="text-sm text-green-900 flex items-start gap-2">
+                                    <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 opacity-70" />
+                                    <span>{pro}</span>
+                                  </li>
                                 ))}
-                              </div>
-                              <span className="ml-2 font-medium">{(product.rating || 0).toFixed(1)}</span>
+                              </ul>
                             </div>
                             
-                            {product.short_description && (
-                              <p className="text-muted-foreground mb-4">{product.short_description}</p>
-                            )}
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                              <div className="bg-secondary/20 p-4 rounded-lg">
-                                <h4 className="font-bold mb-2 text-green-600">Pros</h4>
-                                <ul className="list-disc list-inside space-y-1">
-                                  {product.pros.map((pro, i) => (
-                                    <li key={i} className="text-sm">{pro}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                              
-                              <div className="bg-secondary/20 p-4 rounded-lg">
-                                <h4 className="font-bold mb-2 text-red-600">Cons</h4>
-                                <ul className="list-disc list-inside space-y-1">
-                                  {product.cons.map((con, i) => (
-                                    <li key={i} className="text-sm">{con}</li>
-                                  ))}
-                                </ul>
-                              </div>
+                            <div className="bg-red-50/50 p-4 rounded-lg border border-red-100">
+                              <h4 className="font-semibold mb-3 text-red-800 flex items-center gap-2">
+                                <ThumbsDown className="h-4 w-4" /> Drawbacks
+                              </h4>
+                              <ul className="space-y-2">
+                                {product.cons.slice(0, 4).map((con, i) => (
+                                  <li key={i} className="text-sm text-red-900 flex items-start gap-2">
+                                    <AlertCircle className="h-4 w-4 mt-0.5 shrink-0 opacity-70" />
+                                    <span>{con}</span>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
                           </div>
                           
-                          {/* New Big Buttons Layout */}
-                          <div className="mt-4 space-y-3">
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                              {(amazonPrice > 0 || flipkartPrice > 0) && (
-                                <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 px-3 py-1.5 rounded-md text-green-700 font-semibold text-sm">
-                                  <span>Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()}
+                          {/* Pricing & Actions Section - Enhanced */}
+                          <div className="mt-auto bg-card rounded-xl border shadow-sm p-4 md:p-5">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
+                              <div>
+                                <p className="text-sm font-medium text-muted-foreground mb-1">Best Market Price</p>
+                                <div className="flex items-baseline gap-3">
+                                  <span className="text-4xl font-bold text-foreground">
+                                    ₹{bestPrice.toLocaleString()}
+                                  </span>
+                                  {discount > 0 && (
+                                    <Badge variant="destructive" className="text-sm px-2 py-0.5">
+                                      {discount}% OFF
+                                    </Badge>
+                                  )}
                                 </div>
-                              )}
+                                <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                                  {amazonPrice > 0 && <span>Amazon: ₹{amazonPrice.toLocaleString()}</span>}
+                                  {flipkartPrice > 0 && <span>Flipkart: ₹{flipkartPrice.toLocaleString()}</span>}
+                                </div>
+                              </div>
+
                               {priceHistory.length > 0 && (
                                 <Dialog>
                                   <DialogTrigger asChild>
-                                    <Button variant="outline" size="sm" className="gap-2">
+                                    <Button variant="ghost" size="sm" className="gap-2 text-primary hover:text-primary/80">
                                       <TrendingUp className="h-4 w-4" />
-                                      Price Trend
+                                      View Price History
                                     </Button>
                                   </DialogTrigger>
                                   <DialogContent className="max-w-4xl">
@@ -697,34 +831,49 @@ const ArticleDetail = () => {
                               )}
                             </div>
 
-                            <div className="flex flex-col sm:flex-row gap-4 w-full">
-                              {product.amazon_link && amazonPrice > 0 && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              {product.amazon_link && amazonPrice > 0 ? (
                                 <a 
                                   href={product.amazon_link} 
                                   target="_blank" 
                                   rel="noopener noreferrer"
-                                  className="flex-1 flex items-center justify-center gap-2 bg-[#FF9900] hover:bg-[#FF9900]/90 text-white px-6 py-3 rounded-lg transition-colors font-bold text-lg shadow-sm"
+                                  className="group relative flex items-center justify-center gap-3 bg-[#FF9900] hover:bg-[#FF9900]/90 text-white px-6 py-4 rounded-lg transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
                                 >
                                   <ShoppingCart className="h-5 w-5" /> 
-                                  Amazon ₹{amazonPrice.toLocaleString()}
-                                  <ExternalLink className="h-4 w-4" />
+                                  <div className="flex flex-col items-start leading-none">
+                                    <span className="text-xs font-medium opacity-90">Buy on Amazon</span>
+                                    <span className="text-lg font-bold">₹{amazonPrice.toLocaleString()}</span>
+                                  </div>
+                                  <ExternalLink className="h-4 w-4 absolute right-4 opacity-50 group-hover:opacity-100 transition-opacity" />
                                 </a>
+                              ) : (
+                                <Button disabled className="bg-muted text-muted-foreground py-6">
+                                  Amazon Unavailable
+                                </Button>
                               )}
                               
-                              {product.flipkart_link && flipkartPrice > 0 && (
+                              {product.flipkart_link && flipkartPrice > 0 ? (
                                 <a 
                                   href={product.flipkart_link} 
                                   target="_blank" 
                                   rel="noopener noreferrer" 
-                                  className="flex-1 flex items-center justify-center gap-2 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-6 py-3 rounded-lg transition-colors font-bold text-lg shadow-sm"
+                                  className="group relative flex items-center justify-center gap-3 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-6 py-4 rounded-lg transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
                                 >
                                   <ShoppingCart className="h-5 w-5" /> 
-                                  Flipkart ₹{flipkartPrice.toLocaleString()}
-                                  <ExternalLink className="h-4 w-4" />
+                                  <div className="flex flex-col items-start leading-none">
+                                    <span className="text-xs font-medium opacity-90">Buy on Flipkart</span>
+                                    <span className="text-lg font-bold">₹{flipkartPrice.toLocaleString()}</span>
+                                  </div>
+                                  <ExternalLink className="h-4 w-4 absolute right-4 opacity-50 group-hover:opacity-100 transition-opacity" />
                                 </a>
+                              ) : (
+                                <Button disabled className="bg-muted text-muted-foreground py-6">
+                                  Flipkart Unavailable
+                                </Button>
                               )}
                             </div>
                           </div>
+
                         </div>
                       </div>
                     </Card>
