@@ -78,7 +78,7 @@ interface Category {
 }
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -98,6 +98,9 @@ const AdminDashboard = () => {
 
   // Admin check
   useEffect(() => {
+    // Wait for auth to finish loading
+    if (authLoading) return;
+
     const checkAdmin = async () => {
       if (!user) {
         navigate("/auth");
@@ -132,7 +135,7 @@ const AdminDashboard = () => {
     };
 
     checkAdmin();
-  }, [user, navigate, toast]);
+  }, [user, authLoading, navigate, toast]);
 
   // Helper function to generate slugs
   const generateSlug = (text: string) => {
