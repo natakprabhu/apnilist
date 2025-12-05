@@ -1,6 +1,7 @@
-import { useState, useEffect, useMemo } from "react"; // <-- Added useMemo
-import { Link } from "react-router-dom";
+import { useState, useEffect, useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -77,6 +78,10 @@ interface Category {
 }
 
 const AdminDashboard = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [articles, setArticles] = useState<Article[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -90,6 +95,44 @@ const AdminDashboard = () => {
 
   // State for the Product Modal
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+
+  // Admin check
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .single();
+
+        if (error || !data) {
+          toast({
+            title: "Access Denied",
+            description: "You need admin privileges to access this page",
+            variant: "destructive",
+          });
+          navigate("/");
+          return;
+        }
+
+        setIsAdmin(true);
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+        navigate("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAdmin();
+  }, [user, navigate, toast]);
 
   // Helper function to generate slugs
   const generateSlug = (text: string) => {
@@ -272,9 +315,11 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
   };
 
   useEffect(() => {
-    fetchArticlesFromSupabase();
-    fetchCategories();
-  }, []);
+    if (isAdmin) {
+      fetchArticlesFromSupabase();
+      fetchCategories();
+    }
+  }, [isAdmin]);
 
   const filteredArticles = articles.filter((article) => {
     const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -1046,6 +1091,16 @@ const saveArticleProducts = async (articleId: string, products: ArticleProduct[]
   };
 
   // The rest of your AdminDashboard component (return statement, etc.) goes here...
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/30 to-accent/20">
