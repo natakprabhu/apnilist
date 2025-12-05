@@ -14,13 +14,11 @@ import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
-import ReactMarkdown from "react-markdown";
 import { getCategoryImage } from "@/lib/categoryImages";
 import PriceHistoryChart from "@/components/PriceHistoryChart";
 
-// --- NEW, CORRECTED INTERFACES ---
+// --- INTERFACES ---
 
-// This matches the 'products' table (from Doremon.tsx)
 interface Product {
   id: string;
   name: string;
@@ -37,14 +35,12 @@ interface Product {
   rating?: number;
 }
 
-// This is the junction table data
 interface ArticleProduct {
   rank: number;
   product_id: string;
-  products: Product; // Supabase nests the 'products' data inside here
+  products: Product;
 }
 
-// This matches the 'product_price_history' table
 interface PriceHistory {
   id: string;
   product_id: string;
@@ -55,7 +51,6 @@ interface PriceHistory {
   flipkart_discount: number | null;
 }
 
-// This is the final combined data structure we'll use
 interface DisplayProduct {
   rank: number;
   product: Product;
@@ -86,7 +81,7 @@ interface Article {
   excerpt: string | null;
   featured_image: string | null;
   author: string | null;
-  category: string | null; // This will be populated by the 'categories' table
+  category: string | null;
   category_id: string | null;
   date: string;
   created_at: string;
@@ -99,8 +94,6 @@ interface TopSaleItem {
   model_name: string;
   sales_count: number;
 }
-// --- END OF INTERFACES ---
-
 
 /**
  * Helper function to determine price change direction.
@@ -121,17 +114,6 @@ const getBestPrice = (amazonPrice: number | null, flipkartPrice: number | null):
   if (!flipkartPrice) return amazonPrice || 0;
   return Math.min(amazonPrice, flipkartPrice);
 };
-
-/**
- * Helper function to get the source of the best price
- */
-const bestPriceSource = (amazonPrice: number | null, flipkartPrice: number | null): string => {
-  if (!amazonPrice && !flipkartPrice) return "N/A";
-  if (!amazonPrice) return "Flipkart";
-  if (!flipkartPrice) return "Amazon";
-  return amazonPrice <= flipkartPrice ? "Amazon" : "Flipkart";
-};
-
 
 const ArticleDetail = () => {
   const { slug } = useParams();
@@ -155,7 +137,6 @@ const ArticleDetail = () => {
   
   const [trackedProducts, setTrackedProducts] = useState<Set<string>>(new Set());
 
-
   // Fetch tracked products for current user
   useEffect(() => {
     const fetchTrackedProducts = async () => {
@@ -175,7 +156,7 @@ const ArticleDetail = () => {
     fetchTrackedProducts();
   }, []);
 
-  // Fetch all article data using correct nested queries
+  // Fetch all article data
   useEffect(() => {
     const fetchArticleDetails = async () => {
       if (!slug) return;
@@ -186,7 +167,7 @@ const ArticleDetail = () => {
       setCategoryId(null);
 
       try {
-        // --- QUERY 1: Fetch the Article and its direct relationships ---
+        // --- QUERY 1: Fetch the Article ---
         const { data: articleData, error: articleError } = await supabase
           .from("articles")
           .select(`
@@ -196,7 +177,6 @@ const ArticleDetail = () => {
             related_articles (*)
           `)
           .eq("slug", slug)
-          //.eq("status", "published")
           .single();
 
         if (articleError && articleError.code === 'PGRST116') {
@@ -209,7 +189,6 @@ const ArticleDetail = () => {
             throw new Error("Article not found");
         }
         
-        // Set Article data
         const fetchedArticle: Article = {
             ...articleData,
             category: articleData.categories?.name || null,
@@ -233,14 +212,11 @@ const ArticleDetail = () => {
         if (articleData.category_id) {
           fetchTriviaForCategory(articleData.category_id);
         }
-        // Fetch random related articles in the same category
-          if (articleData.category_id && articleData.id) {
-            fetchRelatedArticlesByCategory(articleData.category_id, articleData.id);
-          }
+        if (articleData.category_id && articleData.id) {
+          fetchRelatedArticlesByCategory(articleData.category_id, articleData.id);
+        }
 
-
-        
-        // --- QUERY 2: Fetch the Article's Products (using the new schema) ---
+        // --- QUERY 2: Fetch the Article's Products ---
         const { data: productsData, error: productsError } = await supabase
           .from("article_products")
           .select(`
@@ -253,7 +229,6 @@ const ArticleDetail = () => {
         
         if (productsError) throw productsError;
         
-        console.log(productsData);
         const articleProducts = (productsData || []).map(item => {
           const products = item.products as any;
           return {
@@ -271,10 +246,10 @@ const ArticleDetail = () => {
 
         if (productIds.length === 0) {
             setDisplayProducts([]);
-            return; // No products to fetch prices for
+            return;
         }
 
-        // --- QUERY 3: Fetch Price History for these products ---
+        // --- QUERY 3: Fetch Price History ---
         const { data: pricesData, error: pricesError } = await supabase
           .from("product_price_history")
           .select("*")
@@ -283,7 +258,7 @@ const ArticleDetail = () => {
         
         if (pricesError) throw pricesError;
 
-        // --- COMBINE DATA: Process prices in JavaScript ---
+        // --- COMBINE DATA ---
         const priceHistoryMap = new Map<string, PriceHistory[]>();
         for (const price of pricesData || []) {
             if (!priceHistoryMap.has(price.product_id)) {
@@ -294,12 +269,29 @@ const ArticleDetail = () => {
 
         const finalDisplayProducts: DisplayProduct[] = articleProducts.map(ap => {
             const history = priceHistoryMap.get(ap.product_id) || [];
+            
+            // --- UPDATED LOGIC: Find latest valid price for each vendor independently ---
+            const latestAmazonEntry = history.find(h => h.amazon_price !== null && h.amazon_price > 0);
+            const latestFlipkartEntry = history.find(h => h.flipkart_price !== null && h.flipkart_price > 0);
+
+            // Create a composite 'latestPrice' object
+            let compositeLatestPrice: PriceHistory | null = null;
+            if (history.length > 0) {
+                compositeLatestPrice = {
+                    ...history[0], // Use the newest record for ID/Timestamp
+                    amazon_price: latestAmazonEntry?.amazon_price ?? null,
+                    amazon_discount: latestAmazonEntry?.amazon_discount ?? null,
+                    flipkart_price: latestFlipkartEntry?.flipkart_price ?? null,
+                    flipkart_discount: latestFlipkartEntry?.flipkart_discount ?? null,
+                };
+            }
+
             return {
                 rank: ap.rank,
                 product: ap.products,
-                latestPrice: history[0] || null,     // Most recent price
-                previousPrice: history[1] || null,   // Second most recent price
-                priceHistory: history.slice(0, 30),  // Last 30 data points for chart
+                latestPrice: compositeLatestPrice, 
+                previousPrice: history[1] || null,
+                priceHistory: history.slice(0, 30),
             };
         });
 
@@ -307,10 +299,6 @@ const ArticleDetail = () => {
 
       } catch (err: any) {
         console.log("Error fetching article:", err.message);
-        //console.log(err.message);
-        // if (err.message !== "Article not found") {
-        //     setError(err.message);
-        // }
       } finally {
         setLoading(false);
       }
@@ -319,69 +307,60 @@ const ArticleDetail = () => {
     fetchArticleDetails();
   }, [slug]);
 
+  const fetchRelatedArticlesByCategory = async (categoryId: string, currentArticleId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("articles")
+        .select("id, title, slug, featured_image, excerpt")
+        .eq("category_id", categoryId)
+        .eq("status", "published")
+        .neq("id", currentArticleId)
+        .limit(3);
 
+      if (error) throw error;
 
-const fetchRelatedArticlesByCategory = async (categoryId: string, currentArticleId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from("articles")
-      .select("id, title, slug, featured_image, excerpt")
-      .eq("category_id", categoryId)
-      .eq("status", "published")
-      .neq("id", currentArticleId)
-      .limit(3);
-
-    if (error) throw error;
-
-    const formattedArticles: RelatedArticle[] = (data || []).map(article => ({
-      id: article.id,
-      title: article.title,
-      url: `/articles/${article.slug}`,
-      slug: article.slug,
-      featured_image: article.featured_image,
-      excerpt: article.excerpt
-    }));
-    setRelatedArticles(formattedArticles);
-  } catch (err: any) {
-    console.error("Error fetching related articles:", err.message);
-    setRelatedArticles([]);
-  }
-};
-
-
-const fetchTriviaForCategory = async (categoryId: string) => {
-  try {
-    setTriviaLoading(true);
-    setTrivia(null);
-
-    const { data, error } = await supabase
-      .from("trivia")
-      .select("id, title, content")
-      .eq("category_id", categoryId);
-
-    if (error) {
-      console.error("Supabase error while fetching trivia:", error.message);
-      throw error;
+      const formattedArticles: RelatedArticle[] = (data || []).map(article => ({
+        id: article.id,
+        title: article.title,
+        url: `/articles/${article.slug}`,
+        slug: article.slug,
+        featured_image: article.featured_image,
+        excerpt: article.excerpt
+      }));
+      setRelatedArticles(formattedArticles);
+    } catch (err: any) {
+      console.error("Error fetching related articles:", err.message);
+      setRelatedArticles([]);
     }
+  };
 
-    if (data && data.length > 0) {
-      const randomIndex = Math.floor(Math.random() * data.length);
-      const randomTrivia = data[randomIndex];
-      setTrivia(randomTrivia); // { title, content }
-    } else {
+  const fetchTriviaForCategory = async (categoryId: string) => {
+    try {
+      setTriviaLoading(true);
       setTrivia(null);
+
+      const { data, error } = await supabase
+        .from("trivia")
+        .select("id, title, content")
+        .eq("category_id", categoryId);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const randomTrivia = data[randomIndex];
+        setTrivia(randomTrivia);
+      } else {
+        setTrivia(null);
+      }
+    } catch (err: any) {
+      console.error("Error fetching trivia:", err.message);
+      setTrivia(null);
+    } finally {
+      setTriviaLoading(false);
     }
-  } catch (err: any) {
-    console.error("Error fetching trivia:", err.message);
-    setTrivia(null);
-  } finally {
-    setTriviaLoading(false);
-  }
-};
+  };
 
-
-
-  // Fetch Sales Data (This remains the same)
   useEffect(() => {
     const fetchTopSales = async () => {
       if (!categoryId) {
@@ -401,7 +380,7 @@ const fetchTriviaForCategory = async (categoryId: string) => {
           .limit(5);
 
         if (error) throw error;
-        setSalesData((data || []).reverse()); // .reverse() for horizontal chart
+        setSalesData((data || []).reverse());
       } catch (err: any) {
         console.error("Error fetching top sales:", err.message);
         setSalesError("Could not load sales data.");
@@ -412,18 +391,14 @@ const fetchTriviaForCategory = async (categoryId: string) => {
     };
 
     fetchTopSales();
-  }, [categoryId]); // This effect depends on categoryId
-
- 
+  }, [categoryId]);
 
   if (loading) {
-    // A more comprehensive loading skeleton
     return (
         <div className="min-h-screen bg-background flex flex-col">
             <Header />
             <main className="flex-1 py-12">
                 <div className="container mx-auto px-4 grid grid-cols-12 gap-8">
-                    {/* Left Skeleton */}
                     <div className="col-span-12 md:col-span-8 space-y-8">
                         <Skeleton className="h-48 w-full rounded-lg" />
                         <Skeleton className="h-16 w-full" />
@@ -436,7 +411,6 @@ const fetchTriviaForCategory = async (categoryId: string) => {
                         <Skeleton className="h-96 w-full rounded-lg" />
                         <Skeleton className="h-96 w-full rounded-lg" />
                     </div>
-                    {/* Right Skeleton */}
                     <aside className="col-span-12 md:col-span-4 space-y-6">
                         <Skeleton className="h-64 w-full rounded-lg" />
                         <Skeleton className="h-48 w-full rounded-lg" />
@@ -450,10 +424,9 @@ const fetchTriviaForCategory = async (categoryId: string) => {
   
   if (notFound) return <p className="text-center py-12">Article not found</p>;
   if (error) return <p className="text-center py-12 text-destructive">{error}</p>;
-  if (!article) return <p className="text-center py-12">An unexpected error occurred.</p>; // Fallback
+  if (!article) return <p className="text-center py-12">An unexpected error occurred.</p>;
 
-
-return (
+  return (
     <div className="min-h-screen bg-background flex flex-col">
       <SEO 
         title={article.title}
@@ -470,17 +443,11 @@ return (
       />
       <Header />
 
-      {/* Main Content */}
       <main className="flex-1 py-12">
         <div className="container mx-auto px-4 grid grid-cols-12 gap-8">
-          {/* Left Content */}
           <div className="col-span-12 md:col-span-8 space-y-8">
-            {/* Article Header */}
             <header className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 rounded-lg shadow-md">
               <div className="flex flex-wrap gap-2 mb-4">
-                {/*<Badge variant="secondary" className="bg-primary-foreground text-primary">
-                  {article.category || "Uncategorized"}
-                </Badge>*/}
               </div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2">{article.title}</h1>
               <div className="flex flex-wrap gap-4 text-sm">
@@ -498,10 +465,7 @@ return (
               </p>
               <div
                 className="flex flex-wrap gap-2 h-[3.5rem] overflow-y-auto border-0"
-                style={{
-                  border: 'none',
-                  boxShadow: 'none' // (if you want to ensure no box-shadow either)
-                }}
+                style={{ border: 'none', boxShadow: 'none' }}
               >
                 {article.tags && article.tags.map((tag) => (
                   <Badge key={tag} variant="secondary" className="text-sm">
@@ -509,49 +473,34 @@ return (
                   </Badge>
                 ))}
               </div>
-
             </header>
 
-{article.category_id && (
-  <Card className="bg-gradient-to-br from-card to-card/80 border-0 shadow-lg">
-    <CardHeader>
-      <CardTitle className="flex items-center gap-2 text-xl">
-        <Lightbulb className="h-5 w-5 text-primary" /> 
-        {trivia?.title
-          ? trivia.title
-          : `Did You Know? (${article.category || "Trivia"})`}
-      </CardTitle>
-    </CardHeader>
-    <CardContent>
-      {triviaLoading && (
-        <p className="text-muted-foreground italic">Loading trivia...</p>
-      )}
-      {!triviaLoading && trivia && (
-        // <div className="prose prose-neutral dark:prose-invert max-w-none text-sm md:text-base leading-relaxed">
-        //   <ReactMarkdown>{trivia.content}</ReactMarkdown>
-        // </div>
+            {article.category_id && (
+              <Card className="bg-gradient-to-br from-card to-card/80 border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Lightbulb className="h-5 w-5 text-primary" /> 
+                    {trivia?.title ? trivia.title : `Did You Know? (${article.category || "Trivia"})`}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {triviaLoading && <p className="text-muted-foreground italic">Loading trivia...</p>}
+                  {!triviaLoading && trivia && (
+                    <div
+                      className="prose prose-neutral dark:prose-invert max-w-none text-sm md:text-base leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: trivia.content }}
+                    />
+                  )}
+                  {!triviaLoading && !trivia && (
+                    <p className="text-sm text-muted-foreground italic">
+                      No trivia available for this category yet.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )}
 
-        <div
-          className="prose prose-neutral dark:prose-invert max-w-none text-sm md:text-base leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: trivia.content }}
-        />
-
-      )}
-      {!triviaLoading && !trivia && (
-        <p className="text-sm text-muted-foreground italic">
-          No trivia available for this category yet.
-        </p>
-      )}
-    </CardContent>
-  </Card>
-)}
-
-
-
-            
-
-          {/* --- Article Content --- */}
-<h2 className="text-3xl font-bold">Overall Summary</h2>
+            <h2 className="text-3xl font-bold">Overall Summary</h2>
             <div
               className="prose prose-orange max-w-none"
               dangerouslySetInnerHTML={{ __html: article.content }}
@@ -559,355 +508,327 @@ return (
 
             <Separator className="my-8" />
 
-          {/* --- Product Reviews --- */}
-          <section className="space-y-8">
-            <h2 className="text-3xl font-bold">Detailed Reviews</h2>
-            
-            <div className="grid grid-cols-1 gap-8">
-              {displayProducts.map((item, index) => {
-                const { product, latestPrice, previousPrice, rank, priceHistory } = item;
-                const amazonPrice = latestPrice?.amazon_price || 0;
-                const flipkartPrice = latestPrice?.flipkart_price || 0;
-                
-                return (
-                  <Card key={product.id} className="overflow-hidden relative">
-                    {/* Track Price Button - Top Right */}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className={`absolute top-4 right-4 z-10 gap-2 ${
-                        trackedProducts.has(product.id) 
-                          ? "bg-red-50 border-red-500 text-red-600 hover:bg-red-100" 
-                          : ""
-                      }`}
-                      onClick={async () => {
-                        const { data: { user } } = await supabase.auth.getUser();
-                        if (!user) {
-                          toast({
-                            title: "Authentication Required",
-                            description: "Please log in to track prices",
-                            variant: "destructive",
-                          });
-                          return;
-                        }
-                        
-                        const isTracked = trackedProducts.has(product.id);
-                        
-                        if (isTracked) {
-                          // Remove from tracking
-                          const { error } = await supabase
-                            .from("wishlist")
-                            .delete()
-                            .eq("user_id", user.id)
-                            .eq("product_id", product.id);
-
-                          if (error) {
+            <section className="space-y-8">
+              <h2 className="text-3xl font-bold">Detailed Reviews</h2>
+              
+              <div className="grid grid-cols-1 gap-8">
+                {displayProducts.map((item) => {
+                  const { product, latestPrice, priceHistory, rank } = item;
+                  const amazonPrice = latestPrice?.amazon_price || 0;
+                  const flipkartPrice = latestPrice?.flipkart_price || 0;
+                  
+                  return (
+                    <Card key={product.id} className="overflow-hidden relative">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className={`absolute top-4 right-4 z-10 gap-2 ${
+                          trackedProducts.has(product.id) 
+                            ? "bg-red-50 border-red-500 text-red-600 hover:bg-red-100" 
+                            : ""
+                        }`}
+                        onClick={async () => {
+                          const { data: { user } } = await supabase.auth.getUser();
+                          if (!user) {
                             toast({
-                              title: "Error",
-                              description: "Failed to remove from tracking",
+                              title: "Authentication Required",
+                              description: "Please log in to track prices",
                               variant: "destructive",
                             });
-                          } else {
-                            setTrackedProducts(prev => {
-                              const newSet = new Set(prev);
-                              newSet.delete(product.id);
-                              return newSet;
-                            });
-                            toast({
-                              title: "Removed",
-                              description: "Product removed from tracking",
-                            });
+                            return;
                           }
-                        } else {
-                          // Add to tracking
-                          const { error } = await supabase
-                            .from("wishlist")
-                            .insert({
-                              user_id: user.id,
-                              product_id: product.id,
-                            });
-
-                          if (error) {
-                            toast({
-                              title: "Error",
-                              description: "Failed to add to tracking",
-                              variant: "destructive",
-                            });
-                          } else {
-                            setTrackedProducts(prev => new Set([...prev, product.id]));
-                            toast({
-                              title: "Success",
-                              description: "Product added to tracking",
-                            });
-                          }
-                        }
-                      }}
-                    >
-                      <Heart 
-                        className={`h-4 w-4 ${trackedProducts.has(product.id) ? "fill-red-600" : ""}`}
-                      /> 
-                      Track Price
-                    </Button>
-
-                    <div className="p-6 flex flex-col md:flex-row gap-6">
-                      <div className="md:w-1/4">
-                        <div className="rounded-lg overflow-hidden bg-white aspect-square relative">
-                          <img 
-                            src={product.image || "/placeholder.svg"} 
-                            alt={product.name} 
-                            className="absolute inset-0 w-full h-full object-cover"
-                          />
-                          <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded">
-                            #{rank}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="md:w-3/4">
-                        <div className="flex items-center gap-2 mb-2 flex-wrap">
-                          <h3 className="text-xl font-bold">{product.name}</h3>
-                          {product.badge && (
-                            <Badge variant="default" className="bg-primary text-primary-foreground">
-                              {product.badge}
-                            </Badge>
-                          )}
-                        </div>
-                        
-                        {/* Product Tags */}
-                        {product.tags && product.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {product.tags.map((tag, tagIndex) => (
-                              <Badge 
-                                key={tagIndex} 
-                                variant="outline" 
-                                className="text-xs bg-secondary/50"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center mb-3">
-                          <div className="flex">
-                            {[...Array(5)].map((_, i) => (
-                              <span 
-                                key={i} 
-                                className={`text-lg ${i < Math.floor(product.rating || 0) ? "text-primary" : "text-muted"}`}
-                              >
-                                ★
-                              </span>
-                            ))}
-                          </div>
-                          <span className="ml-2 font-medium">{(product.rating || 0).toFixed(1)}</span>
-                        </div>
-                        
-                        {product.short_description && (
-                          <p className="text-muted-foreground mb-4">{product.short_description}</p>
-                        )}
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                          <div className="bg-secondary/20 p-4 rounded-lg">
-                            <h4 className="font-bold mb-2 text-green-600">Pros</h4>
-                            <ul className="list-disc list-inside space-y-1">
-                              {product.pros.map((pro, i) => (
-                                <li key={i} className="text-sm">{pro}</li>
-                              ))}
-                            </ul>
-                          </div>
                           
-                          <div className="bg-secondary/20 p-4 rounded-lg">
-                            <h4 className="font-bold mb-2 text-red-600">Cons</h4>
-                            <ul className="list-disc list-inside space-y-1">
-                              {product.cons.map((con, i) => (
-                                <li key={i} className="text-sm">{con}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                        
-                        <div className="flex flex-wrap items-center gap-3">
-                          {/* Best Price Display */}
-                          {(amazonPrice > 0 || flipkartPrice > 0) && (
-                            <div className="inline-flex items-center gap-2 bg-background border border-green-300 px-4 py-2 rounded-md text-green-700 font-semibold">
-                              <span>Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()}
+                          const isTracked = trackedProducts.has(product.id);
+                          
+                          if (isTracked) {
+                            const { error } = await supabase
+                              .from("wishlist")
+                              .delete()
+                              .eq("user_id", user.id)
+                              .eq("product_id", product.id);
+
+                            if (error) {
+                              toast({
+                                title: "Error",
+                                description: "Failed to remove from tracking",
+                                variant: "destructive",
+                              });
+                            } else {
+                              setTrackedProducts(prev => {
+                                const newSet = new Set(prev);
+                                newSet.delete(product.id);
+                                return newSet;
+                              });
+                              toast({
+                                title: "Removed",
+                                description: "Product removed from tracking",
+                              });
+                            }
+                          } else {
+                            const { error } = await supabase
+                              .from("wishlist")
+                              .insert({
+                                user_id: user.id,
+                                product_id: product.id,
+                              });
+
+                            if (error) {
+                              toast({
+                                title: "Error",
+                                description: "Failed to add to tracking",
+                                variant: "destructive",
+                              });
+                            } else {
+                              setTrackedProducts(prev => new Set([...prev, product.id]));
+                              toast({
+                                title: "Success",
+                                description: "Product added to tracking",
+                              });
+                            }
+                          }
+                        }}
+                      >
+                        <Heart className={`h-4 w-4 ${trackedProducts.has(product.id) ? "fill-red-600" : ""}`} /> 
+                        Track Price
+                      </Button>
+
+                      <div className="p-6 flex flex-col md:flex-row gap-6">
+                        <div className="md:w-1/4">
+                          <div className="rounded-lg overflow-hidden bg-white aspect-square relative">
+                            <img 
+                              src={product.image || "/placeholder.svg"} 
+                              alt={product.name} 
+                              className="absolute inset-0 w-full h-full object-cover"
+                            />
+                            <div className="absolute top-2 left-2 bg-black text-white text-xs font-bold py-1 px-2 rounded">
+                              #{rank}
                             </div>
-                          )}
+                          </div>
+                        </div>
+                        
+                        <div className="md:w-3/4 flex flex-col">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-2 flex-wrap">
+                              <h3 className="text-xl font-bold">{product.name}</h3>
+                              {product.badge && (
+                                <Badge variant="default" className="bg-primary text-primary-foreground">
+                                  {product.badge}
+                                </Badge>
+                              )}
+                            </div>
+                            
+                            {product.tags && product.tags.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-3">
+                                {product.tags.map((tag, tagIndex) => (
+                                  <Badge key={tagIndex} variant="outline" className="text-xs bg-secondary/50">
+                                    {tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center mb-3">
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <span 
+                                    key={i} 
+                                    className={`text-lg ${i < Math.floor(product.rating || 0) ? "text-primary" : "text-muted"}`}
+                                  >
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
+                              <span className="ml-2 font-medium">{(product.rating || 0).toFixed(1)}</span>
+                            </div>
+                            
+                            {product.short_description && (
+                              <p className="text-muted-foreground mb-4">{product.short_description}</p>
+                            )}
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                              <div className="bg-secondary/20 p-4 rounded-lg">
+                                <h4 className="font-bold mb-2 text-green-600">Pros</h4>
+                                <ul className="list-disc list-inside space-y-1">
+                                  {product.pros.map((pro, i) => (
+                                    <li key={i} className="text-sm">{pro}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              
+                              <div className="bg-secondary/20 p-4 rounded-lg">
+                                <h4 className="font-bold mb-2 text-red-600">Cons</h4>
+                                <ul className="list-disc list-inside space-y-1">
+                                  {product.cons.map((con, i) => (
+                                    <li key={i} className="text-sm">{con}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
                           
-                          {/* Amazon Button */}
-                          {product.amazon_link && amazonPrice > 0 && (
-                            <a 
-                              href={product.amazon_link} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 bg-[#FF9900] hover:bg-[#FF9900]/90 text-white px-4 py-2 rounded-md transition-colors font-medium"
-                            >
-                              <ShoppingCart className="h-4 w-4" /> 
-                              Amazon ₹{amazonPrice.toLocaleString()}
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
-                          )}
-                          
-                          {/* Flipkart Button */}
-                          {product.flipkart_link && flipkartPrice > 0 && (
-                            <a 
-                              href={product.flipkart_link} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="inline-flex items-center gap-2 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-4 py-2 rounded-md transition-colors font-medium"
-                            >
-                              <ShoppingCart className="h-4 w-4" /> 
-                              Flipkart ₹{flipkartPrice.toLocaleString()}
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
-                          )}
-                          
-                          {/* Price Trend Dialog */}
-                          {priceHistory.length > 0 && (
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" className="gap-2">
-                                  <TrendingUp className="h-4 w-4" />
-                                  Price Trend
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-4xl">
-                                <DialogHeader>
-                                  <DialogTitle className="flex items-center gap-2">
-                                    <TrendingUp className="h-5 w-5" />
-                                    Price History - {product.name}
-                                  </DialogTitle>
-                                </DialogHeader>
-                                <div className="mt-4">
-                                  <PriceHistoryChart data={priceHistory} />
+                          {/* New Big Buttons Layout */}
+                          <div className="mt-4 space-y-3">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                              {(amazonPrice > 0 || flipkartPrice > 0) && (
+                                <div className="inline-flex items-center gap-2 bg-green-50 border border-green-200 px-3 py-1.5 rounded-md text-green-700 font-semibold text-sm">
+                                  <span>Best Price:</span> ₹{getBestPrice(amazonPrice, flipkartPrice).toLocaleString()}
                                 </div>
-                              </DialogContent>
-                            </Dialog>
-                          )}
+                              )}
+                              {priceHistory.length > 0 && (
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button variant="outline" size="sm" className="gap-2">
+                                      <TrendingUp className="h-4 w-4" />
+                                      Price Trend
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent className="max-w-4xl">
+                                    <DialogHeader>
+                                      <DialogTitle className="flex items-center gap-2">
+                                        <TrendingUp className="h-5 w-5" />
+                                        Price History - {product.name}
+                                      </DialogTitle>
+                                    </DialogHeader>
+                                    <div className="mt-4">
+                                      <PriceHistoryChart data={priceHistory} />
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+                              )}
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row gap-4 w-full">
+                              {product.amazon_link && amazonPrice > 0 && (
+                                <a 
+                                  href={product.amazon_link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="flex-1 flex items-center justify-center gap-2 bg-[#FF9900] hover:bg-[#FF9900]/90 text-white px-6 py-3 rounded-lg transition-colors font-bold text-lg shadow-sm"
+                                >
+                                  <ShoppingCart className="h-5 w-5" /> 
+                                  Amazon ₹{amazonPrice.toLocaleString()}
+                                  <ExternalLink className="h-4 w-4" />
+                                </a>
+                              )}
+                              
+                              {product.flipkart_link && flipkartPrice > 0 && (
+                                <a 
+                                  href={product.flipkart_link} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer" 
+                                  className="flex-1 flex items-center justify-center gap-2 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-6 py-3 rounded-lg transition-colors font-bold text-lg shadow-sm"
+                                >
+                                  <ShoppingCart className="h-5 w-5" /> 
+                                  Flipkart ₹{flipkartPrice.toLocaleString()}
+                                  <ExternalLink className="h-4 w-4" />
+                                </a>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                );
-              })}
-            </div>
-          </section>
+                    </Card>
+                  );
+                })}
+              </div>
+            </section>
 
             <Separator className="my-8" />
-
-            {/* Comments */}
             <CommentSection articleId={article.id} />
           </div>
 
-          {/* Right Sidebar */}
-        <aside className="col-span-12 md:col-span-4 space-y-6">
-          {/* Top Products Sales Chart */}
-          <Card className="bg-white p-4 rounded-lg shadow-md">
-            <CardHeader className="p-0 mb-4">
-              <CardTitle className="text-xl font-bold flex items-center gap-2">
-                 <TrendingUp className="h-5 w-5 text-primary" />
-                 Top Selling Models
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {salesLoading && (
-                <div className="space-y-2 h-[220px]">
-                  <Skeleton className="h-8 w-full" />
-                  <Skeleton className="h-8 w-5/6" />
-                  <Skeleton className="h-8 w-4/6" />
-                  <Skeleton className="h-8 w-3/6" />
-                  <Skeleton className="h-8 w-2/6" />
-                </div>
-              )}
-              {salesError && <p className="text-destructive text-center h-[220px] flex items-center justify-center">{salesError}</p>}
-              {!salesLoading && !salesError && salesData.length === 0 && (
-                <p className="text-muted-foreground text-center h-[220px] flex items-center justify-center">
-                  No sales data available.
-                </p>
-              )}
-              {!salesLoading && !salesError && salesData.length > 0 && (
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart
-                    data={salesData}
-                    layout="vertical"
-                    margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
-                  >
-                    <XAxis type="number" hide />
-                    <YAxis
-                      dataKey="model_name"
-                      type="category"
-                      width={140}
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
-                      interval={0}
-                    />
-                    <Tooltip
-                       formatter={(value: number) => [`${value}`, "Sales"]}
-                       cursor={{ fill: 'hsl(var(--muted) / 0.5)' }}
-                       contentStyle={{
-                         backgroundColor: 'hsl(var(--background))',
-                         borderColor: 'hsl(var(--border))',
-                         borderRadius: 'var(--radius)',
-                         fontSize: '12px'
-                       }}
-                    />
-                    <Bar
-                      dataKey="sales_count"
-                      fill="hsl(var(--primary))"
-                      radius={4}
-                      barSize={20}
-                    >
-                      <LabelList
-                        dataKey="sales_count"
-                        position="right"
-                        offset={8}
-                        fill="hsl(var(--foreground))"
-                        fontSize={12}
-                        fontWeight="500"
-                        formatter={(value: number) => `${value}`}
+          <aside className="col-span-12 md:col-span-4 space-y-6">
+            <Card className="bg-white p-4 rounded-lg shadow-md">
+              <CardHeader className="p-0 mb-4">
+                <CardTitle className="text-xl font-bold flex items-center gap-2">
+                   <TrendingUp className="h-5 w-5 text-primary" />
+                   Top Selling Models
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                {salesLoading && (
+                  <div className="space-y-2 h-[220px]">
+                    <Skeleton className="h-8 w-full" />
+                    <Skeleton className="h-8 w-5/6" />
+                    <Skeleton className="h-8 w-4/6" />
+                    <Skeleton className="h-8 w-3/6" />
+                    <Skeleton className="h-8 w-2/6" />
+                  </div>
+                )}
+                {salesError && <p className="text-destructive text-center h-[220px] flex items-center justify-center">{salesError}</p>}
+                {!salesLoading && !salesError && salesData.length === 0 && (
+                  <p className="text-muted-foreground text-center h-[220px] flex items-center justify-center">
+                    No sales data available.
+                  </p>
+                )}
+                {!salesLoading && !salesError && salesData.length > 0 && (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <BarChart data={salesData} layout="vertical" margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
+                      <XAxis type="number" hide />
+                      <YAxis
+                        dataKey="model_name"
+                        type="category"
+                        width={140}
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+                        interval={0}
                       />
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
+                      <Tooltip
+                         formatter={(value: number) => [`${value}`, "Sales"]}
+                         cursor={{ fill: 'hsl(var(--muted) / 0.5)' }}
+                         contentStyle={{
+                           backgroundColor: 'hsl(var(--background))',
+                           borderColor: 'hsl(var(--border))',
+                           borderRadius: 'var(--radius)',
+                           fontSize: '12px'
+                         }}
+                      />
+                      <Bar dataKey="sales_count" fill="hsl(var(--primary))" radius={4} barSize={20}>
+                        <LabelList
+                          dataKey="sales_count"
+                          position="right"
+                          offset={8}
+                          fill="hsl(var(--foreground))"
+                          fontSize={12}
+                          fontWeight="500"
+                          formatter={(value: number) => `${value}`}
+                        />
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            <div className="bg-white p-4 rounded-lg shadow-md space-y-3">
+              <h2 className="text-lg font-bold">Related Articles</h2>
+              {relatedArticles && relatedArticles.length > 0 ? (
+                <ul className="space-y-3">
+                  {relatedArticles.map((related) => (
+                    <li key={related.id}>
+                      <Link to={`/articles/${related.slug}`} className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition">
+                        <img
+                          src={related.featured_image || getCategoryImage(article?.category)}
+                          alt={related.title}
+                          className="w-16 h-16 rounded-md object-cover"
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-medium text-sm text-foreground line-clamp-2">
+                            {related.title}
+                          </span>
+                          <span className="text-xs text-muted-foreground line-clamp-1">
+                            {related.excerpt || ""}
+                          </span>
+                        </div>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground">No related articles found.</p>
               )}
-            </CardContent>
-          </Card>
-
-            {/* Related Articles */}
-{/* Related Articles */}
-<div className="bg-white p-4 rounded-lg shadow-md space-y-3">
-  <h2 className="text-lg font-bold">Related Articles</h2>
-  {relatedArticles && relatedArticles.length > 0 ? (
-    <ul className="space-y-3">
-      {relatedArticles.map((related) => (
-        <li key={related.id}>
-          <Link 
-            to={`/articles/${related.slug}`} 
-            className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition"
-          >
-            <img
-              src={related.featured_image || getCategoryImage(article?.category)}
-              alt={related.title}
-              className="w-16 h-16 rounded-md object-cover"
-            />
-            <div className="flex flex-col">
-              <span className="font-medium text-sm text-foreground line-clamp-2">
-                {related.title}
-              </span>
-              <span className="text-xs text-muted-foreground line-clamp-1">
-                {related.excerpt || ""}
-              </span>
             </div>
-          </Link>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-sm text-muted-foreground">No related articles found.</p>
-  )}
-</div>
-
           </aside>
         </div>
       </main>
