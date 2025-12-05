@@ -28,7 +28,7 @@ type Product = {
 const ITEMS_PER_PAGE = 10;
 
 const Products = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -49,6 +49,9 @@ const Products = () => {
   });
 
   useEffect(() => {
+    // Wait for auth to finish loading
+    if (authLoading) return;
+
     const checkAdmin = async () => {
       if (!user) {
         navigate("/auth");
@@ -84,7 +87,7 @@ const Products = () => {
     };
 
     checkAdmin();
-  }, [user, navigate, toast]);
+  }, [user, authLoading, navigate, toast]);
 
   const fetchProducts = async () => {
     try {
