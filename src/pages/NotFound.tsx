@@ -1,33 +1,34 @@
 import { Link } from "react-router-dom";
-import "./NotFound.css"; // This imports the styles you just pasted
+import "./NotFound.css"; // CRITICAL: This imports the animation
 
 const NotFound = () => {
   return (
-    // We wrap everything in a container to ensure it takes up the full screen
-    <div className="not-found-container">
-      
-      {/* PASTE YOUR HTML BODY CONTENT HERE 
-         
-         1. Open your '404 Page Not Found/index.html'
-         2. Copy everything inside the <body> tags (excluding <script> tags if any)
-         3. Paste it here.
-         
-         IMPORTANT FIXES TO MAKE AFTER PASTING:
-         - Change all 'class=' to 'className='
-         - Change any <a href="/">Home</a> to <Link to="/">Home</Link>
-         - Close all self-closing tags (e.g., <img ... /> or <br />)
-      */}
+    <section className="page_404 min-h-screen flex items-center justify-center">
+      <div className="container mx-auto">
+        <div className="flex justify-center">
+          <div className="w-full md:w-10/12 text-center">
+            
+            {/* This div has the CSS background image (the animation) */}
+            <div className="four_zero_four_bg">
+              <h1 className="text-center">404</h1>
+            </div>
 
-      {/* Example of how it should look after you paste and fix: */}
-      <div className="error-content">
-         <h1>404</h1>
-         <p>Oops! The page you are looking for does not exist.</p>
-         <Link to="/" className="home-btn">
-            Go Back Home
-         </Link>
+            <div className="contant_box_404">
+              <h3 className="text-2xl font-bold mb-4">
+                Look like you're lost
+              </h3>
+
+              <p className="text-lg mb-4">the page you are looking for not available!</p>
+
+              <Link to="/" className="link_404">
+                Go to Home
+              </Link>
+            </div>
+            
+          </div>
+        </div>
       </div>
-
-    </div>
+    </section>
   );
 };
 
