@@ -802,10 +802,10 @@ const ArticleDetail = () => {
                                     </Badge>
                                   )}
                                 </div>
-                                <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                                {/*<div className="flex gap-4 mt-2 text-xs text-muted-foreground">
                                   {amazonPrice > 0 && <span>Amazon: ₹{amazonPrice.toLocaleString()}</span>}
                                   {flipkartPrice > 0 && <span>Flipkart: ₹{flipkartPrice.toLocaleString()}</span>}
-                                </div>
+                                </div>*/}
                               </div>
 
                               {priceHistory.length > 0 && (
