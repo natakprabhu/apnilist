@@ -29,24 +29,33 @@ Deno.serve(async (req) => {
     }
 
     const baseUrl = 'https://apnilist.lovable.app';
+    const today = new Date().toISOString().split('T')[0];
+
+    // Helper function to format date to W3C format (YYYY-MM-DD)
+    const formatDate = (dateStr: string): string => {
+      try {
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0];
+      } catch {
+        return today;
+      }
+    };
 
     // Generate sitemap XML
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
 
-    // Static pages
+    // Static pages (only public pages - no auth required)
     const staticPages = [
       { url: '/', priority: '1.0', changefreq: 'daily' },
       { url: '/articles', priority: '0.9', changefreq: 'daily' },
-      { url: '/price-tracker', priority: '0.8', changefreq: 'weekly' },
       { url: '/deals', priority: '0.8', changefreq: 'daily' },
-      { url: '/at-your-price', priority: '0.7', changefreq: 'weekly' },
-      { url: '/products', priority: '0.7', changefreq: 'weekly' },
     ];
 
     staticPages.forEach((page) => {
       xml += '  <url>\n';
       xml += `    <loc>${baseUrl}${page.url}</loc>\n`;
+      xml += `    <lastmod>${today}</lastmod>\n`;
       xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
       xml += `    <priority>${page.priority}</priority>\n`;
       xml += '  </url>\n';
@@ -54,11 +63,12 @@ Deno.serve(async (req) => {
 
     // Article pages
     articles?.forEach((article) => {
+      const lastmod = formatDate(article.updated_at || article.created_at);
       xml += '  <url>\n';
       xml += `    <loc>${baseUrl}/articles/${article.slug}</loc>\n`;
-      xml += `    <lastmod>${article.updated_at || article.created_at}</lastmod>\n`;
-      xml += '    <changefreq>monthly</changefreq>\n';
-      xml += '    <priority>0.8</priority>\n';
+      xml += `    <lastmod>${lastmod}</lastmod>\n`;
+      xml += `    <changefreq>monthly</changefreq>\n`;
+      xml += `    <priority>0.8</priority>\n`;
       xml += '  </url>\n';
     });
 
