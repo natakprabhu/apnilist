@@ -26,7 +26,6 @@ type Product = {
   rating: number | null;
   short_description: string | null;
   created_at: string;
-  last_updated: string | null;
   processed: boolean;
 };
 
@@ -49,7 +48,7 @@ const Products = () => {
   
   // Sorting State
   const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: 'asc' | 'desc' } | null>({
-    key: 'last_updated',
+    key: 'created_at',
     direction: 'desc'
   });
 
@@ -108,8 +107,8 @@ const Products = () => {
     try {
       const { data, error } = await supabase
         .from("products")
-        .select("id, name, slug, amazon_link, flipkart_link, image, rating, short_description, created_at, last_updated, processed")
-        .order("last_updated", { ascending: false });
+        .select("id, name, slug, amazon_link, flipkart_link, image, rating, short_description, created_at, processed")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setProducts(data || []);
@@ -535,10 +534,10 @@ const Products = () => {
                         </TableHead>
                         <TableHead 
                           className="w-[15%] cursor-pointer hover:bg-muted/50 transition-colors"
-                          onClick={() => handleSort('last_updated')}
+                          onClick={() => handleSort('created_at')}
                         >
                           <div className="flex items-center gap-2">
-                            Last Updated
+                            Created At
                             <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
                           </div>
                         </TableHead>
@@ -583,8 +582,8 @@ const Products = () => {
                               )}
                             </TableCell>
                             <TableCell className="text-sm text-muted-foreground">
-                              {product.last_updated 
-                                ? new Date(product.last_updated).toLocaleDateString() + " " + new Date(product.last_updated).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                              {product.created_at 
+                                ? new Date(product.created_at).toLocaleDateString() + " " + new Date(product.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
                                 : '-'
                               }
                             </TableCell>

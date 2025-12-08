@@ -276,7 +276,9 @@ export type Database = {
           flipkart_link: string | null
           id: string
           image: string | null
+          last_updated: string | null
           name: string
+          processed: boolean | null
           pros: Json | null
           rating: number | null
           short_description: string | null
@@ -292,7 +294,9 @@ export type Database = {
           flipkart_link?: string | null
           id?: string
           image?: string | null
+          last_updated?: string | null
           name: string
+          processed?: boolean | null
           pros?: Json | null
           rating?: number | null
           short_description?: string | null
@@ -308,7 +312,9 @@ export type Database = {
           flipkart_link?: string | null
           id?: string
           image?: string | null
+          last_updated?: string | null
           name?: string
+          processed?: boolean | null
           pros?: Json | null
           rating?: number | null
           short_description?: string | null
