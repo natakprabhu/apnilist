@@ -3,7 +3,6 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.75.0';
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Content-Type': 'application/xml',
 };
 
 Deno.serve(async (req) => {
@@ -15,6 +14,8 @@ Deno.serve(async (req) => {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
+
+    console.log('Starting sitemap generation...');
 
     // Fetch all published articles
     const { data: articles, error } = await supabase
@@ -74,12 +75,42 @@ Deno.serve(async (req) => {
 
     xml += '</urlset>';
 
-    console.log('Sitemap generated successfully with', articles?.length || 0, 'articles');
+    console.log('Sitemap XML generated with', articles?.length || 0, 'articles');
 
-    return new Response(xml, { 
-      headers: corsHeaders,
-      status: 200 
-    });
+    // Upload sitemap to storage bucket
+    const { error: uploadError } = await supabase.storage
+      .from('sitemaps')
+      .upload('sitemap.xml', xml, {
+        contentType: 'application/xml',
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error('Error uploading sitemap to storage:', uploadError);
+      throw uploadError;
+    }
+
+    console.log('Sitemap uploaded to storage successfully');
+
+    // Get the public URL
+    const { data: publicUrl } = supabase.storage
+      .from('sitemaps')
+      .getPublicUrl('sitemap.xml');
+
+    console.log('Sitemap public URL:', publicUrl.publicUrl);
+
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        message: 'Sitemap generated and stored successfully',
+        articlesCount: articles?.length || 0,
+        url: publicUrl.publicUrl
+      }), 
+      { 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 200 
+      }
+    );
   } catch (error) {
     console.error('Error generating sitemap:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
