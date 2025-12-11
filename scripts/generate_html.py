@@ -1,6 +1,7 @@
 import os
 import time
 import requests
+import traceback
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
 from selenium import webdriver
@@ -59,12 +60,18 @@ def get_article_slugs():
         return ["71-juicer-06-12-2025"]
 
 def setup_driver():
-    print("🔧 Setting up Headless Browser...")
+    print("🔧 Setting up Browser (Visible Mode)...")
     chrome_options = Options()
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless") # Disabled for debugging
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36")
+    # Added stability options to prevent crashes
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--ignore-certificate-errors")
+    
+    # Fake being a desktop user to get the full layout
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
     
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     return driver
@@ -78,7 +85,8 @@ def generate_static_file(driver, slug):
         driver.get(url)
 
         # Wait for the H1 title to appear (indicates React loaded)
-        WebDriverWait(driver, 15).until(
+        # Increased timeout to 30 seconds to handle slow loads
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.TAG_NAME, "h1"))
         )
         
@@ -93,6 +101,8 @@ def generate_static_file(driver, slug):
 
     except Exception as e:
         print(f"❌ Failed to generate {slug}: {e}")
+        # Print full error trace to debug "Message: " errors
+        traceback.print_exc()
 
 def main():
     if not os.path.exists(OUTPUT_DIR):
