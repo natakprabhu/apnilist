@@ -4,6 +4,7 @@ import requests
 import traceback
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -13,17 +14,30 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # --- CONFIGURATION ---
-# UPDATED: Now pointing to your live production site
-BASE_URL = "https://www.apnilist.co.in"
+# RECOMMENDATION: Run 'npm start' locally and use http://localhost:5173 (or 3000/8080)
+# This prevents Vercel from serving you a broken cached file while you try to generate a new one.
+BASE_URL = "https://www.apnilist.co.in" 
 
-# CHANGED: Reverted to 'static_html_cache' to match your vercel.json rewrites
-OUTPUT_DIR = os.path.join(os.getcwd(), "public", "static_html_cache")
+# 1. MANUAL LIST: Add new articles here
+MANUAL_SLUGS = [
+    "71-juicer-06-12-2025",
+    "6-air-purifier-22-11-2025",
+    "10-best-microwaves-under-10000",
+]
 
-# Your live sitemap URL (from your vercel.json)
+# 2. SITEMAP SETTINGS
+USE_SITEMAP = False  # Set to True to also fetch from existing sitemap
 SITEMAP_URL = "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml"
 
-def get_article_slugs():
+# Output directories
+OUTPUT_DIR = os.path.join(os.getcwd(), "public", "static_html_cache")
+SITEMAP_OUTPUT_PATH = os.path.join(os.getcwd(), "public", "sitemap.xml")
+
+def get_sitemap_slugs():
     """Fetches the sitemap and extracts all article slugs."""
+    if not USE_SITEMAP:
+        return []
+        
     print(f"🔍 Fetching Sitemap from: {SITEMAP_URL}")
     try:
         response = requests.get(SITEMAP_URL)
@@ -44,7 +58,6 @@ def get_article_slugs():
             # Logic: We only want URLs that contain "/articles/"
             if "/articles/" in loc:
                 # Extract the slug (part after the last slash)
-                # e.g., https://apnilist.com/articles/my-slug -> my-slug
                 parsed_path = urlparse(loc).path
                 slug = parsed_path.split("/")[-1]
                 
@@ -59,8 +72,47 @@ def get_article_slugs():
 
     except Exception as e:
         print(f"❌ Error parsing sitemap: {e}")
-        # Fallback list if sitemap fails
-        return ["71-juicer-06-12-2025"]
+        return []
+
+def generate_sitemap_xml(slugs):
+    """Generates a sitemap.xml file in the public directory."""
+    print(f"🗺️  Generating sitemap.xml at: {SITEMAP_OUTPUT_PATH}")
+    
+    # XML Namespace
+    xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
+    
+    # Root element
+    urlset = ET.Element("urlset", xmlns=xmlns)
+    
+    # Add Homepage (Static)
+    home_url = ET.SubElement(urlset, "url")
+    ET.SubElement(home_url, "loc").text = "https://www.apnilist.co.in/"
+    ET.SubElement(home_url, "changefreq").text = "daily"
+    ET.SubElement(home_url, "priority").text = "1.0"
+    
+    # Add Articles
+    for slug in slugs:
+        url_elem = ET.SubElement(urlset, "url")
+        loc = f"https://www.apnilist.co.in/articles/{slug}"
+        today = datetime.now().strftime("%Y-%m-%d")
+        
+        ET.SubElement(url_elem, "loc").text = loc
+        ET.SubElement(url_elem, "lastmod").text = today
+        ET.SubElement(url_elem, "changefreq").text = "weekly"
+        ET.SubElement(url_elem, "priority").text = "0.8"
+        
+    # Write to file
+    try:
+        # Prettify if possible (Python 3.9+)
+        if hasattr(ET, "indent"):
+            ET.indent(urlset, space="  ", level=0)
+            
+        tree = ET.ElementTree(urlset)
+        tree.write(SITEMAP_OUTPUT_PATH, encoding="utf-8", xml_declaration=True)
+        print("✅ Sitemap.xml updated successfully.")
+    except Exception as e:
+        print(f"❌ Failed to write sitemap.xml: {e}")
+        traceback.print_exc()
 
 def setup_driver():
     print("🔧 Setting up Browser (Visible Mode)...")
@@ -81,7 +133,6 @@ def setup_driver():
 
 def generate_static_file(driver, slug):
     url = f"{BASE_URL}/articles/{slug}"
-    # Ensure filename matches EXACTLY what Vercel rewrites expect
     output_path = os.path.join(OUTPUT_DIR, f"{slug}.html")
     
     try:
@@ -108,7 +159,12 @@ def generate_static_file(driver, slug):
 
     except Exception as e:
         print(f"❌ Failed to generate {slug}: {e}")
-        # Print full error trace to debug "Message: " errors
+        print("\n--- DEBUG: Page Source Dump (First 500 chars) ---")
+        try:
+            print(driver.page_source[:500])
+        except:
+            print("Could not read page source.")
+        print("-------------------------------------------------\n")
         traceback.print_exc()
 
 def main():
@@ -116,23 +172,34 @@ def main():
         print(f"📁 Creating directory: {OUTPUT_DIR}")
         os.makedirs(OUTPUT_DIR)
 
-    # 1. Get list automatically
-    slugs = get_article_slugs()
+    # 1. Collect Slugs
+    slugs = list(MANUAL_SLUGS) # Start with manual list
+    
+    # 2. Optionally add sitemap slugs
+    sitemap_slugs = get_sitemap_slugs()
+    for s in sitemap_slugs:
+        if s not in slugs:
+            slugs.append(s)
     
     if not slugs:
-        print("No articles found to generate.")
+        print("⚠️ No articles found to generate. Add slugs to MANUAL_SLUGS list.")
         return
 
-    # 2. Start Browser
+    print(f"📋 Generating {len(slugs)} pages...")
+
+    # 3. Start Browser
     driver = setup_driver()
     
-    # 3. Loop through them
+    # 4. Loop through them
     try:
         for slug in slugs:
             generate_static_file(driver, slug)
     finally:
         driver.quit()
-        print("\n✨ Batch Generation Complete.")
+        
+    # 5. Generate Sitemap
+    generate_sitemap_xml(slugs)
+    print("\n✨ Batch Generation & Sitemap Update Complete.")
 
 if __name__ == "__main__":
     main()
