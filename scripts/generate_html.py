@@ -13,8 +13,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # --- CONFIGURATION ---
-BASE_URL = "http://localhost:8080"
-OUTPUT_DIR = os.path.join(os.getcwd(), "public", "articles")
+# UPDATED: Now pointing to your live production site
+BASE_URL = "https://www.apnilist.co.in"
+
+# CHANGED: Reverted to 'static_html_cache' to match your vercel.json rewrites
+OUTPUT_DIR = os.path.join(os.getcwd(), "public", "static_html_cache")
 
 # Your live sitemap URL (from your vercel.json)
 SITEMAP_URL = "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml"
@@ -78,6 +81,7 @@ def setup_driver():
 
 def generate_static_file(driver, slug):
     url = f"{BASE_URL}/articles/{slug}"
+    # Ensure filename matches EXACTLY what Vercel rewrites expect
     output_path = os.path.join(OUTPUT_DIR, f"{slug}.html")
     
     try:
@@ -86,11 +90,14 @@ def generate_static_file(driver, slug):
 
         # Wait for the H1 title to appear (indicates React loaded)
         # Increased timeout to 30 seconds to handle slow loads
-        WebDriverWait(driver, 30).until(
+        element = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.TAG_NAME, "h1"))
         )
         
-        time.sleep(3) # Short buffer for images
+        # Optional: Print the title found to confirm it's real content
+        print(f"   Found Title: {element.text}")
+        
+        time.sleep(5) # Increased buffer for images/scripts
 
         full_html = driver.page_source
 
@@ -106,6 +113,7 @@ def generate_static_file(driver, slug):
 
 def main():
     if not os.path.exists(OUTPUT_DIR):
+        print(f"📁 Creating directory: {OUTPUT_DIR}")
         os.makedirs(OUTPUT_DIR)
 
     # 1. Get list automatically
