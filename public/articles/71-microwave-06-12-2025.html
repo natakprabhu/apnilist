@@ -64,6 +64,26 @@
     justify-content: center;
     overflow: hidden;
   }
+
+    /* 2. The Summary Cards (Dark Theme) */
+.summary-grid-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px border rgba(255, 255, 255, 0.1);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.summary-grid-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 3. Global Spacing Fix */
+.container-tight {
+  max-width: 800px; /* Keeps reading width comfortable */
+  margin: 0 auto;
+}
 </style>
 </head>
 <body class="min-h-screen bg-background flex flex-col">
