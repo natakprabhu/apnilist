@@ -23,13 +23,17 @@ MANUAL_SLUGS = [
     "5-air-purifier-22-11-2025",
 ]
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
+
 # 2. SITEMAP SETTINGS
 USE_SITEMAP = False  # Set to True to also fetch from existing sitemap
 SITEMAP_URL = "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml"
 
 # Output directories
-OUTPUT_DIR = os.path.join(os.getcwd(), "public", "static_html_cache")
-SITEMAP_OUTPUT_PATH = os.path.join(os.getcwd(), "public", "sitemap.xml")
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "public", "static_html_cache")
+SITEMAP_OUTPUT_PATH = os.path.join(PROJECT_ROOT, "public", "sitemap.xml")
+
 
 def get_sitemap_slugs():
     """Fetches the sitemap and extracts all article slugs."""
