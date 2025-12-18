@@ -8,8 +8,8 @@
   ],
   "rewrites": [
     {
-      "source": "/articles/:slug",
-      "destination": "/articles/:slug.html"
+      "source": "/static_html_cache/:slug",
+      "destination": "/static_html_cache/:slug.html"
     },
     {
       "source": "/(.*)",
