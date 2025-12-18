@@ -10,7 +10,7 @@
   "rewrites": [
     {
       "source": "/articles/:slug",
-      "destination": "/static_html_cache/:slug.html"
+      "destination": "/articles/:slug.html"
     },
     {
       "source": "/(.*)",
