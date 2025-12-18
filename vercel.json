@@ -1,5 +1,6 @@
 {
   "cleanUrls": true,
+
   "redirects": [
     {
       "source": "/sitemap.xml",
@@ -7,11 +8,15 @@
       "permanent": true
     }
   ],
+
   "rewrites": [
     {
       "source": "/articles/:slug",
-      "destination": "/static_html_cache/:slug.html",
-      "continue": true
+      "destination": "/static_html_cache/:slug.html"
+    },
+    {
+      "source": "/static_html_cache/:path*",
+      "destination": "/static_html_cache/:path*"
     },
     {
       "source": "/(.*)",
