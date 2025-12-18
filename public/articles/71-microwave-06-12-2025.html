@@ -102,6 +102,51 @@
   transform: rotate(-15deg);
   pointer-events: none;
 }
+
+    /* Sidebar Sticky Behavior */
+@media (min-width: 768px) {
+  .sticky-sidebar {
+    position: sticky;
+    top: 5rem;
+    height: fit-content;
+  }
+}
+
+/* Beautiful Verdict Card */
+.verdict-card {
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.verdict-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(to right, #3b82f6, #10b981, #f59e0b);
+}
+
+.verdict-item {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.verdict-item:hover {
+  transform: translateX(4px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.badge-dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
 </style>
 </head>
 <body class="min-h-screen bg-background flex flex-col">
@@ -1367,47 +1412,60 @@
           </article>
 
         </section>
+<aside class="col-span-12 md:col-span-4">
+      <div class="sticky-sidebar space-y-6">
+        
+        <section class="verdict-card rounded-2xl p-6 md:p-8 text-white">
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold tracking-tight">Final Verdict</h2>
+            <p class="text-slate-400 text-sm mt-1">Best picks by category for 2025</p>
+          </div>
 
+          <div class="space-y-4">
+            <a href="#samsung-ms23a3513ak" class="verdict-item flex flex-col p-4 rounded-xl bg-slate-800/50 block hover:no-underline">
+              <span class="flex items-center text-[10px] font-bold uppercase tracking-widest text-sky-400 mb-1">
+                <span class="badge-dot bg-sky-400"></span> Gold Standard
+              </span>
+              <span class="text-white font-semibold text-base">Samsung MS23 Ceramic</span>
+            </a>
 
+            <a href="#lg-ms2043bp" class="verdict-item flex flex-col p-4 rounded-xl bg-slate-800/50 block hover:no-underline">
+              <span class="flex items-center text-[10px] font-bold uppercase tracking-widest text-emerald-400 mb-1">
+                <span class="badge-dot bg-emerald-400"></span> Best Value
+              </span>
+              <span class="text-white font-semibold text-base">LG MS2043BP Solo</span>
+            </a>
 
-        <!-- Overall Summary -->
-<section class="mt-12">
-  <div class="bg-slate-900 rounded-2xl p-8 md:p-10 lg:p-12 text-white max-w-xl mx-auto md:ml-auto">
-    
-    <!-- Title -->
-    <h2 class="text-3xl font-bold text-right mb-2">Final Verdict</h2>
-    <p class="text-sm text-slate-400 text-right mb-8">
-      Quick guide to choosing based on your priority:
-    </p>
+            <a href="#bajaj-2016-mtbx" class="verdict-item flex flex-col p-4 rounded-xl bg-slate-800/50 block hover:no-underline">
+              <span class="flex items-center text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-1">
+                <span class="badge-dot bg-amber-400"></span> Budget Grill
+              </span>
+              <span class="text-white font-semibold text-base">Bajaj 2016 MTBX</span>
+            </a>
 
-    <!-- Grid -->
-    <div class="grid grid-cols-1 gap-6">
+            <a href="#ifb-24pm2b" class="verdict-item flex flex-col p-4 rounded-xl bg-slate-800/50 block hover:no-underline">
+              <span class="flex items-center text-[10px] font-bold uppercase tracking-widest text-indigo-400 mb-1">
+                <span class="badge-dot bg-indigo-400"></span> Largest Capacity
+              </span>
+              <span class="text-white font-semibold text-base">IFB 24L Solo</span>
+            </a>
+          </div>
 
-      <!-- Card -->
-      <div class="flex justify-between items-center bg-slate-800 rounded-lg p-4">
-        <span class="text-sky-400 font-semibold text-sm uppercase">Gold Standard</span>
-        <span class="text-white font-bold text-lg text-right">Samsung MS23</span>
+          <div class="mt-8 pt-6 border-t border-slate-700/50">
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              *Prices are subject to change based on retailer sales. Always check the "Best Overall" pick first if you have a medium budget.
+            </p>
+          </div>
+        </section>
+
+        <div class="bg-accent/30 p-6 rounded-2xl border border-dashed border-border">
+          <h4 class="font-bold text-sm mb-2">Need more help?</h4>
+          <p class="text-xs text-muted-foreground mb-4">Read our Microwave Buying Guide for 2025.</p>
+          <button class="w-full text-xs font-semibold py-2 px-4 bg-background border rounded-lg hover:bg-accent transition-colors">View Guide</button>
+        </div>
+
       </div>
-
-      <div class="flex justify-between items-center bg-slate-800 rounded-lg p-4">
-        <span class="text-emerald-400 font-semibold text-sm uppercase">Best Value</span>
-        <span class="text-white font-bold text-lg text-right">LG MS2043</span>
-      </div>
-
-      <div class="flex justify-between items-center bg-slate-800 rounded-lg p-4">
-        <span class="text-amber-400 font-semibold text-sm uppercase">Budget Grill</span>
-        <span class="text-white font-bold text-lg text-right">Bajaj Solo</span>
-      </div>
-
-      <div class="flex justify-between items-center bg-slate-800 rounded-lg p-4">
-        <span class="text-indigo-400 font-semibold text-sm uppercase">Best Support</span>
-        <span class="text-white font-bold text-lg text-right">IFB Solo</span>
-      </div>
-
-    </div>
-
-  </div>
-</section>
+</aside>
 
       <!-- Sidebar -->
       <aside class="col-span-12 md:col-span-4 space-y-6">
