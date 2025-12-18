@@ -94,6 +94,9 @@ const TopArticlesSection = () => {
                 key={article.slug} // Use slug as key
                 className="group overflow-hidden hover:shadow-hover transition-all duration-300"
               >
+
+
+                
                 <Link to={`/articles/${article.slug}`}>
                   <div className="aspect-video overflow-hidden">
                     <img

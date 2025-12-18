@@ -1193,11 +1193,12 @@ const saveArticleProducts = async (articleId: string, products: ArticleProduct[]
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <Link to={`/articles/${article.slug}`} target="_blank" rel="noopener noreferrer">
-                          <h3 className="text-xl font-semibold mb-1 hover:underline hover:text-primary">
-                            {article.title || "Untitled Article"}
-                          </h3>
-                        </Link>
+                        {/* Updated Link to /draft/ */}
+                          <Link to={`/draft/${article.slug}`} target="_blank" rel="noopener noreferrer">
+                            <h3 className="text-xl font-semibold mb-1 hover:underline hover:text-primary">
+                              {article.title || "Untitled Article"}
+                            </h3>
+                          </Link>
                         <p className="text-sm text-muted-foreground line-clamp-2">{article.excerpt}</p>
                       </div>
                       <Badge variant={article.status === "published" ? "default" : "secondary"}>
