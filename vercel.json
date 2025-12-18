@@ -11,10 +11,6 @@
       }
     },
     {
-      "src": "/static_html_cache/(.*)",
-      "dest": "/static_html_cache/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
