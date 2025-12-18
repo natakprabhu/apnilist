@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>10 Best Microwaves Under ₹10,000 in India (2025) | ApniList</title>
+  <meta name="description" content="Discover the 10 best microwave ovens under ₹10,000 in India. See capacity, features, pros and cons, and ideal usage.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+    .product-card { transition: box-shadow 0.2s ease; }
+    .product-card:hover { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); }
+    /* No-zoom container */
+    .img-container { overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f8fafc; border-radius: 0.75rem; transition: none !important; transform: none !important; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-[#fcfcfd] text-slate-900 flex flex-col">
+
+  <header class="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-slate-200">
+    <div class="container mx-auto px-4 max-w-6xl">
+      <div class="flex h-20 items-center justify-between">
+        <a class="flex items-center gap-2" href="/">
+          <div class="bg-indigo-600 h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-xl">A</div>
+          <span class="text-xl font-bold tracking-tight">ApniList</span>
+        </a>
+        <nav class="hidden md:flex items-center space-x-8">
+          <a class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors" href="/">Home</a>
+          <a class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors" href="/articles">Articles</a>
+          <a class="text-sm font-semibold text-slate-600 hover:text-indigo-600 transition-colors" href="/deals">Daily Deals</a>
+          <button class="bg-indigo-600 text-white px-5 py-2.5 rounded-full text-sm font-bold hover:bg-indigo-700 transition-all shadow-sm">Sign In</button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 py-10">
+    <div class="container mx-auto px-4 max-w-6xl grid grid-cols-12 gap-10">
+      
+      <div class="col-span-12 lg:col-span-8 space-y-10">
+        
+        <header class="space-y-6">
+          <nav class="text-xs font-black uppercase tracking-widest text-indigo-600">Kitchen Essentials • 2025 Guide</nav>
+          <h1 class="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
+            10 Best Microwaves Under <span class="text-indigo-600">₹10,000</span> in India
+          </h1>
+          <div class="flex items-center gap-4 py-3 border-y border-slate-100">
+            <img src="https://ui-avatars.com/api/?name=Apni+List&background=6366f1&color=fff" class="h-10 w-10 rounded-full" alt="Team">
+            <div>
+              <p class="text-sm font-bold text-slate-800">By ApniList Editorial Team</p>
+              <p class="text-xs text-slate-500">Updated Dec 12, 2025 • 12 min read</p>
+            </div>
+          </div>
+          <p class="text-lg text-slate-600 leading-relaxed">
+            In the sub-₹10,000 segment, <strong>Solo Microwaves</strong> are the champions of efficiency. We've vetted the market for units that offer the best reliability, heat distribution, and customer service support.
+          </p>
+        </header>
+
+        <section class="space-y-10">
+          
+          <article id="ifb-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">IFB Solo 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">Rank #1 • Best Overall</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">IFB 20 L Solo Microwave Oven</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.5</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Perfect for small families. IFB offers a 3-year warranty on the magnetron and some of the best heat distribution in this budget.</p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div class="bg-emerald-50/50 p-3 rounded-lg text-xs text-emerald-800 italic">"Very reliable after-sales network."</div>
+                  <div class="bg-rose-50/50 p-3 rounded-lg text-xs text-rose-800 italic">"Design is a bit dated."</div>
+                </div>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹8,990</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="lg-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">LG Solo 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Rank #2 • Best for Reheating</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">LG 20 L Solo Microwave Oven</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.4</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Features 'i-Wave' technology for faster, more even reheating. Ideal for those who use their microwave mainly for warming leftovers.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹8,490</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="samsung-23l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Samsung 23L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-violet-600 uppercase tracking-[0.2em]">Rank #3 • High Capacity</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Samsung 23 L Solo Microwave Oven</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.3</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">A larger 23L cavity means you can fit standard dinner plates comfortably. Features a Ceramic Enamel interior for easy cleaning.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹9,450</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="whirlpool-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Whirlpool 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-sky-600 uppercase tracking-[0.2em]">Rank #4 • Easy to Use</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Whirlpool 20 L Solo Microwave</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.2</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Best for elderly users or students thanks to simple mechanical knobs that are intuitive and durable.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹7,200</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="bajaj-17l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Bajaj 17L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em]">Rank #5 • Compact Pick</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Bajaj 17 L Solo Microwave</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.1</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">The most compact model. Perfect for dorm rooms, studio apartments, or hostel life where space is premium.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹5,490</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="panasonic-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Panasonic 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-lime-600 uppercase tracking-[0.2em]">Rank #6 • Japanese Quality</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Panasonic 20 L Solo Microwave</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.2</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Known for precision defrosting and even heat distribution. It doesn't overcook the edges while the center stays frozen.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹8,100</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="godrej-23l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Godrej 23L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-rose-600 uppercase tracking-[0.2em]">Rank #7 • Desi Power</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Godrej 23 L Solo Microwave</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.1</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Strong Indian brand presence with a large service footprint. The 23L capacity at this price point is excellent value.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹8,990</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="haier-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Haier 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-cyan-600 uppercase tracking-[0.2em]">Rank #8 • Sleek Design</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Haier 20 L Solo Microwave</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.0</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Features a modern, minimalist glass finish that looks great in contemporary kitchens.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹7,490</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="morphy-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">Morphy 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">Rank #9 • Build Quality</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">Morphy Richards 20 L Solo</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.0</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">Solid construction with a high-quality finish. Very reliable for consistent daily heating.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹8,600</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article id="amazonbasics-20l-solo" class="product-card bg-white border border-slate-200 rounded-2xl p-6">
+            <div class="flex flex-col md:flex-row gap-8">
+              <div class="w-full md:w-48 h-48 img-container shrink-0">
+                <span class="text-slate-400 text-xs font-bold uppercase">AmazonBasics 20L</span>
+              </div>
+              <div class="flex-1 space-y-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Rank #10 • Budget Choice</span>
+                        <h2 class="text-2xl font-bold text-slate-900 mt-1">AmazonBasics 20 L Solo</h2>
+                    </div>
+                    <div class="bg-amber-50 text-amber-700 px-2 py-1 rounded text-sm font-bold">★ 4.0</div>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">The best value-for-money option during sale seasons. It covers all the basics without the premium brand markup.</p>
+                <div class="flex items-center justify-between pt-4">
+                  <span class="text-xl font-black text-slate-900">₹6,290</span>
+                  <a href="#" class="bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Check Price</a>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </section>
+
+        <section class="border-t border-slate-200 pt-10">
+          <h2 class="text-3xl font-bold text-slate-900 mb-6 italic">Quick Checklist Before You Buy</h2>
+          <div class="bg-indigo-50 rounded-2xl p-6 space-y-4">
+            <div class="flex gap-4">
+              <div class="h-6 w-6 bg-indigo-600 text-white flex items-center justify-center rounded-full text-xs font-bold shrink-0 mt-1">1</div>
+              <p class="text-sm text-slate-700"><strong>Check Service Centers:</strong> Before buying IFB or Godrej, ensure they have a local service center in your town for easy repairs.</p>
+            </div>
+            <div class="flex gap-4">
+              <div class="h-6 w-6 bg-indigo-600 text-white flex items-center justify-center rounded-full text-xs font-bold shrink-0 mt-1">2</div>
+              <p class="text-sm text-slate-700"><strong>Knob vs Touch:</strong> Knobs are better for elders (less confusing), while digital touch panels offer more precise cooking menus for younger users.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="hidden lg:col-span-4 lg:block space-y-6">
+        <div class="sticky top-28 space-y-6">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h3 class="font-bold text-slate-900 mb-4">Jump to Model</h3>
+                <nav class="space-y-2">
+                  <a href="#ifb-20l-solo" class="block text-sm text-slate-500 hover:text-indigo-600 py-1 transition-colors border-b border-slate-50">1. IFB 20L Solo</a>
+                  <a href="#lg-20l-solo" class="block text-sm text-slate-500 hover:text-indigo-600 py-1 transition-colors border-b border-slate-50">2. LG 20L Solo</a>
+                  <a href="#samsung-23l-solo" class="block text-sm text-slate-500 hover:text-indigo-600 py-1 transition-colors border-b border-slate-50">3. Samsung 23L</a>
+                  <a href="#whirlpool-20l-solo" class="block text-sm text-slate-500 hover:text-indigo-600 py-1 transition-colors border-b border-slate-50">4. Whirlpool 20L</a>
+                  <a href="#bajaj-17l-solo" class="block text-sm text-slate-500 hover:text-indigo-600 py-1 transition-colors border-b border-slate-50">5. Bajaj 17L</a>
+                </nav>
+            </div>
+            <div class="bg-slate-900 rounded-2xl p-6 text-white text-center">
+              <p class="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-2">Our Top Choice</p>
+              <p class="font-bold mb-4">IFB 20L Solo</p>
+              <a href="#ifb-20l-solo" class="inline-block bg-white text-slate-900 px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Why it won?</a>
+            </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-10 mt-10">
+    <div class="container mx-auto px-4 max-w-6xl text-center">
+      <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">© 2025 ApniList • India's Buying Guide</p>
+      <div class="flex justify-center gap-6 text-slate-500 text-sm mb-6">
+        <a href="#" class="hover:text-indigo-600">Guides</a>
+        <a href="#" class="hover:text-indigo-600">Comparison</a>
+        <a href="#" class="hover:text-indigo-600">Discounts</a>
+      </div>
+      <p class="text-slate-400 text-[10px] max-w-lg mx-auto">Product prices and availability are accurate as of the date/time indicated and are subject to change. Any price and availability information displayed on the retailer's site at the time of purchase will apply.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
