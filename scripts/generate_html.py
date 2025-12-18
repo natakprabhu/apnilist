@@ -20,9 +20,7 @@ BASE_URL = "https://www.apnilist.co.in"
 
 # 1. MANUAL LIST: Add new articles here
 MANUAL_SLUGS = [
-    "71-juicer-06-12-2025",
-    "6-air-purifier-22-11-2025",
-    "10-best-microwaves-under-10000",
+    "5-air-purifier-22-11-2025",
 ]
 
 # 2. SITEMAP SETTINGS
@@ -30,7 +28,7 @@ USE_SITEMAP = False  # Set to True to also fetch from existing sitemap
 SITEMAP_URL = "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml"
 
 # Output directories
-OUTPUT_DIR = os.path.join(os.getcwd(), "public", "static_html_cache")
+OUTPUT_DIR = os.path.join(os.getcwd(), "public", "articles")
 SITEMAP_OUTPUT_PATH = os.path.join(os.getcwd(), "public", "sitemap.xml")
 
 def get_sitemap_slugs():
