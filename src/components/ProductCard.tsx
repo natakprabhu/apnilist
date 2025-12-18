@@ -6,17 +6,15 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
-  <title>10 Best Microwave Ovens Under ₹10,000 in India (2025) | ApniList</title>
+  <title>Top 10 microwaves under ₹10,000 in India | ApniList</title>
   <meta
     name="description"
-    content="Confused about budget ovens? Here are the 10 best microwave ovens under ₹10,000 in India for 2025 with capacity, key features, pros & cons, and latest online prices."
+    content="Looking for a good microwave under ₹10,000 in India? Here are the top 10 picks in 2025 with real prices, pros, and tradeoffs—easy to compare and buy."
   >
   <meta name="author" content="ApniList">
-  <meta name="keywords" content="best microwave oven under 10000,best microwave under 10000 india,microwave oven under 10000,best solo microwave oven,best convection microwave under 10000,2025,india">
 
-  <meta name="robots" content="index,follow">
-  <link rel="canonical" href="https://www.apnilist.co.in/best-microwave-oven-under-10000"/>
-
+  <!-- Recommended SEO: include relevant keywords -->
+  <meta name="keywords" content="microwave under 10000 India, best microwave 2025, budget microwave India, solo microwave, grill microwave">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -24,16 +22,15 @@
     rel="stylesheet"
   >
 
-  <meta property="og:title" content="10 Best Microwave Ovens Under ₹10,000 in India (2025) | ApniList">
-  <meta property="og:description" content="Handpicked list of the best solo and convection microwave ovens under ₹10,000 in India with features, pros, cons, and price snapshot.">
+  <meta property="og:title" content="Top 10 microwaves under ₹10,000 in India | ApniList">
+  <meta property="og:description" content="Looking for a good microwave under ₹10,000 in India? Here are the top 10 picks in 2025 with real prices, pros, and tradeoffs—easy to compare and buy.">
   <meta property="og:type" content="article">
-  <meta property="og:image" content="https://www.apnilist.co.in/images/microwave-under-10000-og.jpg">
+  <meta property="og:image" content="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70">
   <meta property="og:site_name" content="ApniList">
-  <meta property="og:url" content="https://www.apnilist.co.in/best-microwave-oven-under-10000">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@apnilist">
-  <meta name="twitter:image" content="https://www.apnilist.co.in/images/microwave-under-10000-og.jpg">
+  <meta name="twitter:image" content="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70">
 
   <link rel="stylesheet" crossorigin href="/assets/index-BwWmn6Gw.css">
 </head>
@@ -85,162 +82,55 @@
         <!-- Hero -->
         <header class="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 rounded-lg shadow-md">
           <h1 class="text-3xl md:text-4xl font-bold mb-2">
-            10 Best Microwave Ovens Under ₹10,000 in India (2025)
+            Top 10 microwaves in India under ₹10,000
           </h1>
           <div class="flex flex-wrap gap-4 text-sm">
             <div class="flex items-center gap-2">
-              <span>By ApniList Kitchen Team</span>
+              <span>By ApniList</span>
             </div>
             <div class="flex items-center gap-2">
               <span>Updated on 18 December 2025</span>
             </div>
           </div>
           <p class="mt-4 text-white/90">
-            Looking for a reliable microwave on a tight budget? This curated list covers the best solo and convection microwave ovens under ₹10,000 in India for 2025, with practical pros, cons, and price snapshots from Amazon and Flipkart.[web:5][web:7][web:14]
+            A quick, reliable shortlist of the best microwaves you can actually buy under ₹10,000 today. Each pick balances price, reliability, and everyday usefulness—great for bachelors, couples, or small families.
           </p>
         </header>
 
         <!-- Intro -->
         <section class="space-y-3">
           <p class="text-muted-foreground">
-            For under ₹10,000, you can easily get a 20–30 litre solo or entry-level convection microwave from trusted brands like LG, Samsung, IFB, Panasonic, Haier, Godrej, Whirlpool and Pigeon.[web:5][web:7] This budget is ideal for small to medium families who mostly need reheating, defrosting and basic cooking with some auto-cook menus.[web:5][web:7] The models below are chosen based on capacity, features, warranty, brand reliability and value for money as seen on popular Indian e-commerce sites.[web:5][web:7][web:14]
+            This list focuses on solo or grill microwaves around 20–24 litres that give you strong value, decent warranty, and wide availability in India. Prices change with sales—check the retailer links before purchase. Ratings are from live listings and customer feedback where available.
           </p>
         </section>
 
-        <!-- Product list -->
+        <!-- Product list (10 ProductCard-style blocks) -->
         <section class="space-y-10">
 
-          <!-- #1 LG MS3032BK 30L Solo -->
-          <article id="lg-ms3032bk-30l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 1) best overall value -->
+          <article id="samsung-ms23a3513ak" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
               #1
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/lg-ms3032bk-30l-solo.jpg"
-                  alt="LG MS3032BK 30L Solo Microwave Oven"
+                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70"
+                  alt="Samsung MS23A3513AK Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best Overall
+                  Best overall
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">LG MS3032BK 30L Solo Microwave Oven</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.6/5)</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Large 30L capacity suitable for families that mainly reheat and cook simple dishes.[web:7]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Solo design keeps price below ₹10,000 while offering timer, auto-cook menus and overheat protection.[web:7]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Reputable LG after-sales service and standard 1‑year product warranty.[web:7][web:17]
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      No convection or grill mode, so not ideal if you bake or grill frequently.[web:7]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Occupies more counter space than 20L models due to larger capacity.[web:7]
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹9,800*</span>
-                      <span class="flex items-center text-sm text-green-600">Price varies with offers</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Often 5–10% bank/coupon discount.[web:7][web:14]
-                    </span>
-                    <a
-                      href="https://www.amazon.in/s?k=LG+MS3032BK+30L+Solo+Microwave+Oven"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹9,800*</span>
-                      <span class="flex items-center text-sm text-green-600">Similar pricing</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Look for exchange and card offers.[web:7][web:14]
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/search?q=LG+MS3032BK+30L+Solo+Microwave+Oven"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- #2 Samsung 23L Solo -->
-          <article id="samsung-23l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #2
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="/images/microwave/samsung-23l-solo.jpg"
-                  alt="Samsung 23L Solo Microwave Oven"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best Build Quality
-                </span>
-              </div>
-
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Samsung 23L Solo Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Samsung MS23A3513AK</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
@@ -253,50 +143,54 @@
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      23L capacity with sleek black design and ceramic enamel cavity that is durable and easy to clean.[web:9]
+                      Ceramic enamel cavity is scratch‑ and rust‑resistant and easy to clean, good long‑term durability.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Multiple preset cooking modes for quick Indian recipes and healthy reheat options.[web:9]
+                      Lots of useful features for the price: grill, auto‑cook menu, Local Taste presets, and touch controls. 
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Trusted Samsung brand with good service network in Indian cities.[web:15]
+                      Strong user rating with over 2,500 ratings shown on listing, suggesting reliability and satisfaction. :contentReference[oaicite:10]{index=10}
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Solo model only; no browning or baking like a convection unit.[web:9]
+                      Slightly higher upfront cost than bare‑bones models, though still under ₹10k.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Interior space may feel tight for very large dishes compared to 28–30L models.[web:9]
+                      Touch panel and extra features add complexity versus purely mechanical knobs for very basic use.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹8,500*</span>
-                      <span class="flex items-center text-sm text-green-600">Often on deal</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Check bank offers for effective price under ₹8,000.[web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=Samsung+23L+Solo+Microwave+Oven"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -305,17 +199,18 @@
                     </a>
                   </div>
 
+                  <!-- Flipkart -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹8,500*</span>
-                      <span class="flex items-center text-sm text-green-600">Price may vary</span>
+                      <span class="text-xl font-bold text-foreground">₹7,790</span>
+                      <span class="flex items-center text-sm text-green-600">27% off</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Look for seasonal sale prices.[web:14]
+                      From ₹10,800
                     </span>
                     <a
-                      href="https://www.flipkart.com/search?q=Samsung+23L+Solo+Microwave+Oven"
+                      href="https://www.flipkart.com/samsung-23-l-auto-cook-programs-child-safety-lock-memory-feature-deodorization-solo-microwave-oven/p/itm144d023a6b928"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -328,28 +223,30 @@
             </div>
           </article>
 
-          <!-- #3 Panasonic 20L Solo (NN-ST26 / similar) -->
-          <article id="panasonic-20l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 2) best overall under ₹7k -->
+          <article id="lg-ms2043bp" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #3
+              #2
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/panasonic-20l-solo.jpg"
-                  alt="Panasonic 20L Solo Microwave Oven"
+                  src="https://rukminim2.flixcart.com/image/128/128/xif0q/microwave-new/i/r/o/-original-imah6dzajzhbqfum.jpeg?crop=false&q=70"
+                  alt="LG MS2043BP Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best for Small Families
+                  Best under ₹7k
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Panasonic 20L Solo Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">LG MS2043BP</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
@@ -362,50 +259,54 @@
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Compact 20L capacity ideal for bachelors or couples with basic cooking needs.[web:5][web:7]
+                      Very widely-reviewed model with 17k+ ratings, showing strong trust and product maturity. :contentReference[oaicite:11]{index=11}
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Multiple power levels, auto-cook menus and defrost modes at a low price point.[web:5][web:7]
+                      i-wave technology and thoughtful controls aim for healthier, uniform cooking and easier use.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Generally priced around ₹6,000–₹7,500, comfortably under the ₹10,000 budget.[web:5][web:14]
+                      Good balance of price and features with reliable brand support.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Not suitable for baking cakes or grilling as it is a solo-only unit.[web:5]
+                      Touch‑type controls may not suit those who prefer simple knobs; still, easy for most users.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Smaller cavity limits the size of dishes and bowls you can use.[web:5]
+                      Limited to solo use; not a grill or convection, though it covers most reheating/defrost needs well.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,500*</span>
-                      <span class="flex items-center text-sm text-green-600">Budget friendly</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Often part of combo offers.[web:5][web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=Panasonic+20L+Solo+Microwave+Oven"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -414,17 +315,18 @@
                     </a>
                   </div>
 
+                  <!-- Flipkart -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,700*</span>
-                      <span class="flex items-center text-sm text-green-600">Similar range</span>
+                      <span class="text-xl font-bold text-foreground">₹6,990</span>
+                      <span class="flex items-center text-sm text-green-600">14% off</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Look for microwave under ₹10,000 filters.[web:14]
+                      From ₹8,199
                     </span>
                     <a
-                      href="https://www.flipkart.com/q/microwave-ovens-under-10000"
+                      href="https://www.flipkart.com/lg-20-l-solo-microwave-oven/p/itmf3rygebb6pbk7"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -437,28 +339,146 @@
             </div>
           </article>
 
-          <!-- #4 IFB 20PM-MEC2B 20L Solo -->
-          <article id="ifb-20pm-mec2b-20l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 3) best compact kitchen pick -->
+          <article id="panasonic-nn-st26" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
+              #3
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
+              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
+                <img
+                  src="https://rukminim2.flixcart.com/image/312/312/xif0q/microwave-new/z/r/6/-original-imah8yu89zggxajw.jpeg?crop=false&q=70"
+                  alt="Panasonic NN-ST26 Solo Microwave"
+                  class="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
+                />
+                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
+                  Compact pick
+                </span>
+              </div>
+
+              <!-- Details -->
+              <div class="flex-1 space-y-4">
+                <div>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Panasonic NN‑ST26</h2>
+                  <div class="flex items-center gap-2">
+                    <div class="flex">
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-muted">★</span>
+                    </div>
+                    <span class="text-muted-foreground">(4.4/5)</span>
+                  </div>
+                </div>
+
+                <!-- Pros -->
+                <div>
+                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
+                  <ul class="space-y-1">
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Japanese brand legacy and consistent quality in budget range; widely used for basic cooking and reheating.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Strong buyer feedback on Flipkart with over 8k ratings; indicates reliable everyday use. :contentReference[oaicite:12]{index=12}
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Good price for a long‑running, proven model—ideal when savings matter most.
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Cons -->
+                <div>
+                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
+                  <ul class="space-y-1">
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-red-600">•</span>
+                      Solo unit, not grill or convection; some users may want browning or grilling features.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-red-600">•</span>
+                      Visual design is utilitarian—good for function over flashy looks.
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Pricing snapshot -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold">Amazon:</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      —
+                    </span>
+                    <a
+                      href="#"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
+                    >
+                      Check on Amazon
+                    </a>
+                  </div>
+
+                  <!-- Flipkart -->
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold">Flipkart:</span>
+                      <span class="text-xl font-bold text-foreground">₹6,440</span>
+                      <span class="flex items-center text-sm text-green-600">14% off</span>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      From ₹7,490
+                    </span>
+                    <a
+                      href="https://www.flipkart.com/panasonic-20-l-stainless-steel-cavity-solo-microwave-oven/p/itm44af8460a2306"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
+                    >
+                      Check on Flipkart
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4) best bigger capacity under ₹8k -->
+          <article id="ifb-24pm2b" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
               #4
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/ifb-20pm-mec2b-20l-solo.jpg"
-                  alt="IFB 20PM-MEC2B 20L Solo Microwave Oven"
+                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/x/e/p/2023-24pm2b-ifb-24-original-imagr7wswhy9ecwm.jpeg?crop=false&q=70"
+                  alt="IFB 24PM2B Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best for Reheat & Defrost
+                  Best 24L under ₹8k
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">IFB 20PM-MEC2B 20L Solo Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">IFB 24PM2B</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
@@ -467,54 +487,58 @@
                       <span class="text-lg text-yellow-500">★</span>
                       <span class="text-lg text-muted">★</span>
                     </div>
-                    <span class="text-muted-foreground">(4.2/5)</span>
+                    <span class="text-muted-foreground">(4.3/5)</span>
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      20L solo unit with stainless steel body and standard features like defrost and timer.[web:7]
+                      Slightly larger 24‑litre capacity—handy for bigger plates or containers than 20L units.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Good for basic Indian kitchens that mainly use microwave for reheating chapatis, sabzi and leftovers.[web:7]
+                      Solid brand after‑sales presence in India with well‑known kitchen appliance range.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Usually available around ₹6,500–₹7,000.[web:7][web:14]
+                      Good rating on the listing and under‑₹8k price point, rare for larger capacity.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Mechanical knobs may feel old-school compared to touch control panels.[web:7]
+                      Slightly bigger footprint; ensure kitchen counter space before buying.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      No convection/grill options.[web:7]
+                      Features set is geared to basics with dependable performance, not advanced convection or heavy grilling.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,700*</span>
-                      <span class="flex items-center text-sm text-green-600">Under budget</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Often clubbed with extended warranty deals.[web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=IFB+20PM-MEC2B+20L+Solo+Microwave+Oven"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -523,17 +547,18 @@
                     </a>
                   </div>
 
+                  <!-- Flipkart -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,900*</span>
-                      <span class="flex items-center text-sm text-green-600">Price may differ</span>
+                      <span class="text-xl font-bold text-foreground">₹7,690</span>
+                      <span class="flex items-center text-sm text-green-600">14% off</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Search for IFB solo microwaves under ₹10k.[web:18]
+                      From ₹8,990
                     </span>
                     <a
-                      href="https://www.flipkart.com/search?q=IFB+20+L+Solo+Microwave+Oven"
+                      href="https://www.flipkart.com/ifb-24-l-solo-microwave-oven/p/itm8baa4f6f11b3f"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -546,28 +571,30 @@
             </div>
           </article>
 
-          <!-- #5 Godrej GME 720 CP2 20L Convection -->
-          <article id="godrej-gme720cp2-20l-convection" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 5) best touchscreen, premium feel under ₹7k -->
+          <article id="whirlpool-magicook-pro" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
               #5
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/godrej-gme720cp2-20l-convection.jpg"
-                  alt="Godrej GME 720 CP2 20L Convection Microwave Oven"
+                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/q/m/h/-original-imah7z9yf6aqxkmn.jpeg?crop=false&q=70"
+                  alt="Whirlpool Magicook Pro 20SE Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best Budget Convection
+                  Best touchscreen
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Godrej GME 720 CP2 20L Convection Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Whirlpool Magicook Pro 20SE</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
@@ -580,50 +607,54 @@
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      20L convection microwave that supports baking, grilling and reheating in one unit.[web:7]
+                      Feather touch membrane controls offer modern feel with auto‑cook and good power levels.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Typically priced just under ₹10,000, making it a rare convection option in this budget.[web:7][web:6]
+                      Over 4,900 ratings shown at the listing; indicates solid buyer experience and availability. :contentReference[oaicite:13]{index=13}
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Preheat, defrost, steam cook and auto-cook menus for versatile cooking.[web:6][web:7]
+                      Typically priced well under ₹10k even when not on sale.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      20L capacity can feel small if you bake regularly for a bigger family.[web:7]
+                      Touch controls and modern layout may be overkill for users who only want simple knobs.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Convection mode consumes more power than solo models.[web:6]
+                      Solo unit—no grill or convection; that’s a deliberate tradeoff for lower price and simplicity.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹9,800*</span>
-                      <span class="flex items-center text-sm text-green-600">Near ₹10k ceiling</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Watch for festive discounts to drop it lower.[web:6][web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=Godrej+GME+720+CP2+20L+Convection+Microwave"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -632,17 +663,18 @@
                     </a>
                   </div>
 
+                  <!-- Flipkart -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹9,800*</span>
-                      <span class="flex items-center text-sm text-green-600">Limited stock sometimes</span>
+                      <span class="text-xl font-bold text-foreground">₹6,490</span>
+                      <span class="flex items-center text-sm text-green-600">26% off</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Use “microwave ovens under 10000” filter.[web:14]
+                      From ₹8,775
                     </span>
                     <a
-                      href="https://www.flipkart.com/search?q=Godrej+23+L+Convection+Microwave+Oven"
+                      href="https://www.flipkart.com/whirlpool-20-l-18-auto-cook-recipes-feather-touch-membrane-solo-microwave-oven/p/itm55e37900bfc42"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -655,246 +687,30 @@
             </div>
           </article>
 
-          <!-- #6 Whirlpool 20L Convection -->
-          <article id="whirlpool-20l-convection" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 6) best rock‑bottom price -->
+          <article id="midea-mmo20cxa" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
               #6
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/whirlpool-20l-convection.jpg"
-                  alt="Whirlpool 20L Convection Microwave Oven"
+                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/k/8/4/-original-imahba2jttyv6mjd.jpeg?crop=false&q=70"
+                  alt="Midea 20L Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Good for Baking Starters
+                  Best deal
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Whirlpool 20L Convection Microwave Oven</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.1/5)</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Convection, grill and microwave modes with preheat and auto-cook menus.[web:6]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Ideal for beginners who want to bake pizzas, cakes and grill starters occasionally.[web:6]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Usually priced close to ₹9,900 on Flipkart in India.[web:6]
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      20L capacity can be restrictive for large baking trays.[web:6]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Close to budget cap; slightly higher operating cost compared to solo units.[web:6]
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹9,700*</span>
-                      <span class="flex items-center text-sm text-green-600">Near cap</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Track festive sales for better deals.[web:6][web:14]
-                    </span>
-                    <a
-                      href="https://www.amazon.in/s?k=Whirlpool+20+L+Convection+Microwave+Oven"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹9,900*</span>
-                      <span class="flex items-center text-sm text-green-600">Varies by offer</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Listed under convection ovens under ₹10k.[web:6][web:10]
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/search?q=Whirlpool+20+L+Convection+Microwave+Oven"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- #7 Haier 20L Solo -->
-          <article id="haier-20l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #7
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="/images/microwave/haier-20l-solo.jpg"
-                  alt="Haier Vogue HIL20V1MYPD 20L Solo Microwave Oven"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Value Solo Pick
-                </span>
-              </div>
-
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Haier Vogue HIL20V1MYPD 20L Solo Microwave Oven</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.1/5)</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      20L solo oven with interior light, digital display and defrost modes.[web:7]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Very competitive pricing, often around ₹5,500–₹6,500.[web:7][web:14]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Sleek design that fits easily in compact Indian kitchens.[web:7]
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Less known brand in microwaves compared to LG/Samsung/IFB for some buyers.[web:7]
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Solo unit only; no grill or convection modes.[web:7]
-                    </li>
-                  </ul>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,000*</span>
-                      <span class="flex items-center text-sm text-green-600">Budget-friendly</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Good option for students and rented flats.[web:7][web:14]
-                    </span>
-                    <a
-                      href="https://www.amazon.in/s?k=Haier+Vogue+HIL20V1MYPD+20L+Solo+Microwave+Oven"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,200*</span>
-                      <span class="flex items-center text-sm text-green-600">Close pricing</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Listed among microwaves under ₹10,000.[web:14]
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/search?q=Haier+20L+Solo+Microwave+Oven"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- #8 LG 20L Grill (MH2044DB type) -->
-          <article id="lg-20l-grill" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #8
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="/images/microwave/lg-20l-grill.jpg"
-                  alt="LG 20L Grill Microwave Oven"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best Grill Option
-                </span>
-              </div>
-
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">LG 20L Grill Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Midea 20L Solo Microwave</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
@@ -907,50 +723,54 @@
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      20L capacity with grill mode, suitable for kebabs, tikkas and toasting.[web:6][web:7]
+                      Extremely low price for a brand‑name solo microwave; a great starter or spare oven.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Well-known LG reliability and 1‑year warranty.[web:7][web:17]
+                      Healthy amount of buyer feedback on listing and consistent availability; good roadmap for service.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Generally priced around ₹8,000–₹8,500 on Flipkart.[web:6]
+                      Clean, simple controls; easy to use for reheating and defrosting.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      No convection fan, so baking is limited compared to full convection ovens.[web:6]
+                      Basic feature set; not ideal if you love grilling or fancy auto recipes.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Grill accessories may need to be purchased separately.[web:6]
+                      Basic exterior styling; choose for value rather than design.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹8,200*</span>
-                      <span class="flex items-center text-sm text-green-600">Mid-range</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Look for LG grill microwaves around 20L.[web:6][web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=LG+20L+Grill+Microwave+Oven"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -959,17 +779,18 @@
                     </a>
                   </div>
 
+                  <!-- Flipkart -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹8,300*</span>
-                      <span class="flex items-center text-sm text-green-600">Similar price</span>
+                      <span class="text-xl font-bold text-foreground">₹4,990</span>
+                      <span class="flex items-center text-sm text-green-600">50% off</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Available in grill section under ₹10k.[web:6][web:18]
+                      From ₹9,990
                     </span>
                     <a
-                      href="https://www.flipkart.com/search?q=LG+20+L+Grill+Microwave+Oven"
+                      href="https://www.flipkart.com/midea-20-l-solo-microwave-oven/p/itmf82bbd44fcd08"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -982,84 +803,322 @@
             </div>
           </article>
 
-          <!-- #9 Pigeon Nano Wave 20L Solo -->
-          <article id="pigeon-nano-wave-20l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 7) best grill under ₹6k -->
+          <article id="bajaj-2016-mtbx" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
+              #7
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
+              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
+                <img
+                  src="https://rukminim2.flixcart.com/image/128/128/kw9krrk0/microwave-new/0/3/m/-original-imag8zharauwyfhn.jpeg?crop=false&q=70"
+                  alt="Bajaj 2016 MTBX Grill Microwave"
+                  class="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
+                />
+                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
+                  Best grill deal
+                </span>
+              </div>
+
+              <!-- Details -->
+              <div class="flex-1 space-y-4">
+                <div>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Bajaj 2016 MTBX</h2>
+                  <div class="flex items-center gap-2">
+                    <div class="flex">
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-muted">★</span>
+                    </div>
+                    <span class="text-muted-foreground">(4.4/5)</span>
+                  </div>
+                </div>
+
+                <!-- Pros -->
+                <div>
+                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
+                  <ul class="space-y-1">
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Grill capability at a low price—rare value for grilling chicken, sandwiches, or veggies.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Strong user feedback; over 6k ratings points to dependable day‑to‑day use. :contentReference[oaicite:14]{index=14}
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Simple mechanical knob controls; easy to use without reading manual in detail.
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Cons -->
+                <div>
+                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
+                  <ul class="space-y-1">
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-red-600">•</span>
+                      Visual style is basic; not for those who want a premium look.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-red-600">•</span>
+                      Grill strength and accessories vary by exact model; check detailed specs with seller.
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Pricing snapshot -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold">Amazon:</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      —
+                    </span>
+                    <a
+                      href="#"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
+                    >
+                      Check on Amazon
+                    </a>
+                  </div>
+
+                  <!-- Flipkart -->
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold">Flipkart:</span>
+                      <span class="text-xl font-bold text-foreground">₹5,790</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      —
+                    </span>
+                    <a
+                      href="https://www.flipkart.com/bajaj-20-l-grill-microwave-oven/p/itm438ef2e1e11e0"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
+                    >
+                      Check on Flipkart
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 8) most stylish low‑cost pick -->
+          <article id="haier-hil20v1" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
+              #8
+            </div>
+
+            <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
+              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
+                <img
+                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/c/h/k/-original-imahfr7vgfkbfzdp.jpeg?crop=false&q=70"
+                  alt="Haier 20L Solo Microwave"
+                  class="w-full h-full object-cover rounded-lg"
+                  loading="lazy"
+                />
+                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
+                  Stylish pick
+                </span>
+              </div>
+
+              <!-- Details -->
+              <div class="flex-1 space-y-4">
+                <div>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Haier 20L Solo Microwave</h2>
+                  <div class="flex items-center gap-2">
+                    <div class="flex">
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-muted">★</span>
+                      <span class="text-lg text-muted">★</span>
+                    </div>
+                    <span class="text-muted-foreground">(Rating varies)</span>
+                  </div>
+                </div>
+
+                <!-- Pros -->
+                <div>
+                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
+                  <ul class="space-y-1">
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Bright, modern look—useful when aesthetics matter in a small kitchen.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Compact solo microwave that still offers child lock, timer, and defrost; easy to live with.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-green-600">•</span>
+                      Available around ₹7–8k, keeps you well under the ₹10k ceiling.
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Cons -->
+                <div>
+                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
+                  <ul class="space-y-1">
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-red-600">•</span>
+                      Ratings and seller support can vary by color or exact SKU; check seller details before buying.
+                    </li>
+                    <li class="text-sm text-foreground flex items-start gap-2">
+                      <span class="text-red-600">•</span>
+                      Solo only; no grill or convection functions.
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Pricing snapshot -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold">Amazon:</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      —
+                    </span>
+                    <a
+                      href="#"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
+                    >
+                      Check on Amazon
+                    </a>
+                  </div>
+
+                  <!-- Flipkart -->
+                  <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <span class="font-semibold">Flipkart:</span>
+                      <span class="text-xl font-bold text-foreground">₹7,490</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
+                    </div>
+                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
+                      —
+                    </span>
+                    <a
+                      href="https://www.flipkart.com/haier-20-l-solo-microwave-oven/p/itm0a86dd09a0b78"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
+                    >
+                      Check on Flipkart
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 9) best feature‑rich at mid‑range -->
+          <article id="sharp-sakura-s20" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
               #9
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/pigeon-nano-wave-20l-solo.jpg"
-                  alt="Pigeon Nano Wave 20L Solo Microwave Oven"
+                  src="https://media-ik.croma.com/prod/https%3A//media.tatacroma.com/Croma%20Assets/Small%20Appliances/Microwave%20or%20OTG/Images/307030_1_WmEwGMJ2Ni.png?updatedAt=1754294277465%3Ftr%3Dw-600"
+                  alt="Sharp Sakura‑S20 Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best Low-Budget
+                  Best design at mid‑range
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Pigeon Nano Wave 20L Solo Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Sharp Sakura‑S20 R‑220KN‑K</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
                       <span class="text-lg text-yellow-500">★</span>
                       <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
+                      <span class="text-lg text-muted">★</span>
                       <span class="text-lg text-muted">★</span>
                     </div>
-                    <span class="text-muted-foreground">(4.0/5)</span>
+                    <span class="text-muted-foreground">(Varies by seller)</span>
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Very affordable 20L solo microwave, often around ₹5,000.[web:7]
+                      Ceramic cavity, child lock, quick defrost, and touch controls—feature rich for the price tier. :contentReference[oaicite:15]{index=15}
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Includes defrost, steam cook and timer functions for basic use.[web:7]
+                      From a globally known electronics brand; good blend of design and practicality.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      2‑year warranty mentioned in listings, which is good for the price.[web:7]
+                      Practical capacity of 20L suits most Indian homes with limited counter space.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Brand perception is more entry-level compared to big brands.[web:7]
+                      Exact price varies by seller & stock; check listing or store for final price and availability.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Basic design and fewer auto-cook menus than premium models.[web:7]
+                      Solo only; grills might be preferred by those who bake or brown often.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹4,900*</span>
-                      <span class="flex items-center text-sm text-green-600">Cheapest pick</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Ideal if budget is very tight.[web:7][web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=Pigeon+Nano+Wave+20L+Solo+Microwave"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -1068,22 +1127,23 @@
                     </a>
                   </div>
 
+                  <!-- Croma -->
                   <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹5,000*</span>
-                      <span class="flex items-center text-sm text-green-600">Similar</span>
+                    <div class="flex items:center gap-2">
+                      <span class="font-semibold">Croma:</span>
+                      <span class="text-xl font-bold text-foreground">See listing</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Check reviews before purchase.[web:7][web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.flipkart.com/search?q=Pigeon+Nano+Wave+20L+Solo+Microwave"
+                      href="https://www.croma.com/sharp-sakura-s20-20l-solo-microwave-oven-with-quick-start-r-220kn-k-black-/p/307030"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
                     >
-                      Check on Flipkart
+                      Check on Croma
                     </a>
                   </div>
                 </div>
@@ -1091,28 +1151,30 @@
             </div>
           </article>
 
-          <!-- #10 Panasonic NN-ST310QBFG 25L Solo -->
-          <article id="panasonic-nnst310qbfg-25l-solo" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
+          <!-- 10) another strong budget solo pick -->
+          <article id="croma-crm2025" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
             <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
               #10
             </div>
 
             <div class="flex flex-col md:flex-row gap-6 p-6">
+              <!-- Image -->
               <div class="relative w-full md:w-64 h-64 flex-shrink-0">
                 <img
-                  src="/images/microwave/panasonic-nnst310qbfg-25l-solo.jpg"
-                  alt="Panasonic NN-ST310QBFG 25L Solo Microwave Oven"
+                  src="https://media-ik.croma.com/prod/https%3A//media.tatacroma.com/Croma%20Assets/Small%20Appliances/Microwave%20or%20OTG/Images/100566_0_CCC2dC2kt.png?updatedAt=1764593635624%3Ftr%3Dw-600"
+                  alt="Croma CRM2025 Solo Microwave"
                   class="w-full h-full object-cover rounded-lg"
                   loading="lazy"
                 />
                 <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Large Solo Option
+                  Budget solo alternative
                 </span>
               </div>
 
+              <!-- Details -->
               <div class="flex-1 space-y-4">
                 <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Panasonic NN-ST310QBFG 25L Solo Microwave Oven</h2>
+                  <h2 class="text-2xl font-bold text-foreground mb-2">Croma CRM2025</h2>
                   <div class="flex items-center gap-2">
                     <div class="flex">
                       <span class="text-lg text-yellow-500">★</span>
@@ -1121,54 +1183,58 @@
                       <span class="text-lg text-yellow-500">★</span>
                       <span class="text-lg text-muted">★</span>
                     </div>
-                    <span class="text-muted-foreground">(4.1/5)</span>
+                    <span class="text-muted-foreground">(4.4/5 retailer rating)</span>
                   </div>
                 </div>
 
+                <!-- Pros -->
                 <div>
                   <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      25L capacity with stainless steel body, interior light and digital display.[web:7]
+                      Retailer shows a solid rating of 4.4 from buyers; good indicator for a private‑label or store brand appliance. 
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Suitable for 3–4 member families that mostly reheat and cook simple meals.[web:7]
+                      8 autocook programs, temperature sensor, quick start; not purely basic, but still a budget price bracket.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-green-600">•</span>
-                      Typically priced around ₹7,000–₹7,500, well within budget.[web:7][web:14]
+                      Compact, easy to fit; good value for single users or small kitchens.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Cons -->
                 <div>
                   <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
                   <ul class="space-y-1">
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      No convection/grill; solo only despite the larger size.[web:7]
+                      Exact street price and stock not always shown openly; requires checking current listing or store.
                     </li>
                     <li class="text-sm text-foreground flex items-start gap-2">
                       <span class="text-red-600">•</span>
-                      Bigger footprint than 20L models, so needs more space.[web:7]
+                      Painted cavity rather than ceramic; minor tradeoff in scratch resistance.
                     </li>
                   </ul>
                 </div>
 
+                <!-- Pricing snapshot -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+                  <!-- Amazon -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
                       <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">₹7,300*</span>
-                      <span class="flex items-center text-sm text-green-600">Value for size</span>
+                      <span class="text-xl font-bold text-foreground">—</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Good mid-range solo choice.[web:7][web:14]
+                      —
                     </span>
                     <a
-                      href="https://www.amazon.in/s?k=Panasonic+NN-ST310QBFG+25L+Solo+Microwave"
+                      href="#"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
@@ -1177,22 +1243,23 @@
                     </a>
                   </div>
 
+                  <!-- Croma -->
                   <div class="space-y-2">
                     <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹7,400*</span>
-                      <span class="flex items-center text-sm text-green-600">Varies slightly</span>
+                      <span class="font-semibold">Croma:</span>
+                      <span class="text-xl font-bold text-foreground">See listing</span>
+                      <span class="flex items-center text-sm text-green-600">—</span>
                     </div>
                     <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      Listed in solo 25L segment.[web:7]
+                      —
                     </span>
                     <a
-                      href="https://www.flipkart.com/search?q=Panasonic+NN-ST310QBFG+25L+Solo+Microwave"
+                      href="https://www.croma.com/croma-20l-solo-microwave-oven-with-temperature-sensor-crm2025-grey-/p/100566"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
                     >
-                      Check on Flipkart
+                      Check on Croma
                     </a>
                   </div>
                 </div>
@@ -1202,13 +1269,13 @@
 
         </section>
 
-        <!-- Did You Know? (Microwave) -->
+        <!-- Did You Know? -->
         <section class="space-y-3 mt-8">
           <h2 class="text-xl font-semibold">
-            Did You Know? <span class="text-muted-foreground text-base">(Microwave)</span>
+            Did You Know? <span class="text-muted-foreground text-base">(Microwaves)</span>
           </h2>
           <div class="border border-dashed border-border rounded-lg p-4 bg-muted/40 text-sm text-muted-foreground">
-            Most budget microwaves in India between ₹5,000 and ₹10,000 offer 17–25L capacity, 700–1200W power and essential functions like auto-cook menus, defrost and child lock, which are enough for most homes.[web:5][web:7]
+            Solo microwaves are the most common budget-friendly type; grill or convection units add cost but can brown or bake. Under ₹10,000, a high‑quality solo or grill unit is usually the best overall value for most households.
           </div>
         </section>
 
@@ -1216,7 +1283,7 @@
         <section class="space-y-3 mt-6">
           <h2 class="text-xl font-semibold">Overall Summary</h2>
           <p class="text-muted-foreground">
-            If you mainly reheat and defrost, a 20–30L solo microwave from LG, Samsung, IFB or Panasonic offers the best balance of price and reliability under ₹10,000.[web:5][web:7] For baking and grilling, entry-level convection models from Godrej and Whirlpool around 20L push close to the top of the budget but give you far more cooking flexibility.[web:6][web:7] Always check live prices and offers on Amazon and Flipkart before buying, as discounts can change the ranking quickly.[web:5][web:7][web:14]
+            If you want one all‑around pick, start with Samsung MS23A3513AK—it balances price, features, and user trust better than most. If slightly cheaper is needed, LG MS2043BP or Midea give excellent value. For grilling on a budget, Bajaj is the standout, while IFB is a smart pick for users who need a bit more capacity without crossing ₹10k.
           </p>
         </section>
       </div>
@@ -1230,7 +1297,7 @@
 
   <!-- FOOTER -->
   <footer class="border-t border-border py-6 text-center text-xs text-muted-foreground">
-    © 2025 ApniList. Static HTML version of 10 Best Microwave Ovens Under ₹10,000 in India (2025).
+    © 2025 ApniList. Static HTML version of Top 10 microwaves in India under ₹10,000.
   </footer>
 </body>
 </html>
