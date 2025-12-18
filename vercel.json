@@ -1,26 +1,13 @@
 {
-  "cleanUrls": true,
-
-  "redirects": [
+  "routes": [
+    { "handle": "filesystem" },
     {
-      "source": "/sitemap.xml",
-      "destination": "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml",
-      "permanent": true
-    }
-  ],
-
-  "rewrites": [
-    {
-      "source": "/articles/:slug",
-      "destination": "/static_html_cache/:slug.html"
+      "src": "/sitemap.xml",
+      "status": 301,
+      "headers": {
+        "Location": "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml"
+      }
     },
-    {
-      "source": "/static_html_cache/:path*",
-      "destination": "/static_html_cache/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
