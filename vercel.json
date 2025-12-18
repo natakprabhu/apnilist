@@ -1,5 +1,20 @@
 {
   "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/articles/(.*)",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/html"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "inline"
+        }
+      ]
+    }
+  ],
   "redirects": [
     {
       "source": "/sitemap.xml",
@@ -11,10 +26,6 @@
     {
       "source": "/articles/:slug",
       "destination": "/articles/:slug.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
   ]
 }
