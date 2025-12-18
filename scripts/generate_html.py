@@ -21,6 +21,7 @@ BASE_URL = "https://www.apnilist.co.in"
 # 1. MANUAL LIST: Add new articles here
 MANUAL_SLUGS = [
     "5-air-purifier-22-11-2025",
+    "chimney-19-12-2025",
 ]
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
