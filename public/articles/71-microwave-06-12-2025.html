@@ -12,214 +12,200 @@
 
   <style>
     :root { --brand: #de6852; --brand-soft: #fff1ef; }
-    body { font-family: 'Inter', sans-serif; background-color: #fcfcfc; }
+    body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #334155; }
     
-    .img-fit-contain { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+    .img-fit-contain { width: 100%; height: 100%; object-fit: contain; }
 
-    /* Highlights the main article column */
+    /* Highlights the main article container */
     .article-focus {
       background: white;
       border: 1px solid #e2e8f0;
-      box-shadow: 0 4px 25px -5px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 30px -10px rgba(0,0,0,0.04);
     }
 
-    /* Professional Rank Badge */
+    /* Rank Badge */
     .rank-tag {
       background: var(--brand);
       color: white;
       font-weight: 800;
-      padding: 2px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
     }
 
-    /* Slim Sidebar Verdict */
-    .verdict-slim {
-      background: #111827;
-      border-radius: 1.5rem;
-      padding: 1.5rem;
+    /* Professional color-coded pros/cons */
+    .pro-box { background-color: #f0fdf4; border-left: 3px solid #22c55e; }
+    .con-box { background-color: #fff1f2; border-left: 3px solid #f43f5e; }
+
+    /* Verdict Card (Now Light) */
+    .verdict-light {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-top: 4px solid var(--brand);
     }
 
-    .verdict-link {
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding: 10px 0;
-      transition: all 0.2s;
-    }
-    .verdict-link:last-child { border: none; }
-    .verdict-link:hover { padding-left: 5px; color: var(--brand); }
-
-    .btn-buy-amazon { background: #FF9900; color: white; }
-    .btn-buy-flipkart { background: #2874F0; color: white; }
+    .btn-amazon { background: #FF9900; color: white; }
+    .btn-flipkart { background: #2874F0; color: white; }
   </style>
 </head>
-<body class="text-slate-800">
+<body class="antialiased">
 
-  <header class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-slate-200">
+  <header class="sticky top-0 z-50 w-full bg-white/95 backdrop-blur border-b border-slate-200">
     <div class="container mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="/"><img src="/logo.png" alt="ApniList" class="h-9 w-auto"></a>
-      <nav class="hidden md:flex space-x-8 text-sm font-bold text-slate-500">
-        <a href="/" class="hover:text-[#de6852]">Home</a>
-        <a href="/articles" class="hover:text-[#de6852]">Articles</a>
-        <a href="/deals" class="hover:text-[#de6852]">Daily Deals</a>
+      <a href="/"><img src="/logo.png" alt="ApniList" class="h-8 w-auto"></a>
+      <nav class="hidden md:flex space-x-8 text-sm font-bold text-slate-600">
+        <a href="/" class="hover:text-[#de6852] transition-colors">Home</a>
+        <a href="/articles" class="hover:text-[#de6852] transition-colors">Articles</a>
+        <a href="/deals" class="hover:text-[#de6852] transition-colors">Daily Deals</a>
       </nav>
-      <button class="bg-[#de6852] text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider">Sign In</button>
+      <button class="bg-[#de6852] text-white px-5 py-2 rounded-full text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-all">Sign In</button>
     </div>
   </header>
 
-  <main class="container mx-auto px-4 py-8">
+  <main class="container mx-auto px-4 py-10">
     <div class="grid grid-cols-12 gap-8">
       
-      <div class="col-span-12 lg:col-span-8 article-focus rounded-3xl p-6 md:p-10 space-y-10">
+      <div class="col-span-12 lg:col-span-8 article-focus rounded-[2.5rem] p-6 md:p-12 space-y-12">
         
         <header>
-          <div class="flex items-center gap-2 mb-4">
-             <span class="w-8 h-1 bg-[#de6852] rounded-full"></span>
-             <span class="text-[10px] font-black uppercase tracking-[0.3em] text-[#de6852]">2025 Market Guide</span>
+          <div class="inline-flex items-center gap-2 bg-brand-soft px-3 py-1 rounded-full mb-6">
+             <span class="w-2 h-2 bg-[#de6852] rounded-full animate-pulse"></span>
+             <span class="text-[10px] font-black uppercase tracking-widest text-[#de6852]">2025 Expert List</span>
           </div>
-          <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
-            Top 10 Microwaves in India <br><span class="text-[#de6852]">Under ₹10,000</span>
+          <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-6">
+            Top 10 Microwaves in India <span class="text-[#de6852]">Under ₹10,000</span>
           </h1>
           <p class="text-slate-500 text-lg leading-relaxed">
             A quick, reliable shortlist of the best microwaves you can actually buy under ₹10,000 today. Each pick balances price, reliability, and everyday usefulness—great for bachelors, couples, or small families.
           </p>
-          <div class="mt-6 text-xs font-bold text-slate-400 flex gap-4 uppercase tracking-tighter">
-            <span>By ApniList Team</span>
-            <span>Updated Dec 18, 2025</span>
+          <div class="mt-8 flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-tighter">
+            <span>By Editorial Team</span>
+            <span class="w-1 h-1 bg-slate-300 rounded-full"></span>
+            <span>Dec 18, 2025</span>
           </div>
         </header>
 
-        <hr class="border-slate-100">
-
-        <section class="bg-[#fff1ef] border-l-4 border-[#de6852] p-6 rounded-r-2xl">
-          <h2 class="text-[#de6852] text-xs font-black uppercase tracking-widest mb-2 flex items-center gap-2">
-            💡 Pro Tip: Microwaves 101
-          </h2>
-          <h3 class="text-xl font-bold mb-3">Why go "Solo" under ₹10,000?</h3>
+        <section class="bg-slate-50 border-l-4 border-[#de6852] p-8 rounded-r-3xl">
+          <h2 class="text-[#de6852] text-[10px] font-black uppercase tracking-widest mb-3">💡 Pro Tip: Microwaves 101</h2>
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Why go "Solo" under ₹10,000?</h3>
           <p class="text-sm text-slate-600 leading-relaxed">
-            Solo microwaves are the most common budget-friendly type; grill or convection units add cost but can brown or bake. <span class="font-bold text-slate-900 underline decoration-[#de6852]/30">Under ₹10,000</span>, a high‑quality solo or grill unit is usually the best overall value for most households, offering better longevity than a "cheap" convection model.
+            Solo microwaves are the most common budget-friendly type; grill or convection units add cost but can brown or bake. <span class="font-bold text-slate-900">Under ₹10,000</span>, a high‑quality solo or grill unit is usually the best overall value for most households, offering better longevity than a "cheap" convection model.
           </p>
         </section>
 
-        <p class="text-slate-500 text-sm italic">
-          This list focuses on solo or grill microwaves around 20–24 litres that give you strong value, decent warranty, and wide availability in India. Prices change with sales—check retailer links before purchase. Ratings are from live listings and customer feedback.
-        </p>
+        <div class="space-y-20">
 
-        <div class="space-y-14">
-
-          <article id="samsung-ms23a3513ak" class="group border-b border-slate-100 pb-12 last:border-0">
-            <div class="flex flex-col md:flex-row gap-8">
-              <div class="w-full md:w-56 h-56 bg-slate-50 rounded-2xl p-4 flex-shrink-0 relative">
-                <div class="rank-tag absolute -top-3 -left-3 shadow-lg">#1</div>
+          <article id="samsung-ms23a3513ak" class="relative group">
+            <div class="flex flex-col md:flex-row gap-10">
+              <div class="w-full md:w-60 h-60 bg-slate-50 rounded-3xl p-6 flex-shrink-0 relative">
+                <div class="rank-tag absolute -top-4 -left-4 shadow-xl shadow-[#de6852]/20">#1</div>
                 <img src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70" class="img-fit-contain">
               </div>
-              <div class="flex-1 space-y-4">
+              <div class="flex-1 space-y-5">
                 <div>
-                  <h2 class="text-2xl font-bold text-slate-900">Samsung MS23A3513AK</h2>
-                  <div class="text-amber-500 text-sm font-bold mt-1 uppercase">★ 4.4/5 <span class="text-slate-400 font-normal ml-1">Best overall value</span></div>
+                  <h2 class="text-2xl font-extrabold text-slate-900 leading-tight">Samsung MS23A3513AK</h2>
+                  <div class="text-[#de6852] text-xs font-black mt-1 uppercase tracking-widest">★ 4.4/5 Rating • Best overall Value</div>
                 </div>
 
-                <div class="grid md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <h4 class="font-bold text-emerald-600 uppercase text-[10px] tracking-widest mb-2">✓ Pros</h4>
-                    <ul class="text-slate-500 space-y-1 list-disc pl-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="pro-box p-4 rounded-2xl">
+                    <h4 class="font-black text-green-700 uppercase text-[9px] tracking-widest mb-2">✓ The Good</h4>
+                    <ul class="text-[13px] text-slate-600 space-y-2 leading-snug">
                       <li>Ceramic enamel cavity (scratch/rust resistant).</li>
-                      <li>Grill, auto‑cook, Local Taste presets, touch controls.</li>
-                      <li>Proven reliability (2,500+ ratings).</li>
+                      <li>Grill, auto‑cook menu, Local Taste presets.</li>
+                      <li>Touch controls & 2,500+ proven ratings.</li>
                     </ul>
                   </div>
-                  <div>
-                    <h4 class="font-bold text-rose-500 uppercase text-[10px] tracking-widest mb-2">✗ Cons</h4>
-                    <ul class="text-slate-500 space-y-1 list-disc pl-4">
-                      <li>Higher cost than entry-level models.</li>
-                      <li>Touch panel adds complexity.</li>
+                  <div class="con-box p-4 rounded-2xl">
+                    <h4 class="font-black text-rose-700 uppercase text-[9px] tracking-widest mb-2">✗ The Bad</h4>
+                    <ul class="text-[13px] text-slate-600 space-y-2 leading-snug">
+                      <li>Slightly higher upfront cost than basic models.</li>
+                      <li>Touch panel adds complexity for some.</li>
                     </ul>
                   </div>
                 </div>
 
-                <div class="flex flex-wrap gap-3 pt-4">
-                  <a href="#" class="btn-buy-amazon px-6 py-2 rounded-lg font-bold text-xs uppercase">Amazon</a>
-                  <a href="https://www.flipkart.com/samsung-23-l-auto-cook-programs-child-safety-lock-memory-feature-deodorization-solo-microwave-oven/p/itm144d023a6b928" class="btn-buy-flipkart px-6 py-2 rounded-lg font-bold text-xs uppercase">Flipkart • ₹7,790</a>
+                <div class="flex gap-4">
+                  <a href="#" class="btn-amazon flex-1 text-center py-3 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-orange-100">Amazon</a>
+                  <a href="https://www.flipkart.com/samsung-23-l-auto-cook-programs-child-safety-lock-memory-feature-deodorization-solo-microwave-oven/p/itm144d023a6b928" class="btn-flipkart flex-1 text-center py-3 rounded-xl font-bold text-xs uppercase tracking-widest shadow-lg shadow-blue-100">Flipkart • ₹7,790</a>
                 </div>
               </div>
             </div>
           </article>
 
-          <article id="lg-ms2043bp" class="group border-b border-slate-100 pb-12 last:border-0">
-            <div class="flex flex-col md:flex-row gap-8">
-              <div class="w-full md:w-56 h-56 bg-slate-50 rounded-2xl p-4 flex-shrink-0 relative">
-                <div class="rank-tag absolute -top-3 -left-3 shadow-lg">#2</div>
+          <article id="lg-ms2043bp" class="relative group">
+            <div class="flex flex-col md:flex-row gap-10">
+              <div class="w-full md:w-60 h-60 bg-slate-50 rounded-3xl p-6 flex-shrink-0 relative">
+                <div class="rank-tag absolute -top-4 -left-4 shadow-xl">#2</div>
                 <img src="https://rukminim2.flixcart.com/image/128/128/xif0q/microwave-new/i/r/o/-original-imah6dzajzhbqfum.jpeg?crop=false&q=70" class="img-fit-contain">
               </div>
-              <div class="flex-1 space-y-4">
-                <h2 class="text-2xl font-bold text-slate-900">LG MS2043BP</h2>
-                <div class="text-amber-500 text-sm font-bold uppercase">★ 4.3/5 <span class="text-slate-400 font-normal ml-1">Best under ₹7k</span></div>
-                <div class="grid md:grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <h4 class="font-bold text-emerald-600 uppercase text-[10px] mb-2">✓ Pros</h4>
-                    <p class="text-slate-500">Strong trust (17k+ ratings). i-wave technology for uniform cooking. Excellent brand support.</p>
+              <div class="flex-1 space-y-5">
+                <h2 class="text-2xl font-extrabold text-slate-900 leading-tight">LG MS2043BP</h2>
+                <div class="text-[#de6852] text-xs font-black uppercase tracking-widest">★ 4.3/5 Rating • Best under ₹7k</div>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div class="pro-box p-4 rounded-2xl">
+                    <h4 class="font-black text-green-700 uppercase text-[9px] mb-2">✓ The Good</h4>
+                    <p class="text-[13px] text-slate-600">i-wave technology for uniform cooking. 17k+ ratings showing extreme trust and product maturity.</p>
                   </div>
-                  <div>
-                    <h4 class="font-bold text-rose-500 uppercase text-[10px] mb-2">✗ Cons</h4>
-                    <p class="text-slate-500">Touch controls may not suit everyone. Solo only (no grill/convection).</p>
+                  <div class="con-box p-4 rounded-2xl">
+                    <h4 class="font-black text-rose-700 uppercase text-[9px] mb-2">✗ The Bad</h4>
+                    <p class="text-[13px] text-slate-600">Touch controls may not suit senior users. Solo only (no grill/bake).</p>
                   </div>
                 </div>
-                <div class="flex flex-wrap gap-3 pt-4">
-                  <a href="#" class="btn-buy-amazon px-6 py-2 rounded-lg font-bold text-xs uppercase">Amazon</a>
-                  <a href="https://www.flipkart.com/lg-20-l-solo-microwave-oven/p/itmf3rygebb6pbk7" class="btn-buy-flipkart px-6 py-2 rounded-lg font-bold text-xs uppercase">Flipkart • ₹6,990</a>
+                <div class="flex gap-4">
+                  <a href="#" class="btn-amazon flex-1 text-center py-3 rounded-xl font-bold text-xs uppercase shadow-md">Amazon</a>
+                  <a href="https://www.flipkart.com/lg-20-l-solo-microwave-oven/p/itmf3rygebb6pbk7" class="btn-flipkart flex-1 text-center py-3 rounded-xl font-bold text-xs uppercase shadow-md">Flipkart • ₹6,990</a>
                 </div>
               </div>
             </div>
           </article>
 
           <div class="grid md:grid-cols-2 gap-6">
-            <div id="panasonic-nn-st26" class="p-5 border border-slate-100 rounded-2xl bg-slate-50/50">
-              <span class="text-[#de6852] font-black text-xs uppercase">#3 Compact Pick</span>
-              <h3 class="font-bold text-lg mt-1">Panasonic NN‑ST26</h3>
-              <p class="text-xs text-slate-500 mt-2">Japanese quality, over 8k ratings, and proven long-term durability for basic reheating.</p>
-              <a href="https://www.flipkart.com/panasonic-20-l-stainless-steel-cavity-solo-microwave-oven/p/itm44af8460a2306" class="inline-block mt-4 text-[#de6852] font-bold text-xs border-b border-[#de6852]">Flipkart • ₹6,440</a>
+            <div id="panasonic-nn-st26" class="p-6 border border-slate-100 rounded-3xl bg-slate-50/50 relative overflow-hidden">
+              <span class="text-[#de6852] font-black text-[10px] uppercase tracking-widest">#3 Compact Pick</span>
+              <h3 class="font-bold text-lg text-slate-900 mt-1">Panasonic NN‑ST26</h3>
+              <p class="text-xs text-slate-500 mt-2 leading-relaxed">Japanese quality with over 8k ratings. Stainless steel cavity model proven for daily reheating.</p>
+              <a href="https://www.flipkart.com/panasonic-20-l-stainless-steel-cavity-solo-microwave-oven/p/itm44af8460a2306" class="inline-block mt-4 text-[#de6852] font-bold text-[10px] uppercase border-b-2 border-[#de6852]/20 hover:border-[#de6852] transition-all">Flipkart Deal • ₹6,440</a>
             </div>
 
-            <div id="ifb-24pm2b" class="p-5 border border-slate-100 rounded-2xl">
-              <span class="text-[#de6852] font-black text-xs uppercase">#4 High Capacity</span>
-              <h3 class="font-bold text-lg mt-1">IFB 24PM2B</h3>
-              <p class="text-xs text-slate-500 mt-2">24L capacity is great for large plates. Solid Indian after-sales network.</p>
-              <a href="https://www.flipkart.com/ifb-24-l-solo-microwave-oven/p/itm8baa4f6f11b3f" class="inline-block mt-4 text-[#de6852] font-bold text-xs border-b border-[#de6852]">Flipkart • ₹7,690</a>
+            <div id="ifb-24pm2b" class="p-6 border border-slate-100 rounded-3xl">
+              <span class="text-[#de6852] font-black text-[10px] uppercase tracking-widest">#4 High Capacity</span>
+              <h3 class="font-bold text-lg text-slate-900 mt-1">IFB 24PM2B</h3>
+              <p class="text-xs text-slate-500 mt-2 leading-relaxed">Larger 24L capacity is rare at this price. Excellent brand presence and after-sales in India.</p>
+              <a href="https://www.flipkart.com/ifb-24-l-solo-microwave-oven/p/itm8baa4f6f11b3f" class="inline-block mt-4 text-[#de6852] font-bold text-[10px] uppercase border-b-2 border-[#de6852]/20">Flipkart Deal • ₹7,690</a>
             </div>
-          </div>
 
-          <div class="grid md:grid-cols-2 gap-6">
-             <div id="whirlpool-magicook-pro" class="p-5 border border-slate-100 rounded-2xl">
-               <span class="text-[#de6852] font-black text-xs uppercase">#5 Best Touchscreen</span>
-               <h3 class="font-bold text-lg mt-1">Whirlpool Magicook Pro</h3>
-               <p class="text-xs text-slate-500 mt-2">Feather touch membrane, 4,900+ ratings, modern layout.</p>
+             <div id="whirlpool-magicook-pro" class="p-6 border border-slate-100 rounded-3xl">
+               <span class="text-[#de6852] font-black text-[10px] uppercase tracking-widest">#5 Touchscreen Pick</span>
+               <h3 class="font-bold text-lg mt-1">Whirlpool Magicook</h3>
+               <p class="text-xs text-slate-500 mt-2 leading-relaxed">Modern feather touch membrane with 4,900+ ratings. Stylish and feature-packed.</p>
              </div>
-             <div id="midea-mmo20cxa" class="p-5 border border-slate-100 rounded-2xl">
-               <span class="text-[#de6852] font-black text-xs uppercase">#6 Best Deal</span>
+
+             <div id="midea-mmo20cxa" class="p-6 border border-slate-100 rounded-3xl">
+               <span class="text-[#de6852] font-black text-[10px] uppercase tracking-widest">#6 Budget King</span>
                <h3 class="font-bold text-lg mt-1">Midea 20L Solo</h3>
-               <p class="text-xs text-slate-500 mt-2">Rock-bottom price, simple controls, brand-name starter oven.</p>
-             </div>
-             <div id="bajaj-2016-mtbx" class="p-5 border border-slate-100 rounded-2xl">
-               <span class="text-[#de6852] font-black text-xs uppercase">#7 Best Grill</span>
-               <h3 class="font-bold text-lg mt-1">Bajaj 2016 MTBX</h3>
-               <p class="text-xs text-slate-500 mt-2">Grill capability at solo prices. Simple mechanical knobs.</p>
-             </div>
-             <div id="haier-hil20v1" class="p-5 border border-slate-100 rounded-2xl">
-               <span class="text-[#de6852] font-black text-xs uppercase">#8 Stylish Pick</span>
-               <h3 class="font-bold text-lg mt-1">Haier 20L Solo</h3>
-               <p class="text-xs text-slate-500 mt-2">Bright, modern look. Child lock and compact solo design.</p>
+               <p class="text-xs text-slate-500 mt-2 leading-relaxed">The lowest priced brand-name solo microwave. Perfect starter unit for basic needs.</p>
              </div>
           </div>
 
-          <div class="space-y-4">
-            <p class="text-sm font-bold text-slate-800">Additional Budget Alternatives:</p>
-            <div class="flex flex-col gap-3">
-               <div id="sharp-sakura-s20" class="flex justify-between items-center text-xs p-3 bg-white border rounded-xl">
-                 <span><strong class="text-[#de6852]">#9 Sharp Sakura-S20:</strong> Ceramic cavity, touch controls.</span>
-                 <a href="#" class="font-bold text-blue-600">Check Croma</a>
+          <div class="pt-8 border-t border-slate-100">
+            <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Other Notable Picks</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+               <div id="bajaj-2016-mtbx" class="bg-white border p-4 rounded-xl flex justify-between items-center group hover:border-[#de6852]">
+                 <span class="text-xs font-medium text-slate-600">#7 <strong class="text-slate-900">Bajaj 2016 MTBX</strong> (Best Grill)</span>
+                 <span class="text-[10px] font-bold text-[#de6852]">₹5,790</span>
                </div>
-               <div id="croma-crm2025" class="flex justify-between items-center text-xs p-3 bg-white border rounded-xl">
-                 <span><strong class="text-[#de6852]">#10 Croma CRM2025:</strong> 4.4 rating, 8 autocook programs.</span>
-                 <a href="#" class="font-bold text-blue-600">Check Croma</a>
+               <div id="haier-hil20v1" class="bg-white border p-4 rounded-xl flex justify-between items-center group hover:border-[#de6852]">
+                 <span class="text-xs font-medium text-slate-600">#8 <strong class="text-slate-900">Haier 20L Solo</strong> (Stylish)</span>
+                 <span class="text-[10px] font-bold text-[#de6852]">₹7,490</span>
+               </div>
+               <div id="sharp-sakura-s20" class="bg-white border p-4 rounded-xl flex justify-between items-center group hover:border-[#de6852]">
+                 <span class="text-xs font-medium text-slate-600">#9 <strong class="text-slate-900">Sharp Sakura-S20</strong> (Premium)</span>
+                 <span class="text-[10px] font-bold text-blue-500 underline uppercase">Croma</span>
+               </div>
+               <div id="croma-crm2025" class="bg-white border p-4 rounded-xl flex justify-between items-center group hover:border-[#de6852]">
+                 <span class="text-xs font-medium text-slate-600">#10 <strong class="text-slate-900">Croma CRM2025</strong> (8 Menus)</span>
+                 <span class="text-[10px] font-bold text-blue-500 underline uppercase">Croma</span>
                </div>
             </div>
           </div>
@@ -230,33 +216,55 @@
       <aside class="col-span-12 lg:col-span-4">
         <div class="sticky top-24 space-y-6">
           
-          <section class="verdict-slim text-white shadow-xl">
-            <h2 class="text-lg font-extrabold mb-4">Quick Verdict</h2>
-            <div class="flex flex-col text-xs font-medium">
-              <a href="#samsung-ms23a3513ak" class="verdict-link group flex justify-between items-center">
-                <span>Samsung MS23 (Ceramic)</span>
-                <span class="text-[#de6852]">Overall Best</span>
+          <section class="verdict-light rounded-3xl p-6 shadow-sm">
+            <h2 class="text-lg font-extrabold text-slate-900 mb-2">Quick Verdict</h2>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Categorized for 2025</p>
+            
+            <div class="space-y-1">
+              <a href="#samsung-ms23a3513ak" class="flex items-center justify-between py-3 border-b border-slate-50 hover:bg-slate-50 px-2 rounded-lg transition-colors group">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-slate-900">Samsung MS23</span>
+                    <span class="text-[9px] text-slate-500 italic">Gold Standard / Ceramic</span>
+                </div>
+                <span class="text-[10px] font-black text-[#de6852] uppercase">Best All-Round</span>
               </a>
-              <a href="#lg-ms2043bp" class="verdict-link group flex justify-between items-center">
-                <span>LG MS2043BP</span>
-                <span class="text-emerald-400">Best Value</span>
+
+              <a href="#lg-ms2043bp" class="flex items-center justify-between py-3 border-b border-slate-50 hover:bg-slate-50 px-2 rounded-lg transition-colors group">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-slate-900">LG MS2043BP</span>
+                    <span class="text-[9px] text-slate-500 italic">Strong Trust / i-wave</span>
+                </div>
+                <span class="text-[10px] font-black text-emerald-600 uppercase">Best Value</span>
               </a>
-              <a href="#bajaj-2016-mtbx" class="verdict-link group flex justify-between items-center">
-                <span>Bajaj 2016 MTBX</span>
-                <span class="text-amber-400">Cheap Grill</span>
+
+              <a href="#bajaj-2016-mtbx" class="flex items-center justify-between py-3 border-b border-slate-50 hover:bg-slate-50 px-2 rounded-lg transition-colors group">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-slate-900">Bajaj 2016</span>
+                    <span class="text-[9px] text-slate-500 italic">Mech Knobs / Grilling</span>
+                </div>
+                <span class="text-[10px] font-black text-amber-500 uppercase">Grill Pick</span>
               </a>
-              <a href="#ifb-24pm2b" class="verdict-link group flex justify-between items-center">
-                <span>IFB 24L Solo</span>
-                <span class="text-indigo-400">Max Capacity</span>
+
+              <a href="#ifb-24pm2b" class="flex items-center justify-between py-3 hover:bg-slate-50 px-2 rounded-lg transition-colors group">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-slate-900">IFB 24L Solo</span>
+                    <span class="text-[9px] text-slate-500 italic">Indian Brand / High Cap</span>
+                </div>
+                <span class="text-[10px] font-black text-indigo-500 uppercase">Largest</span>
               </a>
             </div>
-            <p class="text-[9px] text-slate-500 mt-6 italic">*Prices subject to change via retailers.</p>
+            
+            <div class="mt-6 pt-6 border-t border-slate-100">
+              <p class="text-[9px] text-slate-400 leading-relaxed italic">
+                *Sales may change live pricing. Check retailer links for final price.
+              </p>
+            </div>
           </section>
 
-          <div class="bg-slate-100 p-6 rounded-3xl border border-slate-200">
-            <h4 class="font-bold text-sm mb-2 text-slate-900 tracking-tight">Need help deciding?</h4>
-            <p class="text-[11px] text-slate-500 mb-4">Read our 2025 Microwave Buying Guide for technical specs.</p>
-            <button class="w-full text-[10px] font-black uppercase tracking-widest py-3 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">View Full Guide</button>
+          <div class="bg-[#de6852] p-8 rounded-3xl text-white shadow-xl shadow-[#de6852]/20 text-center">
+            <h4 class="font-extrabold text-lg mb-2">Buying Guide</h4>
+            <p class="text-xs text-brand-soft/80 mb-6 leading-relaxed">Don't know the difference between Solo, Grill, and Convection?</p>
+            <button class="w-full py-3 bg-white text-[#de6852] font-bold text-xs uppercase tracking-widest rounded-xl">Open Guide</button>
           </div>
 
         </div>
@@ -264,8 +272,8 @@
     </div>
   </main>
 
-  <footer class="border-t border-slate-100 py-10 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-    © 2025 ApniList • Home & Kitchen Experts
+  <footer class="py-12 text-center border-t border-slate-100">
+    <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">© 2025 ApniList Editorial</p>
   </footer>
 
 </body>
