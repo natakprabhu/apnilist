@@ -1,1303 +1,287 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-  <title>Top 10 microwaves under ₹10,000 in India | ApniList</title>
-  <meta
-    name="description"
-    content="Looking for a good microwave under ₹10,000 in India? Here are the top 10 picks in 2025 with real prices, pros, and tradeoffs—easy to compare and buy."
-  >
-  <meta name="author" content="ApniList">
+import { ExternalLink, TrendingUp, TrendingDown, Heart } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-  <!-- Recommended SEO: include relevant keywords -->
-  <meta name="keywords" content="microwave under 10000 India, best microwave 2025, budget microwave India, solo microwave, grill microwave">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-    rel="stylesheet"
-  >
+interface ProductCardProps {
+  rank: number;
+  productId?: string;
+  name: string;
+  image: string;
+  rating: number;
+  pros: string[];
+  cons: string[];
+  amazonPrice: number;
+  amazonDiscount?: number;
+  amazonPriceChange?: "up" | "down";
+  amazonLink: string;
+  flipkartPrice: number;
+  flipkartDiscount?: number;
+  flipkartPriceChange?: "up" | "down";
+  flipkartLink: string;
+  badge?: string;
+}
 
-  <meta property="og:title" content="Top 10 microwaves under ₹10,000 in India | ApniList">
-  <meta property="og:description" content="Looking for a good microwave under ₹10,000 in India? Here are the top 10 picks in 2025 with real prices, pros, and tradeoffs—easy to compare and buy.">
-  <meta property="og:type" content="article">
-  <meta property="og:image" content="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70">
-  <meta property="og:site_name" content="ApniList">
+export const ProductCard = ({
+  rank,
+  productId,
+  name,
+  image,
+  rating,
+  pros,
+  cons,
+  amazonPrice,
+  amazonDiscount,
+  amazonPriceChange,
+  amazonLink,
+  flipkartPrice,
+  flipkartDiscount,
+  flipkartPriceChange,
+  flipkartLink,
+  badge,
+}: ProductCardProps) => {
+  const [isTracking, setIsTracking] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const { toast } = useToast();
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@apnilist">
-  <meta name="twitter:image" content="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70">
+  const handleTrackPrice = async () => {
+    if (!productId) {
+      toast({
+        title: "Error",
+        description: "Product ID not available",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  <link rel="stylesheet" crossorigin href="/assets/index-BwWmn6Gw.css">
-</head>
-<body class="min-h-screen bg-background flex flex-col">
-  <!-- HEADER -->
-  <header class="sticky top-0 z-50 w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-    <div class="container mx-auto px-4">
-      <div class="flex h-16 items-center justify-between">
-        <a class="flex items-center space-x-2" href="/">
-          <img src="/logo.png" alt="ApniList" class="h-14 w-auto">
-        </a>
-        <nav class="hidden md:flex items-center space-x-6">
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="/">Home</a>
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="/articles">Articles</a>
-          <a class="text-sm font-medium hover:text-primary transition-colors" href="/deals">Daily Deals</a>
-        </nav>
-        <form class="hidden md:flex items-center flex-1 max-w-sm mx-4">
-          <div class="relative w-full">
-            <input
-              type="text"
-              class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 md:text-sm pl-10 pr-4 h-9"
-              placeholder="Search articles..."
-              aria-label="Search articles"
-            >
+    setIsAdding(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to track prices",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('wishlist')
+        .insert({
+          user_id: user.id,
+          product_id: productId,
+        });
+
+      if (error) {
+        if (error.code === '23505') {
+          toast({
+            title: "Already Tracking",
+            description: "This product is already in your wishlist",
+          });
+        } else {
+          throw error;
+        }
+      } else {
+        setIsTracking(true);
+        toast({
+          title: "Success",
+          description: "Product added to price tracker",
+        });
+      }
+    } catch (error) {
+      console.error('Error tracking price:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add product to price tracker",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
+  return (
+    <Card className="relative hover:shadow-hover transition-all duration-300">
+      {/* Rank Number Overlay */}
+      <div className="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
+        #{rank}
+      </div>
+
+      <div className="flex flex-col md:flex-row gap-6 p-6">
+        {/* Product Image */}
+        <div className="relative w-full md:w-64 h-64 flex-shrink-0">
+          <img
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover rounded-lg"
+            loading="lazy"
+          />
+          {badge && (
+            <Badge className="absolute top-2 left-2 bg-accent text-accent-foreground">
+              {badge}
+            </Badge>
+          )}
+        </div>
+
+        {/* Product Details */}
+        <div className="flex-1 space-y-4">
+          <div>
+            <h3 className="text-2xl font-bold text-foreground mb-2">{name}</h3>
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <span
+                    key={i}
+                    className={`text-lg ${
+                      i < rating ? "text-yellow-500" : "text-muted"
+                    }`}
+                  >
+                    ★
+                  </span>
+                ))}
+              </div>
+              <span className="text-muted-foreground">({rating}/5)</span>
+            </div>
           </div>
-        </form>
-        <div class="flex items-center gap-4">
-          <a href="/auth">
-            <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3">
-              Sign In
-            </button>
-          </a>
-          <button
-            class="inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium hover:bg-accent hover:text-accent-foreground h-10 w-10 md:hidden"
-            aria-label="Open menu"
-          >
-            <span class="sr-only">Menu</span>
-          </button>
+
+          {/* Pros */}
+          <div>
+            <h4 className="font-semibold text-green-600 mb-2">✓ Pros:</h4>
+            <ul className="space-y-1">
+              {pros.map((pro, idx) => (
+                <li
+                  key={idx}
+                  className="text-sm text-foreground flex items-start gap-2"
+                >
+                  <span className="text-green-600">•</span>
+                  {pro}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Cons */}
+          <div>
+            <h4 className="font-semibold text-red-600 mb-2">✗ Cons:</h4>
+            <ul className="space-y-1">
+              {cons.map((con, idx) => (
+                <li
+                  key={idx}
+                  className="text-sm text-foreground flex items-start gap-2"
+                >
+                  <span className="text-red-600">•</span>
+                  {con}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Track Price Button */}
+          {productId && (
+            <div className="pt-2">
+              <Button
+                onClick={handleTrackPrice}
+                disabled={isAdding || isTracking}
+                variant={isTracking ? "secondary" : "outline"}
+                className="w-full gap-2"
+              >
+                <Heart className={`w-4 h-4 ${isTracking ? 'fill-current' : ''}`} />
+                {isTracking ? "Tracking Price" : "Track Price"}
+              </Button>
+            </div>
+          )}
+
+          {/* Pricing Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
+            {/* Amazon Section */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">Amazon:</span>
+                <span className="text-xl font-bold text-foreground">
+                  ₹{amazonPrice.toLocaleString()}
+                </span>
+                {amazonPriceChange && (
+                  <span
+                    className={`flex items-center text-sm ${
+                      amazonPriceChange === "down"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {amazonPriceChange === "down" ? (
+                      <TrendingDown className="w-4 h-4" />
+                    ) : (
+                      <TrendingUp className="w-4 h-4" />
+                    )}
+                  </span>
+                )}
+              </div>
+              {amazonDiscount && (
+                <Badge
+                  variant="secondary"
+                  className="bg-green-100 text-green-700"
+                >
+                  {amazonDiscount}% OFF
+                </Badge>
+              )}
+              <Button
+                asChild
+                className="w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold transition-colors"
+              >
+                <a href={amazonLink} target="_blank" rel="noopener noreferrer">
+                  Check on Amazon
+                  <ExternalLink className="ml-2 w-4 h-4" />
+                </a>
+              </Button>
+            </div>
+
+            {/* Flipkart Section */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold">Flipkart:</span>
+                <span className="text-xl font-bold text-foreground">
+                  ₹{flipkartPrice.toLocaleString()}
+                </span>
+                {flipkartPriceChange && (
+                  <span
+                    className={`flex items-center text-sm ${
+                      flipkartPriceChange === "down"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {flipkartPriceChange === "down" ? (
+                      <TrendingDown className="w-4 h-4" />
+                    ) : (
+                      <TrendingUp className="w-4 h-4" />
+                    )}
+                  </span>
+                )}
+              </div>
+              {flipkartDiscount && (
+                <Badge
+                  variant="secondary"
+                  className="bg-green-100 text-green-700"
+                >
+                  {flipkartDiscount}% OFF
+                </Badge>
+              )}
+              <Button
+                asChild
+                className="w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold transition-colors"
+              >
+                <a href={flipkartLink} target="_blank" rel="noopener noreferrer">
+                  Check on Flipkart
+                  <ExternalLink className="ml-2 w-4 h-4" />
+                </a>
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </header>
-
-  <!-- MAIN -->
-  <main class="flex-1 py-12">
-    <div class="container mx-auto px-4 grid grid-cols-12 gap-8">
-      <!-- Article column -->
-      <div class="col-span-12 md:col-span-8 space-y-8">
-        <!-- Hero -->
-        <header class="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-6 rounded-lg shadow-md">
-          <h1 class="text-3xl md:text-4xl font-bold mb-2">
-            Top 10 microwaves in India under ₹10,000
-          </h1>
-          <div class="flex flex-wrap gap-4 text-sm">
-            <div class="flex items-center gap-2">
-              <span>By ApniList</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span>Updated on 18 December 2025</span>
-            </div>
-          </div>
-          <p class="mt-4 text-white/90">
-            A quick, reliable shortlist of the best microwaves you can actually buy under ₹10,000 today. Each pick balances price, reliability, and everyday usefulness—great for bachelors, couples, or small families.
-          </p>
-        </header>
-
-        <!-- Intro -->
-        <section class="space-y-3">
-          <p class="text-muted-foreground">
-            This list focuses on solo or grill microwaves around 20–24 litres that give you strong value, decent warranty, and wide availability in India. Prices change with sales—check the retailer links before purchase. Ratings are from live listings and customer feedback where available.
-          </p>
-        </section>
-
-        <!-- Product list (10 ProductCard-style blocks) -->
-        <section class="space-y-10">
-
-          <!-- 1) best overall value -->
-          <article id="samsung-ms23a3513ak" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #1
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/t/i/2/-original-imaheyusmgcrqpkf.jpeg?crop=false&q=70"
-                  alt="Samsung MS23A3513AK Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best overall
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Samsung MS23A3513AK</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.4/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Ceramic enamel cavity is scratch‑ and rust‑resistant and easy to clean, good long‑term durability.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Lots of useful features for the price: grill, auto‑cook menu, Local Taste presets, and touch controls. 
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Strong user rating with over 2,500 ratings shown on listing, suggesting reliability and satisfaction. :contentReference[oaicite:10]{index=10}
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Slightly higher upfront cost than bare‑bones models, though still under ₹10k.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Touch panel and extra features add complexity versus purely mechanical knobs for very basic use.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹7,790</span>
-                      <span class="flex items-center text-sm text-green-600">27% off</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      From ₹10,800
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/samsung-23-l-auto-cook-programs-child-safety-lock-memory-feature-deodorization-solo-microwave-oven/p/itm144d023a6b928"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 2) best overall under ₹7k -->
-          <article id="lg-ms2043bp" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #2
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/128/128/xif0q/microwave-new/i/r/o/-original-imah6dzajzhbqfum.jpeg?crop=false&q=70"
-                  alt="LG MS2043BP Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best under ₹7k
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">LG MS2043BP</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.3/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Very widely-reviewed model with 17k+ ratings, showing strong trust and product maturity. :contentReference[oaicite:11]{index=11}
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      i-wave technology and thoughtful controls aim for healthier, uniform cooking and easier use.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Good balance of price and features with reliable brand support.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Touch‑type controls may not suit those who prefer simple knobs; still, easy for most users.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Limited to solo use; not a grill or convection, though it covers most reheating/defrost needs well.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,990</span>
-                      <span class="flex items-center text-sm text-green-600">14% off</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      From ₹8,199
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/lg-20-l-solo-microwave-oven/p/itmf3rygebb6pbk7"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 3) best compact kitchen pick -->
-          <article id="panasonic-nn-st26" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #3
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/312/312/xif0q/microwave-new/z/r/6/-original-imah8yu89zggxajw.jpeg?crop=false&q=70"
-                  alt="Panasonic NN-ST26 Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Compact pick
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Panasonic NN‑ST26</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.4/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Japanese brand legacy and consistent quality in budget range; widely used for basic cooking and reheating.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Strong buyer feedback on Flipkart with over 8k ratings; indicates reliable everyday use. :contentReference[oaicite:12]{index=12}
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Good price for a long‑running, proven model—ideal when savings matter most.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Solo unit, not grill or convection; some users may want browning or grilling features.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Visual design is utilitarian—good for function over flashy looks.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,440</span>
-                      <span class="flex items-center text-sm text-green-600">14% off</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      From ₹7,490
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/panasonic-20-l-stainless-steel-cavity-solo-microwave-oven/p/itm44af8460a2306"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 4) best bigger capacity under ₹8k -->
-          <article id="ifb-24pm2b" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #4
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/x/e/p/2023-24pm2b-ifb-24-original-imagr7wswhy9ecwm.jpeg?crop=false&q=70"
-                  alt="IFB 24PM2B Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best 24L under ₹8k
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">IFB 24PM2B</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.3/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Slightly larger 24‑litre capacity—handy for bigger plates or containers than 20L units.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Solid brand after‑sales presence in India with well‑known kitchen appliance range.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Good rating on the listing and under‑₹8k price point, rare for larger capacity.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Slightly bigger footprint; ensure kitchen counter space before buying.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Features set is geared to basics with dependable performance, not advanced convection or heavy grilling.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹7,690</span>
-                      <span class="flex items-center text-sm text-green-600">14% off</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      From ₹8,990
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/ifb-24-l-solo-microwave-oven/p/itm8baa4f6f11b3f"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 5) best touchscreen, premium feel under ₹7k -->
-          <article id="whirlpool-magicook-pro" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #5
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/q/m/h/-original-imah7z9yf6aqxkmn.jpeg?crop=false&q=70"
-                  alt="Whirlpool Magicook Pro 20SE Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best touchscreen
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Whirlpool Magicook Pro 20SE</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.2/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Feather touch membrane controls offer modern feel with auto‑cook and good power levels.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Over 4,900 ratings shown at the listing; indicates solid buyer experience and availability. :contentReference[oaicite:13]{index=13}
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Typically priced well under ₹10k even when not on sale.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Touch controls and modern layout may be overkill for users who only want simple knobs.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Solo unit—no grill or convection; that’s a deliberate tradeoff for lower price and simplicity.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹6,490</span>
-                      <span class="flex items-center text-sm text-green-600">26% off</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      From ₹8,775
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/whirlpool-20-l-18-auto-cook-recipes-feather-touch-membrane-solo-microwave-oven/p/itm55e37900bfc42"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 6) best rock‑bottom price -->
-          <article id="midea-mmo20cxa" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #6
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/k/8/4/-original-imahba2jttyv6mjd.jpeg?crop=false&q=70"
-                  alt="Midea 20L Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best deal
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Midea 20L Solo Microwave</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.2/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Extremely low price for a brand‑name solo microwave; a great starter or spare oven.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Healthy amount of buyer feedback on listing and consistent availability; good roadmap for service.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Clean, simple controls; easy to use for reheating and defrosting.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Basic feature set; not ideal if you love grilling or fancy auto recipes.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Basic exterior styling; choose for value rather than design.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹4,990</span>
-                      <span class="flex items-center text-sm text-green-600">50% off</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      From ₹9,990
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/midea-20-l-solo-microwave-oven/p/itmf82bbd44fcd08"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 7) best grill under ₹6k -->
-          <article id="bajaj-2016-mtbx" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #7
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/128/128/kw9krrk0/microwave-new/0/3/m/-original-imag8zharauwyfhn.jpeg?crop=false&q=70"
-                  alt="Bajaj 2016 MTBX Grill Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best grill deal
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Bajaj 2016 MTBX</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.4/5)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Grill capability at a low price—rare value for grilling chicken, sandwiches, or veggies.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Strong user feedback; over 6k ratings points to dependable day‑to‑day use. :contentReference[oaicite:14]{index=14}
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Simple mechanical knob controls; easy to use without reading manual in detail.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Visual style is basic; not for those who want a premium look.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Grill strength and accessories vary by exact model; check detailed specs with seller.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹5,790</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/bajaj-20-l-grill-microwave-oven/p/itm438ef2e1e11e0"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 8) most stylish low‑cost pick -->
-          <article id="haier-hil20v1" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #8
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://rukminim2.flixcart.com/image/416/416/xif0q/microwave-new/c/h/k/-original-imahfr7vgfkbfzdp.jpeg?crop=false&q=70"
-                  alt="Haier 20L Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Stylish pick
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Haier 20L Solo Microwave</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(Rating varies)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Bright, modern look—useful when aesthetics matter in a small kitchen.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Compact solo microwave that still offers child lock, timer, and defrost; easy to live with.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Available around ₹7–8k, keeps you well under the ₹10k ceiling.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Ratings and seller support can vary by color or exact SKU; check seller details before buying.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Solo only; no grill or convection functions.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Flipkart -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Flipkart:</span>
-                      <span class="text-xl font-bold text-foreground">₹7,490</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="https://www.flipkart.com/haier-20-l-solo-microwave-oven/p/itm0a86dd09a0b78"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Flipkart
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 9) best feature‑rich at mid‑range -->
-          <article id="sharp-sakura-s20" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #9
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://media-ik.croma.com/prod/https%3A//media.tatacroma.com/Croma%20Assets/Small%20Appliances/Microwave%20or%20OTG/Images/307030_1_WmEwGMJ2Ni.png?updatedAt=1754294277465%3Ftr%3Dw-600"
-                  alt="Sharp Sakura‑S20 Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Best design at mid‑range
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Sharp Sakura‑S20 R‑220KN‑K</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(Varies by seller)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Ceramic cavity, child lock, quick defrost, and touch controls—feature rich for the price tier. :contentReference[oaicite:15]{index=15}
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      From a globally known electronics brand; good blend of design and practicality.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Practical capacity of 20L suits most Indian homes with limited counter space.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Exact price varies by seller & stock; check listing or store for final price and availability.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Solo only; grills might be preferred by those who bake or brown often.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Croma -->
-                  <div class="space-y-2">
-                    <div class="flex items:center gap-2">
-                      <span class="font-semibold">Croma:</span>
-                      <span class="text-xl font-bold text-foreground">See listing</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="https://www.croma.com/sharp-sakura-s20-20l-solo-microwave-oven-with-quick-start-r-220kn-k-black-/p/307030"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Croma
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- 10) another strong budget solo pick -->
-          <article id="croma-crm2025" class="relative hover:shadow-hover transition-all duration-300 border border-border rounded-lg bg-card">
-            <div class="absolute -top-6 -left-6 text-6xl font-bold text-orange-500 opacity-90 z-10 select-none">
-              #10
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-6 p-6">
-              <!-- Image -->
-              <div class="relative w-full md:w-64 h-64 flex-shrink-0">
-                <img
-                  src="https://media-ik.croma.com/prod/https%3A//media.tatacroma.com/Croma%20Assets/Small%20Appliances/Microwave%20or%20OTG/Images/100566_0_CCC2dC2kt.png?updatedAt=1764593635624%3Ftr%3Dw-600"
-                  alt="Croma CRM2025 Solo Microwave"
-                  class="w-full h-full object-cover rounded-lg"
-                  loading="lazy"
-                />
-                <span class="absolute top-2 left-2 inline-flex items-center px-2 py-1 text-xs font-medium bg-accent text-accent-foreground rounded-full">
-                  Budget solo alternative
-                </span>
-              </div>
-
-              <!-- Details -->
-              <div class="flex-1 space-y-4">
-                <div>
-                  <h2 class="text-2xl font-bold text-foreground mb-2">Croma CRM2025</h2>
-                  <div class="flex items-center gap-2">
-                    <div class="flex">
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-yellow-500">★</span>
-                      <span class="text-lg text-muted">★</span>
-                    </div>
-                    <span class="text-muted-foreground">(4.4/5 retailer rating)</span>
-                  </div>
-                </div>
-
-                <!-- Pros -->
-                <div>
-                  <h3 class="font-semibold text-green-600 mb-2">✓ Pros:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Retailer shows a solid rating of 4.4 from buyers; good indicator for a private‑label or store brand appliance. 
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      8 autocook programs, temperature sensor, quick start; not purely basic, but still a budget price bracket.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-green-600">•</span>
-                      Compact, easy to fit; good value for single users or small kitchens.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Cons -->
-                <div>
-                  <h3 class="font-semibold text-red-600 mb-2">✗ Cons:</h3>
-                  <ul class="space-y-1">
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Exact street price and stock not always shown openly; requires checking current listing or store.
-                    </li>
-                    <li class="text-sm text-foreground flex items-start gap-2">
-                      <span class="text-red-600">•</span>
-                      Painted cavity rather than ceramic; minor tradeoff in scratch resistance.
-                    </li>
-                  </ul>
-                </div>
-
-                <!-- Pricing snapshot -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  <!-- Amazon -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Amazon:</span>
-                      <span class="text-xl font-bold text-foreground">—</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="#"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#FF9900] hover:bg-[#e68a00] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Amazon
-                    </a>
-                  </div>
-
-                  <!-- Croma -->
-                  <div class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <span class="font-semibold">Croma:</span>
-                      <span class="text-xl font-bold text-foreground">See listing</span>
-                      <span class="flex items-center text-sm text-green-600">—</span>
-                    </div>
-                    <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-700 rounded-full">
-                      —
-                    </span>
-                    <a
-                      href="https://www.croma.com/croma-20l-solo-microwave-oven-with-temperature-sensor-crm2025-grey-/p/100566"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center justify-center w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold text-sm h-10 rounded-md transition-colors"
-                    >
-                      Check on Croma
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </article>
-
-        </section>
-
-        <!-- Did You Know? -->
-        <section class="space-y-3 mt-8">
-          <h2 class="text-xl font-semibold">
-            Did You Know? <span class="text-muted-foreground text-base">(Microwaves)</span>
-          </h2>
-          <div class="border border-dashed border-border rounded-lg p-4 bg-muted/40 text-sm text-muted-foreground">
-            Solo microwaves are the most common budget-friendly type; grill or convection units add cost but can brown or bake. Under ₹10,000, a high‑quality solo or grill unit is usually the best overall value for most households.
-          </div>
-        </section>
-
-        <!-- Overall Summary -->
-        <section class="space-y-3 mt-6">
-          <h2 class="text-xl font-semibold">Overall Summary</h2>
-          <p class="text-muted-foreground">
-            If you want one all‑around pick, start with Samsung MS23A3513AK—it balances price, features, and user trust better than most. If slightly cheaper is needed, LG MS2043BP or Midea give excellent value. For grilling on a budget, Bajaj is the standout, while IFB is a smart pick for users who need a bit more capacity without crossing ₹10k.
-          </p>
-        </section>
-      </div>
-
-      <!-- Sidebar -->
-      <aside class="col-span-12 md:col-span-4 space-y-6">
-        <!-- Optional static widgets / related links -->
-      </aside>
-    </div>
-  </main>
-
-  <!-- FOOTER -->
-  <footer class="border-t border-border py-6 text-center text-xs text-muted-foreground">
-    © 2025 ApniList. Static HTML version of Top 10 microwaves in India under ₹10,000.
-  </footer>
-</body>
-</html>
+    </Card>
+  );
+};
