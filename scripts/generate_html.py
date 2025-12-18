@@ -32,7 +32,7 @@ USE_SITEMAP = False  # Set to True to also fetch from existing sitemap
 SITEMAP_URL = "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml"
 
 # Output directories
-OUTPUT_DIR = os.path.join(PROJECT_ROOT, "public", "static_html_cache")
+OUTPUT_DIR = os.path.join(PROJECT_ROOT, "public", "articles")
 SITEMAP_OUTPUT_PATH = os.path.join(PROJECT_ROOT, "public", "sitemap.xml")
 
 
@@ -135,7 +135,7 @@ def setup_driver():
     return driver
 
 def generate_static_file(driver, slug):
-    url = f"{BASE_URL}/articles/{slug}"
+    url = f"{BASE_URL}/draft/{slug}"
     output_path = os.path.join(OUTPUT_DIR, f"{slug}.html")
     
     try:
