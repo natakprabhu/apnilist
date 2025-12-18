@@ -9,11 +9,6 @@
   ],
   "rewrites": [
     {
-      "source": "/articles/:slug",
-      "destination": "/articles/:slug.html",
-      "continue": true
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
