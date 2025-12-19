@@ -798,16 +798,6 @@ const ArticleDetail = () => {
                               </ul>
                             </div>
                           </div>
-                            const displayOriginalPrice =
-                              latestPrice?.original_price && latestPrice.original_price > 0
-                                ? latestPrice.original_price
-                                : flipkartPrice > 0
-                                  ? flipkartPrice
-                                  : amazonPrice > 0
-                                    ? amazonPrice
-                                    : 0;
-
-
                           {/* Pricing & Actions Section - Enhanced */}
                           <div className="mt-auto bg-card rounded-xl border shadow-sm p-4 md:p-5">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-6">
