@@ -798,14 +798,15 @@ const ArticleDetail = () => {
                               </ul>
                             </div>
                           </div>
-                          {originalPrice > bestPrice && (
-                            <p className="text-sm text-muted-foreground mb-1">
-                              MRP:&nbsp;
-                              <span className="line-through font-medium">
-                                ₹{originalPrice.toLocaleString()}
-                              </span>
-                            </p>
-                          )}
+                            const displayOriginalPrice =
+                              latestPrice?.original_price && latestPrice.original_price > 0
+                                ? latestPrice.original_price
+                                : flipkartPrice > 0
+                                  ? flipkartPrice
+                                  : amazonPrice > 0
+                                    ? amazonPrice
+                                    : 0;
+
 
                           {/* Pricing & Actions Section - Enhanced */}
                           <div className="mt-auto bg-card rounded-xl border shadow-sm p-4 md:p-5">
