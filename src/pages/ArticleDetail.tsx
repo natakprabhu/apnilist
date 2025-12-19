@@ -806,14 +806,14 @@ const ArticleDetail = () => {
 
                                 <p className="text-sm font-medium text-muted-foreground mb-1">Best Market Price</p>
                                 <div className="flex items-baseline gap-3">
-                                   {displayOriginalPrice > bestPrice && (
+                                   
                                       <p className="text-sm text-muted-foreground mb-2">
                                         MRP:&nbsp;
                                         <span className="line-through font-semibold">
                                           ₹{displayOriginalPrice.toLocaleString()}
                                         </span>
                                       </p>
-                                    )}
+                              
                                   <span className="text-4xl font-bold text-foreground">
                                     ₹{bestPrice.toLocaleString()}
                                   </span>
