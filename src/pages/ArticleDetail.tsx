@@ -50,6 +50,7 @@ interface PriceHistory {
   flipkart_price: number | null;
   amazon_discount: number | null;
   flipkart_discount: number | null;
+  original_price: number | null;
 }
 
 interface DealAnalysis {
@@ -360,6 +361,8 @@ const ArticleDetail = () => {
                     amazon_discount: latestAmazonEntry?.amazon_discount ?? null,
                     flipkart_price: latestFlipkartEntry?.flipkart_price ?? null,
                     flipkart_discount: latestFlipkartEntry?.flipkart_discount ?? null,
+                    original_price:
+                       history.find(h => h.original_price && h.original_price > 0)?.original_price ?? null, // ✅ NEW
                 };
             }
 
@@ -595,6 +598,7 @@ const ArticleDetail = () => {
                   const { product, latestPrice, priceHistory, rank, analysis } = item;
                   const amazonPrice = latestPrice?.amazon_price || 0;
                   const flipkartPrice = latestPrice?.flipkart_price || 0;
+                  const originalPrice = latestPrice?.original_price || 0;
                   const bestPrice = getBestPrice(amazonPrice, flipkartPrice);
                   const discount = amazonPrice > 0 && flipkartPrice > 0 
                     ? Math.max(latestPrice?.amazon_discount || 0, latestPrice?.flipkart_discount || 0)
