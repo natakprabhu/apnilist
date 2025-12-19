@@ -16,6 +16,7 @@ interface ProductCardProps {
   cons: string[];
   amazonPrice: number;
   amazonDiscount?: number;
+  originalPrice?: number | null; // ✅ NEW
   amazonPriceChange?: "up" | "down";
   amazonLink: string;
   flipkartPrice: number;
@@ -33,6 +34,7 @@ export const ProductCard = ({
   rating,
   pros,
   cons,
+  originalPrice, 
   amazonPrice,
   amazonDiscount,
   amazonPriceChange,
@@ -191,6 +193,15 @@ export const ProductCard = ({
                 <Heart className={`w-4 h-4 ${isTracking ? 'fill-current' : ''}`} />
                 {isTracking ? "Tracking Price" : "Track Price"}
               </Button>
+            </div>
+          )}
+          {/* Original Price */}
+          {originalPrice && originalPrice > Math.min(amazonPrice, flipkartPrice) && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <span>Original Price:</span>
+              <span className="line-through font-medium">
+                ₹{originalPrice.toLocaleString()}
+              </span>
             </div>
           )}
 
