@@ -1340,8 +1340,7 @@ const saveArticleProducts = async (articleId: string, products: ArticleProduct[]
 
                         const baseSlug = selectedCat.slug || selectedCat.name;
                         const categorySlug = baseSlug.toLowerCase().replace(/\s+/g, '-');
-                        const newSlug = `${randInt}-${categorySlug}-${day}-${month}-${year}`;
-
+                        const newSlug = `${categorySlug}-${day}-${month}-${year}`;
                         const newCategoryName = selectedCat.name;
                         const newExcerpt = categoryExcerpts[newCategoryName] || "";
                         const newContent = categoryContentTemplates[newCategoryName] || "";
