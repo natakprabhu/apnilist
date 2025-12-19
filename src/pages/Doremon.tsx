@@ -834,10 +834,12 @@ const saveArticleProducts = async (articleId: string, products: ArticleProduct[]
         setIsLoadingProducts(true);
         setFilterQuery(""); // Reset filter
         try {
-          const { data, error } = await supabase
-            .from("products")
-            .select("*")
-            .eq("category_id", selectedArticle.category_id);
+         const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("category_id", selectedArticle.category_id)
+          .order("created_at", { ascending: false }); // 👈 newest first
+
             
           if (error) throw error;
           const formattedProducts = (data || []).map(p => ({
