@@ -253,6 +253,14 @@ const AdminDashboard = () => {
       "Bagged",
       "Bagless"
     ],
+    "Washing Machine": [
+      "Front Load Fully-Automatic",
+      "Top Load Fully-Automatic",
+      "Semi-Automatic",
+      "Washer-Dryer Combo",
+      "Inverter Technology",
+      "Built-in Heater & Steam"
+    ],
     "Water Purifier": [
       "RO (Reverse Osmosis)",
       "UV (Ultraviolet)",
@@ -290,6 +298,7 @@ const AdminDashboard = () => {
     "TV": "Upgrade your home entertainment. This guide ranks the best TVs based on picture quality, smart features, and sound performance.",
     "Vaccum Cleaner": "Keep your floors spotless with less effort. Discover the best vacuum cleaners, from powerful corded models to convenient cordless sticks.",
     "Water Purifier": "Ensure your family drinks safe, clean water. We review the top water purifiers, comparing RO, UV, and UF technologies.",
+    "Washing Machine": "Get perfectly clean clothes with zero effort. We compare the best front load, top load, and semi-automatic washing machines for every family size and budget.",
   };
 
   const categoryContentTemplates: { [key: string]: string } = {
@@ -313,6 +322,8 @@ A good refrigerator keeps your food fresh and can lower energy bills. Single-doo
 Upgrading your home entertainment setup means choosing between LED, QLED, and OLED panels. Standard 4K LED TVs from Mi or TCL offer great value, starting around ₹25,000. QLEDs from Samsung provide brighter, more vibrant colors, while OLEDs from Sony and LG are premium (starting ₹80,000+) and offer perfect blacks and the best contrast for a true cinematic experience.`,
     "Vaccum Cleaner": `
 Keeping your floors spotless is easier with the right vacuum. Options range from portable handhelds (starting at ₹2,000) to powerful canister vacuums from Eureka Forbes. Lightweight, cordless stick vacuums are very convenient, with premium brands like Dyson offering high-end performance. Robotic vacuums offer automated cleaning for daily maintenance.`,
+"Washing Machine": `
+Choosing the right washing machine depends on your laundry habits and space. The main types include Front Load Fully-Automatic (best for fabric care and water efficiency), Top Load Fully-Automatic (more ergonomic and faster), and Semi-Automatic (durable and budget-friendly). Advanced features like Inverter Technology for silent operation and Built-in Heaters for hygienic steam washes are now common in top models from brands like LG, Samsung, Bosch, and IFB. Prices range from ₹8,000 for basic semi-automatic units to over ₹60,000 for high-capacity washer-dryer combos.`,
     "Water Purifier": `
 Ensuring safe drinking water in India often requires a purifier. The technology you need depends on your water source. RO (Reverse Osmosis) is essential for hard water, while UV (Ultraviolet) kills bacteria and viruses. Top brands like Kent, Aquaguard, and Pureit often combine these in RO+UV models, which typically range from ₹8,0g00 to ₹20,000.`,
   };
