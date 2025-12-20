@@ -9,6 +9,7 @@ import refrigeratorImg from "@/assets/categories/refrigerator.jpg";
 import tvImg from "@/assets/categories/tv.jpg";
 import vacuumCleanerImg from "@/assets/categories/vacuum-cleaner.jpg";
 import waterPurifierImg from "@/assets/categories/water-purifier.jpg";
+import washingMachineImg from "@/assets/categories/washing-machine.jpg"; // Added Import
 
 export const categoryImages: Record<string, string> = {
   "Air Purifier": airPurifierImg,
@@ -23,7 +24,7 @@ export const categoryImages: Record<string, string> = {
   "Vacuum Cleaner": vacuumCleanerImg,
   "Vacuum Cleaner": vacuumCleanerImg,
   "Vaccum Cleaner": vacuumCleanerImg,
-
+  "Washing Machine": washingMachineImg,
   "Water Purifier": waterPurifierImg,
 };
 
