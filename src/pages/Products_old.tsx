@@ -7,12 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { Search, Plus, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Plus, Pencil, Trash2, ChevronLeft, ChevronRight, ArrowUpDown, Check, X, Loader2 } from "lucide-react";
 
 type Product = {
   id: string;
@@ -23,6 +25,8 @@ type Product = {
   image: string | null;
   rating: number | null;
   short_description: string | null;
+  created_at: string;
+  processed: boolean;
 };
 
 const ITEMS_PER_PAGE = 10;
@@ -40,16 +44,26 @@ const Products = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [priceLoading, setPriceLoading] = useState(false); // New state for loading prices
+  
+  // Sorting State
+  const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: 'asc' | 'desc' } | null>({
+    key: 'created_at',
+    direction: 'desc'
+  });
+
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
     image: "",
     amazon_link: "",
     flipkart_link: "",
+    processed: false,
+    amazon_price: "", // New Field for price input
+    flipkart_price: "", // New Field for price input
   });
 
   useEffect(() => {
-    // Wait for auth to finish loading
     if (authLoading) return;
 
     const checkAdmin = async () => {
@@ -93,8 +107,8 @@ const Products = () => {
     try {
       const { data, error } = await supabase
         .from("products")
-        .select("id, name, slug, amazon_link, flipkart_link, image, rating, short_description")
-        .order("name");
+        .select("id, name, slug, amazon_link, flipkart_link, image, rating, short_description, created_at, processed")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setProducts(data || []);
@@ -122,21 +136,82 @@ const Products = () => {
     }
   }, [searchQuery, products]);
 
-  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+  // Sorting Logic
+  const handleSort = (key: keyof Product) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (!sortConfig) return 0;
+    const { key, direction } = sortConfig;
+    
+    // Handle booleans (processed)
+    if (typeof a[key] === 'boolean' && typeof b[key] === 'boolean') {
+      return direction === 'asc' 
+        ? (a[key] === b[key] ? 0 : a[key] ? 1 : -1)
+        : (a[key] === b[key] ? 0 : a[key] ? -1 : 1);
+    }
+
+    // Handle null values
+    if (a[key] === null) return 1;
+    if (b[key] === null) return -1;
+    
+    // Compare
+    if (a[key]! < b[key]!) return direction === 'asc' ? -1 : 1;
+    if (a[key]! > b[key]!) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const totalPages = Math.ceil(sortedProducts.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentProducts = filteredProducts.slice(startIndex, endIndex);
+  const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = async (product: Product) => {
     setEditingProduct(product);
-    setFormData({
+    setPriceLoading(true); // Start loading
+
+    // Default form data without prices initially
+    const initialData = {
       name: product.name,
       slug: product.slug,
       image: product.image || "",
       amazon_link: product.amazon_link || "",
       flipkart_link: product.flipkart_link || "",
-    });
+      processed: product.processed || false,
+      amazon_price: "",
+      flipkart_price: "",
+    };
+
+    setFormData(initialData);
     setIsEditDialogOpen(true);
+
+    try {
+      // Fetch the latest price from history
+      const { data: priceHistory, error } = await supabase
+        .from("product_price_history")
+        .select("amazon_price, flipkart_price")
+        .eq("product_id", product.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!error && priceHistory) {
+        setFormData(prev => ({
+          ...prev,
+          amazon_price: priceHistory.amazon_price?.toString() || "",
+          flipkart_price: priceHistory.flipkart_price?.toString() || ""
+        }));
+      }
+    } catch (err) {
+      console.error("Error fetching price history", err);
+    } finally {
+      setPriceLoading(false); // Stop loading
+    }
   };
 
   const handleDelete = async (productId: string, productName: string) => {
@@ -178,7 +253,8 @@ const Products = () => {
     }
 
     try {
-      const { error } = await supabase
+      // 1. Update Product Details
+      const { error: productError } = await supabase
         .from("products")
         .update({
           name: formData.name,
@@ -186,14 +262,33 @@ const Products = () => {
           image: formData.image || null,
           amazon_link: formData.amazon_link || null,
           flipkart_link: formData.flipkart_link || null,
+          processed: formData.processed,
         })
         .eq("id", editingProduct.id);
 
-      if (error) throw error;
+      if (productError) throw productError;
+
+      // 2. Insert New Price History if provided
+      const amazonPrice = parseFloat(formData.amazon_price);
+      const flipkartPrice = parseFloat(formData.flipkart_price);
+
+      // Only insert if at least one price is valid
+      if (!isNaN(amazonPrice) || !isNaN(flipkartPrice)) {
+        const { error: priceError } = await supabase
+          .from("product_price_history")
+          .insert({
+            product_id: editingProduct.id,
+            amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
+            flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
+            // created_at is automatic
+          });
+        
+        if (priceError) console.error("Error updating price history:", priceError);
+      }
 
       toast({
         title: "Success",
-        description: "Product updated successfully",
+        description: "Product and prices updated successfully",
       });
 
       setIsEditDialogOpen(false);
@@ -219,7 +314,8 @@ const Products = () => {
     }
 
     try {
-      const { error } = await supabase
+      // 1. Insert Product
+      const { data: newProduct, error: productError } = await supabase
         .from("products")
         .insert({
           name: formData.name,
@@ -227,9 +323,28 @@ const Products = () => {
           image: formData.image || null,
           amazon_link: formData.amazon_link || null,
           flipkart_link: formData.flipkart_link || null,
-        });
+          processed: formData.processed,
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (productError) throw productError;
+
+      // 2. Insert Initial Price if provided
+      if (newProduct) {
+        const amazonPrice = parseFloat(formData.amazon_price);
+        const flipkartPrice = parseFloat(formData.flipkart_price);
+
+        if (!isNaN(amazonPrice) || !isNaN(flipkartPrice)) {
+           await supabase
+            .from("product_price_history")
+            .insert({
+              product_id: newProduct.id,
+              amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
+              flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
+            });
+        }
+      }
 
       toast({
         title: "Success",
@@ -237,7 +352,10 @@ const Products = () => {
       });
 
       setIsAddDialogOpen(false);
-      setFormData({ name: "", slug: "", image: "", amazon_link: "", flipkart_link: "" });
+      setFormData({ 
+        name: "", slug: "", image: "", amazon_link: "", flipkart_link: "", processed: false,
+        amazon_price: "", flipkart_price: ""
+      });
       await fetchProducts();
     } catch (error: any) {
       toast({
@@ -253,7 +371,7 @@ const Products = () => {
       <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
-          <p className="text-muted-foreground">Loading...</p>
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </main>
         <Footer />
       </div>
@@ -266,7 +384,7 @@ const Products = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <SEO 
         title="Products Management"
-        description="Browse and manage products. Find detailed information about electronics, appliances, and more."
+        description="Browse and manage products."
         canonical="/products"
       />
       <Header />
@@ -284,29 +402,33 @@ const Products = () => {
                       Add Product
                     </Button>
                   </DialogTrigger>
-                  <DialogContent>
+                  <DialogContent className="max-w-2xl">
                     <DialogHeader>
                       <DialogTitle>Add New Product</DialogTitle>
                     </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="add-name">Name *</Label>
-                        <Input
-                          id="add-name"
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="Product name"
-                        />
+                    <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto px-1">
+                      {/* Standard Fields */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="add-name">Name *</Label>
+                          <Input
+                            id="add-name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            placeholder="Product name"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="add-slug">Slug *</Label>
+                          <Input
+                            id="add-slug"
+                            value={formData.slug}
+                            onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                            placeholder="product-slug"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="add-slug">Slug *</Label>
-                        <Input
-                          id="add-slug"
-                          value={formData.slug}
-                          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                          placeholder="product-slug"
-                        />
-                      </div>
+
                       <div className="space-y-2">
                         <Label htmlFor="add-image">Image URL *</Label>
                         <Input
@@ -316,24 +438,61 @@ const Products = () => {
                           placeholder="https://example.com/image.jpg"
                         />
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="add-amazon">Amazon Link</Label>
-                        <Input
-                          id="add-amazon"
-                          value={formData.amazon_link}
-                          onChange={(e) => setFormData({ ...formData, amazon_link: e.target.value })}
-                          placeholder="https://amazon.in/..."
-                        />
+
+                      {/* Links */}
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="add-amazon">Amazon Link</Label>
+                          <Input
+                            id="add-amazon"
+                            value={formData.amazon_link}
+                            onChange={(e) => setFormData({ ...formData, amazon_link: e.target.value })}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="add-flipkart">Flipkart Link</Label>
+                          <Input
+                            id="add-flipkart"
+                            value={formData.flipkart_link}
+                            onChange={(e) => setFormData({ ...formData, flipkart_link: e.target.value })}
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="add-flipkart">Flipkart Link</Label>
-                        <Input
-                          id="add-flipkart"
-                          value={formData.flipkart_link}
-                          onChange={(e) => setFormData({ ...formData, flipkart_link: e.target.value })}
-                          placeholder="https://flipkart.com/..."
-                        />
+                      
+                      {/* Price Inputs */}
+                      <div className="grid grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
+                         <div className="space-y-2">
+                          <Label htmlFor="add-amazon-price" className="text-orange-600 font-semibold">Amazon Price (₹)</Label>
+                          <Input
+                            id="add-amazon-price"
+                            type="number"
+                            value={formData.amazon_price}
+                            onChange={(e) => setFormData({ ...formData, amazon_price: e.target.value })}
+                            placeholder="e.g. 999"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="add-flipkart-price" className="text-blue-600 font-semibold">Flipkart Price (₹)</Label>
+                          <Input
+                            id="add-flipkart-price"
+                            type="number"
+                            value={formData.flipkart_price}
+                            onChange={(e) => setFormData({ ...formData, flipkart_price: e.target.value })}
+                            placeholder="e.g. 899"
+                          />
+                        </div>
                       </div>
+
+                      {/* Processed Switch */}
+                      <div className="flex items-center space-x-2 border p-3 rounded-md">
+                        <Switch
+                          id="add-processed"
+                          checked={formData.processed}
+                          onCheckedChange={(checked) => setFormData({ ...formData, processed: checked })}
+                        />
+                        <Label htmlFor="add-processed">Mark as Processed</Label>
+                      </div>
+
                     </div>
                     <DialogFooter>
                       <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
@@ -346,6 +505,7 @@ const Products = () => {
               </div>
             </CardHeader>
             <CardContent>
+              {/* Table rendering code remains the same as before... */}
               <div className="space-y-4">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -361,17 +521,34 @@ const Products = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="w-[10%]">Image</TableHead>
-                        <TableHead className="w-[30%]">Name</TableHead>
-                        <TableHead className="w-[25%]">Slug</TableHead>
-                        <TableHead className="w-[15%] text-center">Links</TableHead>
-                        <TableHead className="w-[20%] text-right">Actions</TableHead>
+                        <TableHead className="w-[8%]">Image</TableHead>
+                        <TableHead className="w-[25%]">Name</TableHead>
+                        <TableHead 
+                          className="w-[12%] cursor-pointer hover:bg-muted/50 transition-colors"
+                          onClick={() => handleSort('processed')}
+                        >
+                          <div className="flex items-center gap-2">
+                            Processed
+                            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </TableHead>
+                        <TableHead 
+                          className="w-[15%] cursor-pointer hover:bg-muted/50 transition-colors"
+                          onClick={() => handleSort('created_at')}
+                        >
+                          <div className="flex items-center gap-2">
+                            Created At
+                            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        </TableHead>
+                        <TableHead className="w-[10%] text-center">Links</TableHead>
+                        <TableHead className="w-[15%] text-right">Actions</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {currentProducts.length === 0 ? (
                         <TableRow>
-                          <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                          <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                             {searchQuery ? "No products found matching your search" : "No products available"}
                           </TableCell>
                         </TableRow>
@@ -380,51 +557,50 @@ const Products = () => {
                           <TableRow key={product.id}>
                             <TableCell>
                               {product.image ? (
-                                <img src={product.image} alt={product.name} className="h-12 w-12 object-cover rounded" />
+                                <img src={product.image} alt={product.name} className="h-10 w-10 object-cover rounded" />
                               ) : (
-                                <div className="h-12 w-12 bg-muted rounded flex items-center justify-center text-xs">
+                                <div className="h-10 w-10 bg-muted rounded flex items-center justify-center text-xs">
                                   No img
                                 </div>
                               )}
                             </TableCell>
-                            <TableCell className="font-medium">{product.name}</TableCell>
-                            <TableCell className="text-muted-foreground">{product.slug}</TableCell>
+                            <TableCell className="font-medium">
+                              <div className="flex flex-col">
+                                <span>{product.name}</span>
+                                <span className="text-xs text-muted-foreground truncate max-w-[200px]">{product.slug}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              {product.processed ? (
+                                <Badge variant="default" className="bg-green-600 hover:bg-green-700">
+                                  <Check className="w-3 h-3 mr-1" /> Processed
+                                </Badge>
+                              ) : (
+                                <Badge variant="secondary">
+                                  <X className="w-3 h-3 mr-1" /> Pending
+                                </Badge>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {product.created_at 
+                                ? new Date(product.created_at).toLocaleDateString() + " " + new Date(product.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                                : '-'
+                              }
+                            </TableCell>
                             <TableCell className="text-center">
                               <div className="flex gap-1 justify-center">
-                                {product.amazon_link && (
-                                  <span className="inline-block px-2 py-1 text-xs bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400 rounded">
-                                    A
-                                  </span>
-                                )}
-                                {product.flipkart_link && (
-                                  <span className="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 rounded">
-                                    F
-                                  </span>
-                                )}
-                                {!product.amazon_link && !product.flipkart_link && (
-                                  <span className="text-xs text-muted-foreground">None</span>
-                                )}
+                                {product.amazon_link && <span className="text-xs font-bold text-orange-600">Amz</span>}
+                                {product.flipkart_link && <span className="text-xs font-bold text-blue-600">Flp</span>}
+                                {!product.amazon_link && !product.flipkart_link && <span className="text-xs text-muted-foreground">-</span>}
                               </div>
                             </TableCell>
                             <TableCell className="text-right">
                               <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => handleEdit(product)}
-                                  className="gap-2"
-                                >
-                                  <Pencil className="h-3 w-3" />
-                                  Edit
+                                <Button variant="outline" size="sm" onClick={() => handleEdit(product)} className="h-8 w-8 p-0">
+                                  <Pencil className="h-4 w-4" />
                                 </Button>
-                                <Button
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => handleDelete(product.id, product.name)}
-                                  className="gap-2"
-                                >
-                                  <Trash2 className="h-3 w-3" />
-                                  Delete
+                                <Button variant="destructive" size="sm" onClick={() => handleDelete(product.id, product.name)} className="h-8 w-8 p-0">
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
                               </div>
                             </TableCell>
@@ -436,10 +612,9 @@ const Products = () => {
                 </div>
 
                 {totalPages > 1 && (
-                  <div className="flex items-center justify-between">
+                   <div className="flex items-center justify-between mt-4">
                     <p className="text-sm text-muted-foreground">
-                      Showing {startIndex + 1} to {Math.min(endIndex, filteredProducts.length)} of{" "}
-                      {filteredProducts.length} products
+                      Page {currentPage} of {totalPages}
                     </p>
                     <div className="flex gap-2">
                       <Button
@@ -447,20 +622,16 @@ const Products = () => {
                         size="sm"
                         onClick={() => setCurrentPage(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="gap-2"
                       >
-                        <ChevronLeft className="h-4 w-4" />
-                        Previous
+                        <ChevronLeft className="h-4 w-4 mr-1" /> Prev
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setCurrentPage(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="gap-2"
                       >
-                        Next
-                        <ChevronRight className="h-4 w-4" />
+                        Next <ChevronRight className="h-4 w-4 ml-1" />
                       </Button>
                     </div>
                   </div>
@@ -471,56 +642,100 @@ const Products = () => {
         </div>
       </main>
 
+      {/* Edit Dialog - Now includes Price Inputs */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit Product</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="edit-name">Name *</Label>
-              <Input
-                id="edit-name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Product name"
-              />
+          <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto px-1">
+            <div className="grid grid-cols-2 gap-4">
+               <div className="space-y-2">
+                <Label htmlFor="edit-name">Name *</Label>
+                <Input
+                  id="edit-name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-slug">Slug *</Label>
+                <Input
+                  id="edit-slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                />
+              </div>
             </div>
+           
             <div className="space-y-2">
-              <Label htmlFor="edit-slug">Slug *</Label>
-              <Input
-                id="edit-slug"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="product-slug"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-image">Image URL *</Label>
+              <Label htmlFor="edit-image">Image URL</Label>
               <Input
                 id="edit-image"
                 value={formData.image}
                 onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                placeholder="https://example.com/image.jpg"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-amazon">Amazon Link</Label>
-              <Input
-                id="edit-amazon"
-                value={formData.amazon_link}
-                onChange={(e) => setFormData({ ...formData, amazon_link: e.target.value })}
-                placeholder="https://amazon.in/..."
-              />
+
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-amazon">Amazon Link</Label>
+                  <Input
+                    id="edit-amazon"
+                    value={formData.amazon_link}
+                    onChange={(e) => setFormData({ ...formData, amazon_link: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-flipkart">Flipkart Link</Label>
+                  <Input
+                    id="edit-flipkart"
+                    value={formData.flipkart_link}
+                    onChange={(e) => setFormData({ ...formData, flipkart_link: e.target.value })}
+                  />
+                </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-flipkart">Flipkart Link</Label>
-              <Input
-                id="edit-flipkart"
-                value={formData.flipkart_link}
-                onChange={(e) => setFormData({ ...formData, flipkart_link: e.target.value })}
-                placeholder="https://flipkart.com/..."
+
+            {/* Price Inputs in Edit Dialog */}
+            <div className="grid grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-amazon-price" className="text-orange-600 font-semibold flex justify-between">
+                    Amazon Price (₹) 
+                    {priceLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                  </Label>
+                  <Input
+                    id="edit-amazon-price"
+                    type="number"
+                    value={formData.amazon_price}
+                    onChange={(e) => setFormData({ ...formData, amazon_price: e.target.value })}
+                    placeholder={priceLoading ? "Loading..." : "Current Price"}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-flipkart-price" className="text-blue-600 font-semibold flex justify-between">
+                    Flipkart Price (₹)
+                    {priceLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                  </Label>
+                  <Input
+                    id="edit-flipkart-price"
+                    type="number"
+                    value={formData.flipkart_price}
+                    onChange={(e) => setFormData({ ...formData, flipkart_price: e.target.value })}
+                    placeholder={priceLoading ? "Loading..." : "Current Price"}
+                  />
+                </div>
+                <p className="col-span-2 text-xs text-muted-foreground">
+                  Updating these values will add a new entry to the price history timeline.
+                </p>
+            </div>
+            
+            <div className="flex items-center space-x-2 border p-3 rounded-md">
+              <Switch
+                id="edit-processed"
+                checked={formData.processed}
+                onCheckedChange={(checked) => setFormData({ ...formData, processed: checked })}
               />
+              <Label htmlFor="edit-processed">Mark as Processed</Label>
             </div>
           </div>
           <DialogFooter>
