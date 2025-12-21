@@ -46,7 +46,6 @@ const Products = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [priceLoading, setPriceLoading] = useState(false);
    
-  // Sorting State
   const [sortConfig, setSortConfig] = useState<{ key: keyof Product; direction: 'asc' | 'desc' } | null>({
     key: 'created_at',
     direction: 'desc'
@@ -123,7 +122,6 @@ const Products = () => {
     }
   };
 
-  // --- Handle Direct Toggle Status ---
   const handleToggleProcessed = async (productId: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
     setProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: newStatus } : p));
@@ -167,7 +165,6 @@ const Products = () => {
     }
   }, [searchQuery, products]);
 
-  // Sorting Logic
   const handleSort = (key: keyof Product) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -199,7 +196,7 @@ const Products = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
-  // --- FIXED HANDLE EDIT ---
+  // --- THIS IS THE CRITICAL FIX ---
   const handleEdit = async (product: Product) => {
     setEditingProduct(product);
     setPriceLoading(true);
@@ -220,20 +217,28 @@ const Products = () => {
     setIsEditDialogOpen(true);
 
     try {
+      // FIX: Added 'original_price' to the select query
       const { data: priceHistory, error } = await supabase
         .from("product_price_history")
-        .select("amazon_price, flipkart_price, original_price") // <--- ADDED original_price HERE
+        .select("amazon_price, flipkart_price, original_price") 
         .eq("product_id", product.id)
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
 
-      if (!error && priceHistory) {
+      if (error) {
+        console.error("Error fetching price history:", error);
+      }
+
+      if (priceHistory) {
+        // Use 'as any' to read the data even if types.ts is missing the column definition
+        const historyData = priceHistory as any;
+        
         setFormData(prev => ({
           ...prev,
-          amazon_price: priceHistory.amazon_price?.toString() || "",
-          flipkart_price: priceHistory.flipkart_price?.toString() || "",
-          original_price: priceHistory.original_price?.toString() || "" 
+          amazon_price: historyData.amazon_price?.toString() || "",
+          flipkart_price: historyData.flipkart_price?.toString() || "",
+          original_price: historyData.original_price?.toString() || "" 
         }));
       }
     } catch (err) {
@@ -300,16 +305,18 @@ const Products = () => {
       const flipkartPrice = parseFloat(formData.flipkart_price);
       const originalPrice = parseFloat(formData.original_price);
 
-      // Only add price history if at least one value is present
-      if (!isNaN(amazonPrice) || !isNaN(flipkartPrice) || !isNaN(originalPrice)) {
+      // Cast payload to 'any' to allow 'original_price' insertion
+      const payload: any = {
+        product_id: editingProduct.id,
+        amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
+        flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
+        original_price: isNaN(originalPrice) ? null : originalPrice,
+      };
+
+      if (payload.amazon_price !== null || payload.flipkart_price !== null || payload.original_price !== null) {
         const { error: priceError } = await supabase
           .from("product_price_history")
-          .insert({
-            product_id: editingProduct.id,
-            amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
-            flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
-            original_price: isNaN(originalPrice) ? null : originalPrice,
-          });
+          .insert(payload);
         
         if (priceError) console.error("Error updating price history:", priceError);
       }
@@ -362,15 +369,17 @@ const Products = () => {
         const flipkartPrice = parseFloat(formData.flipkart_price);
         const originalPrice = parseFloat(formData.original_price);
 
-        if (!isNaN(amazonPrice) || !isNaN(flipkartPrice) || !isNaN(originalPrice)) {
+        const payload: any = {
+          product_id: newProduct.id,
+          amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
+          flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
+          original_price: isNaN(originalPrice) ? null : originalPrice,
+        };
+
+        if (payload.amazon_price !== null || payload.flipkart_price !== null || payload.original_price !== null) {
            await supabase
             .from("product_price_history")
-            .insert({
-              product_id: newProduct.id,
-              amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
-              flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
-              original_price: isNaN(originalPrice) ? null : originalPrice,
-            });
+            .insert(payload);
         }
       }
 
@@ -435,7 +444,6 @@ const Products = () => {
                       <DialogTitle>Add New Product</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4 py-4 max-h-[70vh] overflow-y-auto px-1">
-                      {/* Standard Fields */}
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="add-name">Name *</Label>
@@ -486,7 +494,6 @@ const Products = () => {
                         </div>
                       </div>
                       
-                      {/* Price Inputs */}
                       <div className="space-y-4 bg-muted/20 p-4 rounded-lg border">
                           <div className="space-y-2">
                             <Label htmlFor="add-original-price" className="text-muted-foreground font-semibold">MRP / Original Price (₹)</Label>
