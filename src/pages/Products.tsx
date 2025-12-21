@@ -61,7 +61,7 @@ const Products = () => {
     processed: false,
     amazon_price: "",
     flipkart_price: "",
-    original_price: "", // RESTORED: Original Price field
+    original_price: "",
   });
 
   useEffect(() => {
@@ -123,11 +123,9 @@ const Products = () => {
     }
   };
 
-  // --- Handle Direct Toggle Status (New Feature) ---
+  // --- Handle Direct Toggle Status ---
   const handleToggleProcessed = async (productId: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
-
-    // Optimistically update UI
     setProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: newStatus } : p));
     setFilteredProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: newStatus } : p));
 
@@ -144,7 +142,6 @@ const Products = () => {
         description: `Product marked as ${newStatus ? "Processed" : "Pending"}`,
       });
     } catch (error: any) {
-      // Revert on error
       setProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: currentStatus } : p));
       setFilteredProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: currentStatus } : p));
       
@@ -202,6 +199,7 @@ const Products = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
+  // --- FIXED HANDLE EDIT ---
   const handleEdit = async (product: Product) => {
     setEditingProduct(product);
     setPriceLoading(true);
@@ -222,10 +220,9 @@ const Products = () => {
     setIsEditDialogOpen(true);
 
     try {
-      // RESTORED: Fetch original_price along with other prices
       const { data: priceHistory, error } = await supabase
         .from("product_price_history")
-        .select("amazon_price, flipkart_price, original_price")
+        .select("amazon_price, flipkart_price, original_price") // <--- ADDED original_price HERE
         .eq("product_id", product.id)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -236,7 +233,7 @@ const Products = () => {
           ...prev,
           amazon_price: priceHistory.amazon_price?.toString() || "",
           flipkart_price: priceHistory.flipkart_price?.toString() || "",
-          original_price: priceHistory.original_price?.toString() || "" // RESTORED
+          original_price: priceHistory.original_price?.toString() || "" 
         }));
       }
     } catch (err) {
@@ -301,9 +298,9 @@ const Products = () => {
 
       const amazonPrice = parseFloat(formData.amazon_price);
       const flipkartPrice = parseFloat(formData.flipkart_price);
-      const originalPrice = parseFloat(formData.original_price); // RESTORED
+      const originalPrice = parseFloat(formData.original_price);
 
-      // RESTORED: Check for originalPrice as well
+      // Only add price history if at least one value is present
       if (!isNaN(amazonPrice) || !isNaN(flipkartPrice) || !isNaN(originalPrice)) {
         const { error: priceError } = await supabase
           .from("product_price_history")
@@ -311,7 +308,7 @@ const Products = () => {
             product_id: editingProduct.id,
             amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
             flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
-            original_price: isNaN(originalPrice) ? null : originalPrice, // RESTORED
+            original_price: isNaN(originalPrice) ? null : originalPrice,
           });
         
         if (priceError) console.error("Error updating price history:", priceError);
@@ -363,7 +360,7 @@ const Products = () => {
       if (newProduct) {
         const amazonPrice = parseFloat(formData.amazon_price);
         const flipkartPrice = parseFloat(formData.flipkart_price);
-        const originalPrice = parseFloat(formData.original_price); // RESTORED
+        const originalPrice = parseFloat(formData.original_price);
 
         if (!isNaN(amazonPrice) || !isNaN(flipkartPrice) || !isNaN(originalPrice)) {
            await supabase
@@ -372,7 +369,7 @@ const Products = () => {
               product_id: newProduct.id,
               amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
               flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
-              original_price: isNaN(originalPrice) ? null : originalPrice, // RESTORED
+              original_price: isNaN(originalPrice) ? null : originalPrice,
             });
         }
       }
@@ -470,7 +467,6 @@ const Products = () => {
                         />
                       </div>
 
-                      {/* Links */}
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="add-amazon">Amazon Link</Label>
@@ -492,7 +488,6 @@ const Products = () => {
                       
                       {/* Price Inputs */}
                       <div className="space-y-4 bg-muted/20 p-4 rounded-lg border">
-                          {/* RESTORED: MRP Input */}
                           <div className="space-y-2">
                             <Label htmlFor="add-original-price" className="text-muted-foreground font-semibold">MRP / Original Price (₹)</Label>
                             <Input 
@@ -528,7 +523,6 @@ const Products = () => {
                           </div>
                       </div>
 
-                      {/* Processed Switch */}
                       <div className="flex items-center space-x-2 border p-3 rounded-md">
                         <Switch
                           id="add-processed"
@@ -615,7 +609,6 @@ const Products = () => {
                               </div>
                             </TableCell>
                             
-                            {/* Toggle Switch in Table */}
                             <TableCell>
                               <div className="flex items-center space-x-2">
                                 <Switch
@@ -690,7 +683,6 @@ const Products = () => {
         </div>
       </main>
 
-      {/* Edit Dialog - RESTORED MRP Input */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -744,9 +736,7 @@ const Products = () => {
                 </div>
             </div>
 
-            {/* Price Inputs in Edit Dialog */}
             <div className="space-y-4 bg-muted/20 p-4 rounded-lg border">
-                {/* RESTORED: MRP Input */}
                 <div className="space-y-2">
                   <Label htmlFor="edit-original-price" className="text-muted-foreground font-semibold flex justify-between">
                     MRP / Original Price (₹) 
