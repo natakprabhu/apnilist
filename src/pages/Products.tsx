@@ -61,6 +61,7 @@ const Products = () => {
     processed: false,
     amazon_price: "",
     flipkart_price: "",
+    original_price: "", // RESTORED: Original Price field
   });
 
   useEffect(() => {
@@ -122,16 +123,15 @@ const Products = () => {
     }
   };
 
-  // --- NEW: Handle Direct Toggle Status ---
+  // --- Handle Direct Toggle Status (New Feature) ---
   const handleToggleProcessed = async (productId: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
 
-    // 1. Optimistically update the UI so it feels instant
+    // Optimistically update UI
     setProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: newStatus } : p));
     setFilteredProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: newStatus } : p));
 
     try {
-      // 2. Update Supabase
       const { error } = await supabase
         .from("products")
         .update({ processed: newStatus })
@@ -144,7 +144,7 @@ const Products = () => {
         description: `Product marked as ${newStatus ? "Processed" : "Pending"}`,
       });
     } catch (error: any) {
-      // 3. Revert if there was an error
+      // Revert on error
       setProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: currentStatus } : p));
       setFilteredProducts(prev => prev.map(p => p.id === productId ? { ...p, processed: currentStatus } : p));
       
@@ -155,7 +155,6 @@ const Products = () => {
       });
     }
   };
-  // ----------------------------------------
 
   useEffect(() => {
     if (searchQuery.trim() === "") {
@@ -216,15 +215,17 @@ const Products = () => {
       processed: product.processed || false,
       amazon_price: "",
       flipkart_price: "",
+      original_price: "",
     };
 
     setFormData(initialData);
     setIsEditDialogOpen(true);
 
     try {
+      // RESTORED: Fetch original_price along with other prices
       const { data: priceHistory, error } = await supabase
         .from("product_price_history")
-        .select("amazon_price, flipkart_price")
+        .select("amazon_price, flipkart_price, original_price")
         .eq("product_id", product.id)
         .order("created_at", { ascending: false })
         .limit(1)
@@ -234,7 +235,8 @@ const Products = () => {
         setFormData(prev => ({
           ...prev,
           amazon_price: priceHistory.amazon_price?.toString() || "",
-          flipkart_price: priceHistory.flipkart_price?.toString() || ""
+          flipkart_price: priceHistory.flipkart_price?.toString() || "",
+          original_price: priceHistory.original_price?.toString() || "" // RESTORED
         }));
       }
     } catch (err) {
@@ -299,14 +301,17 @@ const Products = () => {
 
       const amazonPrice = parseFloat(formData.amazon_price);
       const flipkartPrice = parseFloat(formData.flipkart_price);
+      const originalPrice = parseFloat(formData.original_price); // RESTORED
 
-      if (!isNaN(amazonPrice) || !isNaN(flipkartPrice)) {
+      // RESTORED: Check for originalPrice as well
+      if (!isNaN(amazonPrice) || !isNaN(flipkartPrice) || !isNaN(originalPrice)) {
         const { error: priceError } = await supabase
           .from("product_price_history")
           .insert({
             product_id: editingProduct.id,
             amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
             flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
+            original_price: isNaN(originalPrice) ? null : originalPrice, // RESTORED
           });
         
         if (priceError) console.error("Error updating price history:", priceError);
@@ -358,14 +363,16 @@ const Products = () => {
       if (newProduct) {
         const amazonPrice = parseFloat(formData.amazon_price);
         const flipkartPrice = parseFloat(formData.flipkart_price);
+        const originalPrice = parseFloat(formData.original_price); // RESTORED
 
-        if (!isNaN(amazonPrice) || !isNaN(flipkartPrice)) {
+        if (!isNaN(amazonPrice) || !isNaN(flipkartPrice) || !isNaN(originalPrice)) {
            await supabase
             .from("product_price_history")
             .insert({
               product_id: newProduct.id,
               amazon_price: isNaN(amazonPrice) ? null : amazonPrice,
               flipkart_price: isNaN(flipkartPrice) ? null : flipkartPrice,
+              original_price: isNaN(originalPrice) ? null : originalPrice, // RESTORED
             });
         }
       }
@@ -378,7 +385,7 @@ const Products = () => {
       setIsAddDialogOpen(false);
       setFormData({ 
         name: "", slug: "", image: "", amazon_link: "", flipkart_link: "", processed: false,
-        amazon_price: "", flipkart_price: ""
+        amazon_price: "", flipkart_price: "", original_price: ""
       });
       await fetchProducts();
     } catch (error: any) {
@@ -484,27 +491,41 @@ const Products = () => {
                       </div>
                       
                       {/* Price Inputs */}
-                      <div className="grid grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
+                      <div className="space-y-4 bg-muted/20 p-4 rounded-lg border">
+                          {/* RESTORED: MRP Input */}
                           <div className="space-y-2">
-                          <Label htmlFor="add-amazon-price" className="text-orange-600 font-semibold">Amazon Price (₹)</Label>
-                          <Input
-                            id="add-amazon-price"
-                            type="number"
-                            value={formData.amazon_price}
-                            onChange={(e) => setFormData({ ...formData, amazon_price: e.target.value })}
-                            placeholder="e.g. 999"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="add-flipkart-price" className="text-blue-600 font-semibold">Flipkart Price (₹)</Label>
-                          <Input
-                            id="add-flipkart-price"
-                            type="number"
-                            value={formData.flipkart_price}
-                            onChange={(e) => setFormData({ ...formData, flipkart_price: e.target.value })}
-                            placeholder="e.g. 899"
-                          />
-                        </div>
+                            <Label htmlFor="add-original-price" className="text-muted-foreground font-semibold">MRP / Original Price (₹)</Label>
+                            <Input 
+                              id="add-original-price" 
+                              type="number" 
+                              value={formData.original_price} 
+                              onChange={(e) => setFormData({ ...formData, original_price: e.target.value })} 
+                              placeholder="e.g. 1999" 
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="add-amazon-price" className="text-orange-600 font-semibold">Amazon Price (₹)</Label>
+                              <Input
+                                id="add-amazon-price"
+                                type="number"
+                                value={formData.amazon_price}
+                                onChange={(e) => setFormData({ ...formData, amazon_price: e.target.value })}
+                                placeholder="e.g. 999"
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="add-flipkart-price" className="text-blue-600 font-semibold">Flipkart Price (₹)</Label>
+                              <Input
+                                id="add-flipkart-price"
+                                type="number"
+                                value={formData.flipkart_price}
+                                onChange={(e) => setFormData({ ...formData, flipkart_price: e.target.value })}
+                                placeholder="e.g. 899"
+                              />
+                            </div>
+                          </div>
                       </div>
 
                       {/* Processed Switch */}
@@ -594,7 +615,7 @@ const Products = () => {
                               </div>
                             </TableCell>
                             
-                            {/* --- NEW: Toggle Switch inside Table --- */}
+                            {/* Toggle Switch in Table */}
                             <TableCell>
                               <div className="flex items-center space-x-2">
                                 <Switch
@@ -607,7 +628,6 @@ const Products = () => {
                                 </span>
                               </div>
                             </TableCell>
-                            {/* -------------------------------------- */}
 
                             <TableCell className="text-sm text-muted-foreground">
                               {product.created_at 
@@ -670,7 +690,7 @@ const Products = () => {
         </div>
       </main>
 
-      {/* Edit Dialog - Now includes Price Inputs */}
+      {/* Edit Dialog - RESTORED MRP Input */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -725,34 +745,51 @@ const Products = () => {
             </div>
 
             {/* Price Inputs in Edit Dialog */}
-            <div className="grid grid-cols-2 gap-4 bg-muted/20 p-4 rounded-lg border">
+            <div className="space-y-4 bg-muted/20 p-4 rounded-lg border">
+                {/* RESTORED: MRP Input */}
                 <div className="space-y-2">
-                  <Label htmlFor="edit-amazon-price" className="text-orange-600 font-semibold flex justify-between">
-                    Amazon Price (₹) 
+                  <Label htmlFor="edit-original-price" className="text-muted-foreground font-semibold flex justify-between">
+                    MRP / Original Price (₹) 
                     {priceLoading && <Loader2 className="h-3 w-3 animate-spin" />}
                   </Label>
-                  <Input
-                    id="edit-amazon-price"
-                    type="number"
-                    value={formData.amazon_price}
-                    onChange={(e) => setFormData({ ...formData, amazon_price: e.target.value })}
-                    placeholder={priceLoading ? "Loading..." : "Current Price"}
+                  <Input 
+                    id="edit-original-price" 
+                    type="number" 
+                    value={formData.original_price} 
+                    onChange={(e) => setFormData({ ...formData, original_price: e.target.value })} 
+                    placeholder="Current MRP" 
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="edit-flipkart-price" className="text-blue-600 font-semibold flex justify-between">
-                    Flipkart Price (₹)
-                    {priceLoading && <Loader2 className="h-3 w-3 animate-spin" />}
-                  </Label>
-                  <Input
-                    id="edit-flipkart-price"
-                    type="number"
-                    value={formData.flipkart_price}
-                    onChange={(e) => setFormData({ ...formData, flipkart_price: e.target.value })}
-                    placeholder={priceLoading ? "Loading..." : "Current Price"}
-                  />
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-amazon-price" className="text-orange-600 font-semibold flex justify-between">
+                        Amazon Price (₹) 
+                        {priceLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                      </Label>
+                      <Input
+                        id="edit-amazon-price"
+                        type="number"
+                        value={formData.amazon_price}
+                        onChange={(e) => setFormData({ ...formData, amazon_price: e.target.value })}
+                        placeholder={priceLoading ? "Loading..." : "Current Price"}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-flipkart-price" className="text-blue-600 font-semibold flex justify-between">
+                        Flipkart Price (₹)
+                        {priceLoading && <Loader2 className="h-3 w-3 animate-spin" />}
+                      </Label>
+                      <Input
+                        id="edit-flipkart-price"
+                        type="number"
+                        value={formData.flipkart_price}
+                        onChange={(e) => setFormData({ ...formData, flipkart_price: e.target.value })}
+                        placeholder={priceLoading ? "Loading..." : "Current Price"}
+                      />
+                    </div>
                 </div>
-                <p className="col-span-2 text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Updating these values will add a new entry to the price history timeline.
                 </p>
             </div>
