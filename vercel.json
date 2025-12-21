@@ -1,11 +1,4 @@
 {
-  "redirects": [
-    {
-      "source": "/sitemap.xml",
-      "destination": "https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/sitemaps/sitemap.xml",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
