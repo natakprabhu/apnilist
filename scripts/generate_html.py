@@ -18,12 +18,38 @@ from selenium.webdriver.support import expected_conditions as EC
 # This prevents Vercel from serving you a broken cached file while you try to generate a new one.
 BASE_URL = "https://www.apnilist.co.in" 
 
+
 # 1. MANUAL LIST: Add new articles here
 MANUAL_SLUGS = [
-    "5-air-purifier-22-11-2025",
+    "laptop-19-12-2025",
+    "mobile-19-12-2025",
+    "tv-19-12-2025",
+    "air-purifier-19-12-2025",
+    "vaccum-cleaner-19-12-2025",
     "chimney-19-12-2025",
+    "refrigerator-19-12-2025",
+    "microwave-19-12-2025",
+    "coffee-maker-19-12-2025",
+    "juicer-19-12-2025",
+    "vaccum-cleaner-20-12-2025",
+    "air-purifier-20-12-2025",
+    "tv-20-12-2025",
+    "mobile-20-12-2025",
+    "laptop-20-12-2025",
+    "juicer-20-12-2025",
+    "coffee-maker-20-12-2025",
+    "microwave-20-12-2025",
+    "refrigerator-20-12-2025",
+    "chimney-20-12-2025",
+    "vaccum-cleaner-wet-dry-20-12-2025",
+    "foldable-mobile-20-12-2025",
+    "washing-machine-20-12-2025",
+    "washing-machine-21-12-2025",
+    "smart-washing-machine-21-12-2025",
+    "semi-autonatic-washing-machine-21-12-2025",
+    "projectors-21-12-2025",
+    "laptop-under-50k-21-12-2025",
 ]
-
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 
