@@ -26,7 +26,7 @@ const MostTrackedSection = () => {
       const { data: productsData } = await supabase
         .from("products")
         .select("id, name, image, amazon_link, flipkart_link, rating")
-        .limit(3);
+        .limit(6);
 
       if (productsData) {
         // Fetch latest prices for each product
@@ -61,7 +61,7 @@ const MostTrackedSection = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-2xl font-bold mb-8">🔥 Most Tracked Products</h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => {
             // Determine best deal
             const hasBothPrices = product.amazon_price && product.flipkart_price;
