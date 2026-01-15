@@ -6,9 +6,32 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award } from "lucide-react";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award, Bell } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+
+type Category = {
+  id: string;
+  name: string;
+  slug: string;
+};
 
 type Product = {
   id: string;
@@ -28,14 +51,32 @@ const ITEMS_PER_PAGE = 12;
 
 const Deals = () => {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Price alert dialog state
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [targetPrice, setTargetPrice] = useState("");
+  const [settingAlert, setSettingAlert] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       try {
+        // Fetch categories
+        const { data: categoriesData } = await supabase
+          .from("categories")
+          .select("id, name, slug")
+          .order("name");
+        
+        if (categoriesData) setCategories(categoriesData);
+
         // Fetch all products with their details
         const { data: productsData, error } = await supabase
           .from("products")
@@ -79,17 +120,28 @@ const Deals = () => {
       }
     };
 
-    fetchProducts();
+    fetchData();
   }, [toast]);
 
-  // Filter products based on search query
+  // Filter products based on search query and category
   const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) return allProducts;
-    const query = searchQuery.toLowerCase();
-    return allProducts.filter(product => 
-      product.name.toLowerCase().includes(query)
-    );
-  }, [allProducts, searchQuery]);
+    let filtered = allProducts;
+    
+    // Filter by category
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(product => product.category_id === selectedCategory);
+    }
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(product => 
+        product.name.toLowerCase().includes(query)
+      );
+    }
+    
+    return filtered;
+  }, [allProducts, searchQuery, selectedCategory]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -98,10 +150,10 @@ const Deals = () => {
     return filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   }, [filteredProducts, currentPage]);
 
-  // Reset to page 1 when search changes
+  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery]);
+  }, [searchQuery, selectedCategory]);
 
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -134,6 +186,65 @@ const Deals = () => {
     return pages;
   };
 
+  const handleSetPriceAlert = (product: Product) => {
+    if (!user) {
+      toast({
+        title: "Login Required",
+        description: "Please login to set price alerts",
+        variant: "destructive",
+      });
+      navigate("/auth");
+      return;
+    }
+    
+    setSelectedProduct(product);
+    const lowestPrice = product.amazon_price && product.flipkart_price 
+      ? Math.min(product.amazon_price, product.flipkart_price)
+      : product.amazon_price || product.flipkart_price;
+    setTargetPrice(lowestPrice ? Math.floor(lowestPrice * 0.9).toString() : "");
+    setAlertDialogOpen(true);
+  };
+
+  const submitPriceAlert = async () => {
+    if (!selectedProduct || !targetPrice || !user) return;
+    
+    setSettingAlert(true);
+    try {
+      const { error } = await supabase
+        .from("price_alerts")
+        .insert({
+          user_id: user.id,
+          product_id: selectedProduct.id,
+          target_price: parseFloat(targetPrice),
+          alert_enabled: true,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Price Alert Set!",
+        description: `We'll notify you when ${selectedProduct.name} drops to ₹${parseInt(targetPrice).toLocaleString()}`,
+      });
+      setAlertDialogOpen(false);
+    } catch (error: any) {
+      if (error.code === '23505') {
+        toast({
+          title: "Alert Already Exists",
+          description: "You already have an alert for this product. Check your alerts page.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to set price alert",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setSettingAlert(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <SEO 
@@ -145,7 +256,7 @@ const Deals = () => {
       
       <main className="flex-1 py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <div className="flex flex-col gap-4 mb-8">
             <div className="flex items-center gap-3">
               <Flame className="h-8 w-8 text-primary" />
               <div>
@@ -156,15 +267,33 @@ const Deals = () => {
               </div>
             </div>
             
-            {/* Search Input */}
-            <div className="relative w-full md:w-80">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products..."
-                className="pl-10"
-              />
+            {/* Filters Row */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Category Filter */}
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue placeholder="All Categories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category.id} value={category.id}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {/* Search Input */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search products..."
+                  className="pl-10"
+                />
+              </div>
             </div>
           </div>
           
@@ -176,7 +305,7 @@ const Deals = () => {
           ) : paginatedProducts.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
-                {searchQuery ? "No products match your search" : "No deals available at the moment"}
+                {searchQuery || selectedCategory !== "all" ? "No products match your filters" : "No deals available at the moment"}
               </p>
             </div>
           ) : (
@@ -250,7 +379,7 @@ const Deals = () => {
 
                         {/* Flipkart Price */}
                         {product.flipkart_price && product.flipkart_link && (
-                          <div className="relative flex items-center justify-between p-2 bg-muted/50 rounded border border-border">
+                          <div className="relative flex items-center justify-between p-2 bg-muted/50 rounded border border-border mb-3">
                             {flipkartIsBest && (
                               <Badge className="absolute -top-2 -right-2 bg-green-600 hover:bg-green-700 text-white text-xs flex items-center gap-1">
                                 <Award size={10} />
@@ -283,9 +412,22 @@ const Deals = () => {
 
                         {/* No price available */}
                         {!product.amazon_price && !product.flipkart_price && (
-                          <p className="text-sm text-muted-foreground text-center py-2">
+                          <p className="text-sm text-muted-foreground text-center py-2 mb-3">
                             Price not available
                           </p>
+                        )}
+
+                        {/* Price Alert Button */}
+                        {(product.amazon_price || product.flipkart_price) && (
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="w-full"
+                            onClick={() => handleSetPriceAlert(product)}
+                          >
+                            <Bell className="h-4 w-4 mr-2" />
+                            Set Price Alert
+                          </Button>
                         )}
                       </CardContent>
                     </Card>
@@ -337,6 +479,49 @@ const Deals = () => {
           )}
         </div>
       </main>
+
+      {/* Price Alert Dialog */}
+      <Dialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Set Price Alert</DialogTitle>
+            <DialogDescription>
+              {selectedProduct && (
+                <>
+                  Get notified when <strong>{selectedProduct.name}</strong> drops to your target price.
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4">
+            <label className="text-sm font-medium mb-2 block">Target Price (₹)</label>
+            <Input
+              type="number"
+              value={targetPrice}
+              onChange={(e) => setTargetPrice(e.target.value)}
+              placeholder="Enter your target price"
+              min="1"
+            />
+            {selectedProduct && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Current lowest price: ₹{(
+                  selectedProduct.amazon_price && selectedProduct.flipkart_price 
+                    ? Math.min(selectedProduct.amazon_price, selectedProduct.flipkart_price)
+                    : selectedProduct.amazon_price || selectedProduct.flipkart_price || 0
+                ).toLocaleString()}
+              </p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setAlertDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={submitPriceAlert} disabled={settingAlert || !targetPrice}>
+              {settingAlert ? "Setting..." : "Set Alert"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Footer />
     </div>
