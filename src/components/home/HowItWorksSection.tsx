@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search, Heart, Bell, TrendingDown, ShoppingCart } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const steps = [
   {
@@ -36,13 +37,17 @@ const steps = [
 
 const HowItWorksNavbar = () => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    // Only auto-scroll on mobile devices
+    if (!isMobile) return;
+    
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % steps.length);
     }, 3000); // auto-slide every 3s
     return () => clearInterval(interval);
-  }, []);
+  }, [isMobile]);
 
   return (
     <section className="py-8 bg-[hsl(10.1,67.8%,95%)]">
@@ -54,16 +59,25 @@ const HowItWorksNavbar = () => {
           Add products to your wishlist, monitor prices, get instant alerts, and buy at the right moment.
         </p>
 
-        {/* Carousel Cards */}
+        {/* Carousel Cards - Desktop shows all, Mobile scrolls */}
         <div className="relative overflow-hidden">
           <div
-            className="flex transition-transform duration-700 ease-in-out"
-            style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+            className={`flex transition-transform duration-700 ease-in-out ${
+              !isMobile ? 'transform-none' : ''
+            }`}
+            style={{ 
+              transform: isMobile ? `translateX(-${activeIndex * 100}%)` : 'none'
+            }}
           >
             {steps.map((step, index) => {
               const StepIcon = step.icon;
               return (
-                <div key={index} className="flex-shrink-0 w-full md:w-1/5 px-2">
+                <div 
+                  key={index} 
+                  className={`flex-shrink-0 px-2 ${
+                    isMobile ? 'w-full' : 'w-1/5'
+                  }`}
+                >
                   <div className="bg-white border border-[hsl(10.1,67.8%,50%)] rounded-xl shadow-lg p-4 h-64 flex flex-col justify-start items-center">
                     {/* Rectangular Step Number */}
                     <div className="flex items-center justify-center w-16 h-10 bg-[hsl(10.1,67.8%,50%)] text-white rounded-md mb-4 font-bold">
@@ -86,6 +100,23 @@ const HowItWorksNavbar = () => {
             })}
           </div>
         </div>
+
+        {/* Mobile indicators */}
+        {isMobile && (
+          <div className="flex justify-center gap-2 mt-4">
+            {steps.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveIndex(index)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  index === activeIndex 
+                    ? 'bg-[hsl(10.1,67.8%,50%)]' 
+                    : 'bg-[hsl(10.1,67.8%,80%)]'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
