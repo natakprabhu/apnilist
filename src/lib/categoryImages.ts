@@ -22,7 +22,6 @@ export const categoryImages: Record<string, string> = {
   "Refrigerator": refrigeratorImg,
   "TV": tvImg,
   "Vacuum Cleaner": vacuumCleanerImg,
-  "Vacuum Cleaner": vacuumCleanerImg,
   "Vaccum Cleaner": vacuumCleanerImg,
   "Washing Machine": washingMachineImg,
   "Water Purifier": waterPurifierImg,
