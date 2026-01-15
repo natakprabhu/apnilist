@@ -236,6 +236,7 @@ export type Database = {
           flipkart_discount: number | null
           flipkart_price: number | null
           id: string
+          original_price: number | null
           product_id: string
         }
         Insert: {
@@ -245,6 +246,7 @@ export type Database = {
           flipkart_discount?: number | null
           flipkart_price?: number | null
           id?: string
+          original_price?: number | null
           product_id: string
         }
         Update: {
@@ -254,6 +256,7 @@ export type Database = {
           flipkart_discount?: number | null
           flipkart_price?: number | null
           id?: string
+          original_price?: number | null
           product_id?: string
         }
         Relationships: [
