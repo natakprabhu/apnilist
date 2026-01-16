@@ -297,7 +297,7 @@ const ArticlesPage: React.FC = () => {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {articles.map((article) => (
-                    <Link key={article.id} to={`/article/${article.slug}`}>
+                    <Link key={article.id} to={`/articles/${article.slug}`}>
                       <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
                         <CardContent className="p-0">
                           <div className="aspect-video overflow-hidden rounded-t-lg">
