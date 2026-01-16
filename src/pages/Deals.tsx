@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 import { 
   Select,
   SelectContent,
@@ -21,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award, Bell } from "lucide-react";
+import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award, Bell, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,6 +57,9 @@ const Deals = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [sortBy, setSortBy] = useState<string>("default");
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500000]);
+  const [maxPriceInData, setMaxPriceInData] = useState(500000);
   const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -107,6 +112,14 @@ const Deals = () => {
             })
           );
           setAllProducts(productsWithPrices);
+          
+          // Calculate max price for slider
+          const prices = productsWithPrices.flatMap(p => [p.amazon_price, p.flipkart_price].filter(Boolean) as number[]);
+          if (prices.length > 0) {
+            const maxPrice = Math.ceil(Math.max(...prices) / 10000) * 10000;
+            setMaxPriceInData(maxPrice);
+            setPriceRange([0, maxPrice]);
+          }
         }
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -123,7 +136,18 @@ const Deals = () => {
     fetchData();
   }, [toast]);
 
-  // Filter products based on search query and category
+  // Helper to get lowest price of a product
+  const getLowestPrice = (product: Product): number | null => {
+    const prices = [product.amazon_price, product.flipkart_price].filter(Boolean) as number[];
+    return prices.length > 0 ? Math.min(...prices) : null;
+  };
+
+  // Helper to get max discount of a product
+  const getMaxDiscount = (product: Product): number => {
+    return Math.max(product.amazon_discount || 0, product.flipkart_discount || 0);
+  };
+
+  // Filter and sort products
   const filteredProducts = useMemo(() => {
     let filtered = allProducts;
     
@@ -140,8 +164,34 @@ const Deals = () => {
       );
     }
     
+    // Filter by price range
+    filtered = filtered.filter(product => {
+      const lowestPrice = getLowestPrice(product);
+      if (!lowestPrice) return true; // Show products without price
+      return lowestPrice >= priceRange[0] && lowestPrice <= priceRange[1];
+    });
+    
+    // Sort products
+    if (sortBy === "price-low") {
+      filtered = [...filtered].sort((a, b) => {
+        const priceA = getLowestPrice(a) ?? Infinity;
+        const priceB = getLowestPrice(b) ?? Infinity;
+        return priceA - priceB;
+      });
+    } else if (sortBy === "price-high") {
+      filtered = [...filtered].sort((a, b) => {
+        const priceA = getLowestPrice(a) ?? 0;
+        const priceB = getLowestPrice(b) ?? 0;
+        return priceB - priceA;
+      });
+    } else if (sortBy === "discount") {
+      filtered = [...filtered].sort((a, b) => {
+        return getMaxDiscount(b) - getMaxDiscount(a);
+      });
+    }
+    
     return filtered;
-  }, [allProducts, searchQuery, selectedCategory]);
+  }, [allProducts, searchQuery, selectedCategory, sortBy, priceRange]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
@@ -153,7 +203,7 @@ const Deals = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, sortBy, priceRange]);
 
   const goToPage = (page: number) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
@@ -268,31 +318,69 @@ const Deals = () => {
             </div>
             
             {/* Filters Row */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              {/* Category Filter */}
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="All Categories" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.id}>
-                      {category.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
+                {/* Category Filter */}
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              {/* Search Input */}
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search products..."
-                  className="pl-10"
+                {/* Sort By Dropdown */}
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <ArrowUpDown className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                    <SelectItem value="discount">Highest Discount</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {/* Search Input */}
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              {/* Price Range Slider */}
+              <div className="bg-muted/30 p-4 rounded-lg border">
+                <div className="flex items-center justify-between mb-3">
+                  <Label className="text-sm font-medium">Price Range</Label>
+                  <span className="text-sm text-muted-foreground">
+                    ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                  </span>
+                </div>
+                <Slider
+                  value={priceRange}
+                  onValueChange={(value) => setPriceRange(value as [number, number])}
+                  min={0}
+                  max={maxPriceInData}
+                  step={1000}
+                  className="w-full"
                 />
+                <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                  <span>₹0</span>
+                  <span>₹{maxPriceInData.toLocaleString()}</span>
+                </div>
               </div>
             </div>
           </div>
