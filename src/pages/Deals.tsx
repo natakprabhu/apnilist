@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award, Bell, ArrowUpDown } from "lucide-react";
+import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award, Bell, ArrowUpDown, X, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -145,6 +145,21 @@ const Deals = () => {
   // Helper to get max discount of a product
   const getMaxDiscount = (product: Product): number => {
     return Math.max(product.amazon_discount || 0, product.flipkart_discount || 0);
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = searchQuery.trim() !== "" || 
+    selectedCategory !== "all" || 
+    sortBy !== "default" || 
+    priceRange[0] !== 0 || 
+    priceRange[1] !== maxPriceInData;
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchQuery("");
+    setSelectedCategory("all");
+    setSortBy("default");
+    setPriceRange([0, maxPriceInData]);
   };
 
   // Filter and sort products
@@ -382,6 +397,19 @@ const Deals = () => {
                   <span>₹{maxPriceInData.toLocaleString()}</span>
                 </div>
               </div>
+
+              {/* Clear All Filters Button */}
+              {hasActiveFilters && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={clearAllFilters}
+                  className="w-fit"
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Clear All Filters
+                </Button>
+              )}
             </div>
           </div>
           
@@ -406,9 +434,18 @@ const Deals = () => {
                   const lowestPrice = product.amazon_price && product.flipkart_price 
                     ? Math.min(product.amazon_price, product.flipkart_price)
                     : product.amazon_price || product.flipkart_price;
+                  const maxDiscount = getMaxDiscount(product);
+                  const isHotDeal = maxDiscount >= 30;
 
                   return (
-                    <Card key={product.id} className="group hover:shadow-lg transition-all duration-300">
+                    <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 relative overflow-hidden">
+                      {/* Hot Deal Indicator */}
+                      {isHotDeal && (
+                        <div className="absolute top-0 left-0 z-10 bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 text-xs font-bold flex items-center gap-1 rounded-br-lg shadow-md">
+                          <Zap className="h-3 w-3" />
+                          HOT DEAL
+                        </div>
+                      )}
                       <CardContent className="p-4">
                         <div className="relative mb-4">
                           <img
@@ -416,6 +453,16 @@ const Deals = () => {
                             alt={product.name}
                             className="w-full h-48 object-contain rounded-lg bg-muted/30"
                           />
+                          {/* Prominent Discount Badge */}
+                          {maxDiscount > 0 && (
+                            <Badge className={`absolute top-2 left-2 text-sm font-bold px-2 py-1 ${
+                              isHotDeal 
+                                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 animate-pulse' 
+                                : 'bg-green-600 text-white'
+                            }`}>
+                              {maxDiscount}% OFF
+                            </Badge>
+                          )}
                           {product.rating && (
                             <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
                               ⭐ {product.rating}
@@ -445,11 +492,6 @@ const Deals = () => {
                               <p className="text-xs text-muted-foreground">Amazon</p>
                               <div className="flex items-center gap-2">
                                 <p className="font-bold text-sm">₹{product.amazon_price.toLocaleString()}</p>
-                                {product.amazon_discount && product.amazon_discount > 0 && (
-                                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100">
-                                    {product.amazon_discount}% OFF
-                                  </Badge>
-                                )}
                               </div>
                             </div>
                             <Button 
@@ -478,11 +520,6 @@ const Deals = () => {
                               <p className="text-xs text-muted-foreground">Flipkart</p>
                               <div className="flex items-center gap-2">
                                 <p className="font-bold text-sm">₹{product.flipkart_price.toLocaleString()}</p>
-                                {product.flipkart_discount && product.flipkart_discount > 0 && (
-                                  <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100">
-                                    {product.flipkart_discount}% OFF
-                                  </Badge>
-                                )}
                               </div>
                             </div>
                             <Button 
