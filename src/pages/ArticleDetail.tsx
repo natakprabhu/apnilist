@@ -596,19 +596,24 @@ const ArticleDetail = () => {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <h2 className="text-3xl font-bold">Detailed Reviews</h2>
                 
-                {/* Sort Dropdown */}
-                <div className="flex items-center gap-2">
-                  <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                {/* Sort Dropdown - Highlighted */}
+                <div className="flex items-center gap-3 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200 dark:border-orange-800 rounded-xl px-4 py-2 shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="flex items-center gap-2">
+                    <div className="bg-orange-500 rounded-full p-1.5">
+                      <ArrowUpDown className="h-3.5 w-3.5 text-white" />
+                    </div>
+                    <span className="text-sm font-semibold text-orange-700 dark:text-orange-300 hidden sm:inline">Sort by:</span>
+                  </div>
                   <Select value={productSortBy} onValueChange={setProductSortBy}>
-                    <SelectTrigger className="w-[180px]">
+                    <SelectTrigger className="w-[180px] border-orange-300 dark:border-orange-700 bg-white dark:bg-background hover:border-orange-400 focus:ring-orange-500 font-medium">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="rank">Rank (Default)</SelectItem>
-                      <SelectItem value="price-low">Price: Low to High</SelectItem>
-                      <SelectItem value="price-high">Price: High to Low</SelectItem>
-                      <SelectItem value="discount-high">Discount: High to Low</SelectItem>
-                      <SelectItem value="discount-low">Discount: Low to High</SelectItem>
+                    <SelectContent className="border-orange-200 dark:border-orange-800">
+                      <SelectItem value="rank" className="font-medium">📊 Rank (Default)</SelectItem>
+                      <SelectItem value="price-low" className="font-medium">💰 Price: Low to High</SelectItem>
+                      <SelectItem value="price-high" className="font-medium">💎 Price: High to Low</SelectItem>
+                      <SelectItem value="discount-high" className="font-medium">🔥 Discount: High to Low</SelectItem>
+                      <SelectItem value="discount-low" className="font-medium">📉 Discount: Low to High</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
