@@ -63,6 +63,7 @@ export type Database = {
           featured_image: string | null
           id: string
           slug: string
+          static_html_generated: boolean | null
           status: string
           tags: string[] | null
           title: string
@@ -81,6 +82,7 @@ export type Database = {
           featured_image?: string | null
           id?: string
           slug: string
+          static_html_generated?: boolean | null
           status?: string
           tags?: string[] | null
           title: string
@@ -99,6 +101,7 @@ export type Database = {
           featured_image?: string | null
           id?: string
           slug?: string
+          static_html_generated?: boolean | null
           status?: string
           tags?: string[] | null
           title?: string
