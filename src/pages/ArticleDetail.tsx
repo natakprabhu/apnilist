@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -8,7 +8,8 @@ import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CommentSection } from "@/components/CommentSection";
-import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink, TrendingDown, Info, ThumbsUp, ThumbsDown, CheckCircle2, AlertCircle } from "lucide-react";
+import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink, TrendingDown, Info, ThumbsUp, ThumbsDown, CheckCircle2, AlertCircle, ArrowUpDown } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } from "recharts";
@@ -214,6 +215,7 @@ const ArticleDetail = () => {
   const [triviaLoading, setTriviaLoading] = useState(false);
   
   const [trackedProducts, setTrackedProducts] = useState<Set<string>>(new Set());
+  const [productSortBy, setProductSortBy] = useState<string>("rank");
 
   // Fetch tracked products for current user
   useEffect(() => {
@@ -591,10 +593,55 @@ const ArticleDetail = () => {
             <Separator className="my-8" />
 
             <section className="space-y-8">
-              <h2 className="text-3xl font-bold">Detailed Reviews</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <h2 className="text-3xl font-bold">Detailed Reviews</h2>
+                
+                {/* Sort Dropdown */}
+                <div className="flex items-center gap-2">
+                  <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+                  <Select value={productSortBy} onValueChange={setProductSortBy}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="rank">Rank (Default)</SelectItem>
+                      <SelectItem value="price-low">Price: Low to High</SelectItem>
+                      <SelectItem value="price-high">Price: High to Low</SelectItem>
+                      <SelectItem value="discount-high">Discount: High to Low</SelectItem>
+                      <SelectItem value="discount-low">Discount: Low to High</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
               
               <div className="grid grid-cols-1 gap-8">
-                {displayProducts.map((item) => {
+                {[...displayProducts].sort((a, b) => {
+                  const getPriceForSort = (item: DisplayProduct) => {
+                    const amazonPrice = item.latestPrice?.amazon_price || 0;
+                    const flipkartPrice = item.latestPrice?.flipkart_price || 0;
+                    return getBestPrice(amazonPrice, flipkartPrice);
+                  };
+                  const getDiscountForSort = (item: DisplayProduct) => {
+                    return Math.max(
+                      item.latestPrice?.amazon_discount || 0,
+                      item.latestPrice?.flipkart_discount || 0
+                    );
+                  };
+                  
+                  switch (productSortBy) {
+                    case "price-low":
+                      return getPriceForSort(a) - getPriceForSort(b);
+                    case "price-high":
+                      return getPriceForSort(b) - getPriceForSort(a);
+                    case "discount-high":
+                      return getDiscountForSort(b) - getDiscountForSort(a);
+                    case "discount-low":
+                      return getDiscountForSort(a) - getDiscountForSort(b);
+                    case "rank":
+                    default:
+                      return a.rank - b.rank;
+                  }
+                }).map((item) => {
                   const { product, latestPrice, priceHistory, rank, analysis } = item;
                   const amazonPrice = latestPrice?.amazon_price || 0;
                   const flipkartPrice = latestPrice?.flipkart_price || 0;
