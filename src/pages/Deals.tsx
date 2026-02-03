@@ -70,6 +70,27 @@ const Deals = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [targetPrice, setTargetPrice] = useState("");
   const [settingAlert, setSettingAlert] = useState(false);
+  
+  // Tracked products state
+  const [trackedProducts, setTrackedProducts] = useState<Set<string>>(new Set());
+
+  // Fetch tracked products for current user
+  useEffect(() => {
+    const fetchTrackedProducts = async () => {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from("wishlist")
+        .select("product_id")
+        .eq("user_id", user.id);
+
+      if (!error && data) {
+        setTrackedProducts(new Set(data.map(item => item.product_id)));
+      }
+    };
+
+    fetchTrackedProducts();
+  }, [user]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -308,6 +329,9 @@ const Deals = () => {
 
       if (error) throw error;
 
+      // Update tracked products state
+      setTrackedProducts(prev => new Set([...prev, selectedProduct.id]));
+      
       toast({
         title: "Price Alert Set!",
         description: `Product added to Price Tracker. We'll notify you when it drops to ₹${parseInt(targetPrice).toLocaleString()}`,
@@ -567,13 +591,22 @@ const Deals = () => {
                         {/* Price Alert Button */}
                         {(product.amazon_price || product.flipkart_price) && (
                           <Button 
-                            variant="outline" 
+                            variant={trackedProducts.has(product.id) ? "secondary" : "outline"}
                             size="sm" 
-                            className="w-full"
+                            className={`w-full ${trackedProducts.has(product.id) ? "bg-green-50 border-green-500 text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-400" : ""}`}
                             onClick={() => handleSetPriceAlert(product)}
                           >
-                            <Bell className="h-4 w-4 mr-2" />
-                            Set Price Alert
+                            {trackedProducts.has(product.id) ? (
+                              <>
+                                <Bell className="h-4 w-4 mr-2 fill-current" />
+                                Tracking
+                              </>
+                            ) : (
+                              <>
+                                <Bell className="h-4 w-4 mr-2" />
+                                Set Price Alert
+                              </>
+                            )}
                           </Button>
                         )}
                       </CardContent>
