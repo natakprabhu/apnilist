@@ -275,6 +275,28 @@ const Deals = () => {
     
     setSettingAlert(true);
     try {
+      // First, add product to wishlist (for price tracker page)
+      const { data: existingWishlistItem } = await supabase
+        .from("wishlist")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("product_id", selectedProduct.id)
+        .maybeSingle();
+
+      if (!existingWishlistItem) {
+        const { error: wishlistError } = await supabase
+          .from("wishlist")
+          .insert({
+            user_id: user.id,
+            product_id: selectedProduct.id,
+          });
+        
+        if (wishlistError && wishlistError.code !== '23505') {
+          throw wishlistError;
+        }
+      }
+
+      // Then, create the price alert
       const { error } = await supabase
         .from("price_alerts")
         .insert({
@@ -288,14 +310,14 @@ const Deals = () => {
 
       toast({
         title: "Price Alert Set!",
-        description: `We'll notify you when ${selectedProduct.name} drops to ₹${parseInt(targetPrice).toLocaleString()}`,
+        description: `Product added to Price Tracker. We'll notify you when it drops to ₹${parseInt(targetPrice).toLocaleString()}`,
       });
       setAlertDialogOpen(false);
     } catch (error: any) {
       if (error.code === '23505') {
         toast({
           title: "Alert Already Exists",
-          description: "You already have an alert for this product. Check your alerts page.",
+          description: "You already have an alert for this product. Check your Price Tracker.",
           variant: "destructive",
         });
       } else {
