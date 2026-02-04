@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SEO } from "@/components/SEO"; // <--- FIXED: Added curly braces
+import { SEO } from "@/components/SEO";
+import ArticleDetail from "./ArticleDetail";
 
 const StaticArticleLoader = () => {
   const { slug } = useParams();
@@ -11,6 +12,7 @@ const StaticArticleLoader = () => {
   const [content, setContent] = useState<string | null>(null);
   const [metaInfo, setMetaInfo] = useState({ title: "", description: "" });
   const [loading, setLoading] = useState(true);
+  const [useDatabase, setUseDatabase] = useState(false);
 
   useEffect(() => {
     const fetchHtml = async () => {
@@ -18,7 +20,10 @@ const StaticArticleLoader = () => {
         const response = await fetch(`/articles/${slug}.html`);
         
         if (!response.ok) {
-          throw new Error("Article not found");
+          // Static file not found, fall back to database-driven ArticleDetail
+          setUseDatabase(true);
+          setLoading(false);
+          return;
         }
         
         const fullHtmlText = await response.text();
@@ -35,8 +40,9 @@ const StaticArticleLoader = () => {
         setContent(mainContent || doc.body.innerHTML);
 
       } catch (error) {
-        console.error("Failed to load static article:", error);
-        navigate("/404");
+        console.error("Failed to load static article, falling back to database:", error);
+        // Fall back to database-driven ArticleDetail
+        setUseDatabase(true);
       } finally {
         setLoading(false);
       }
@@ -46,6 +52,11 @@ const StaticArticleLoader = () => {
       fetchHtml();
     }
   }, [slug, navigate]);
+
+  // If static file not found, render the database-driven ArticleDetail
+  if (useDatabase) {
+    return <ArticleDetail />;
+  }
 
   if (loading) {
     return (
