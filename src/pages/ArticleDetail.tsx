@@ -8,7 +8,8 @@ import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { CommentSection } from "@/components/CommentSection";
-import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, Heart, ExternalLink, TrendingDown, Info, ThumbsUp, ThumbsDown, CheckCircle2, AlertCircle, ArrowUpDown } from "lucide-react";
+import { Calendar, User, Lightbulb, TrendingUp, ShoppingCart, ExternalLink, TrendingDown, Info, ThumbsUp, ThumbsDown, CheckCircle2, AlertCircle, ArrowUpDown } from "lucide-react";
+import { TrackButton } from "@/components/TrackButton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -668,53 +669,23 @@ const ArticleDetail = () => {
                     <Card key={product.id} className="overflow-hidden relative border-t-4 border-t-primary shadow-lg hover:shadow-xl transition-shadow duration-300">
                       
                       {/* Track Price Button */}
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className={`absolute top-4 right-4 z-10 gap-2 ${
-                          trackedProducts.has(product.id) 
-                            ? "bg-red-50 border-red-500 text-red-600 hover:bg-red-100" 
-                            : "bg-background/80 backdrop-blur-sm"
-                        }`}
-                        onClick={async () => {
-                          const { data: { user } } = await supabase.auth.getUser();
-                          if (!user) {
-                            toast({
-                              title: "Authentication Required",
-                              description: "Please log in to track prices",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                          const isTracked = trackedProducts.has(product.id);
-                          if (isTracked) {
-                            const { error } = await supabase
-                              .from("wishlist")
-                              .delete()
-                              .eq("user_id", user.id)
-                              .eq("product_id", product.id);
-                            if (!error) {
-                              setTrackedProducts(prev => {
-                                const newSet = new Set(prev);
-                                newSet.delete(product.id);
-                                return newSet;
-                              });
-                              toast({ title: "Removed", description: "Product removed from tracking" });
+                      <TrackButton
+                        productId={product.id}
+                        productName={product.name}
+                        isTracked={trackedProducts.has(product.id)}
+                        onTrackChange={(id, isTracked) => {
+                          setTrackedProducts(prev => {
+                            const newSet = new Set(prev);
+                            if (isTracked) {
+                              newSet.add(id);
+                            } else {
+                              newSet.delete(id);
                             }
-                          } else {
-                            const { error } = await supabase
-                              .from("wishlist")
-                              .insert({ user_id: user.id, product_id: product.id });
-                            if (!error) {
-                              setTrackedProducts(prev => new Set([...prev, product.id]));
-                              toast({ title: "Success", description: "Product added to tracking" });
-                            }
-                          }
+                            return newSet;
+                          });
                         }}
-                      >
-                        <Heart className={`h-4 w-4 ${trackedProducts.has(product.id) ? "fill-red-600" : ""}`} /> 
-                        <span className="hidden sm:inline">Track</span>
-                      </Button>
+                        className="absolute top-4 right-4 z-10"
+                      />
 
                       <div className="p-6 flex flex-col md:flex-row gap-6">
                         {/* Image & Deal Score Column */}
