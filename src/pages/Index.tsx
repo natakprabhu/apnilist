@@ -4,6 +4,7 @@ import HowItWorksSection from "@/components/home/HowItWorksSection";
 import TopArticlesSection from "@/components/home/TopArticlesSection";
 import MostTrackedSection from "@/components/home/MostTrackedSection";
 import GoogleReviewsSection from "@/components/home/GoogleReviewsSection";
+import TelegramSubscribeSection from "@/components/home/TelegramSubscribeSection";
 import { SEO } from "@/components/SEO";
 
 const Index = () => {
@@ -18,6 +19,7 @@ const Index = () => {
       
       <main className="flex-1">
         <HowItWorksSection />
+        <TelegramSubscribeSection />
         <TopArticlesSection />
         <MostTrackedSection />
         <GoogleReviewsSection />
