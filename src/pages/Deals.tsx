@@ -24,6 +24,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Flame, ExternalLink, Search, ChevronLeft, ChevronRight, Award, Bell, ArrowUpDown, X, Zap } from "lucide-react";
+import { TrackButton } from "@/components/TrackButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -588,27 +589,34 @@ const Deals = () => {
                           </p>
                         )}
 
-                        {/* Price Alert Button */}
-                        {(product.amazon_price || product.flipkart_price) && (
-                          <Button 
-                            variant={trackedProducts.has(product.id) ? "secondary" : "outline"}
-                            size="sm" 
-                            className={`w-full ${trackedProducts.has(product.id) ? "bg-green-50 border-green-500 text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-400" : ""}`}
-                            onClick={() => handleSetPriceAlert(product)}
-                          >
-                            {trackedProducts.has(product.id) ? (
-                              <>
-                                <Bell className="h-4 w-4 mr-2 fill-current" />
-                                Tracking
-                              </>
-                            ) : (
-                              <>
-                                <Bell className="h-4 w-4 mr-2" />
-                                Set Price Alert
-                              </>
-                            )}
-                          </Button>
-                        )}
+                        {/* Track & Price Alert Buttons */}
+                        <div className="flex gap-2">
+                          <TrackButton
+                            productId={product.id}
+                            productName={product.name}
+                            isTracked={trackedProducts.has(product.id)}
+                            onTrackChange={(id, tracked) => {
+                              setTrackedProducts(prev => {
+                                const next = new Set(prev);
+                                if (tracked) next.add(id);
+                                else next.delete(id);
+                                return next;
+                              });
+                            }}
+                            className="flex-1"
+                          />
+                          {(product.amazon_price || product.flipkart_price) && (
+                            <Button 
+                              variant="outline"
+                              size="sm" 
+                              className="flex-1"
+                              onClick={() => handleSetPriceAlert(product)}
+                            >
+                              <Bell className="h-4 w-4 mr-2" />
+                              Set Alert
+                            </Button>
+                          )}
+                        </div>
                       </CardContent>
                     </Card>
                   );
