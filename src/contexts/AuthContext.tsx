@@ -9,6 +9,9 @@ interface AuthContextType {
   session: Session | null;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
+  signInWithMagicLink: (email: string) => Promise<{ error: any }>;
+  resetPassword: (email: string) => Promise<{ error: any }>;
+  updatePassword: (newPassword: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   loading: boolean;
 }
@@ -78,6 +81,53 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: null };
   };
 
+  const signInWithMagicLink = async (email: string) => {
+    const redirectUrl = `${window.location.origin}/`;
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: redirectUrl,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return { error };
+    }
+
+    toast.success('Magic link sent! Check your email to sign in.');
+    return { error: null };
+  };
+
+  const resetPassword = async (email: string) => {
+    const redirectUrl = `${window.location.origin}/reset-password`;
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return { error };
+    }
+
+    toast.success('Password reset link sent! Check your email.');
+    return { error: null };
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return { error };
+    }
+
+    toast.success('Password updated successfully!');
+    return { error: null };
+  };
+
   const signOut = async () => {
     await supabase.auth.signOut();
     toast.success('Signed out successfully');
@@ -85,7 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signIn, signUp, signOut, loading }}>
+    <AuthContext.Provider value={{ user, session, signIn, signUp, signInWithMagicLink, resetPassword, updatePassword, signOut, loading }}>
       {children}
     </AuthContext.Provider>
   );
