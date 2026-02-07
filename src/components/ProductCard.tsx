@@ -206,9 +206,9 @@ export const ProductCard = ({
           )}
 
           {/* Pricing Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-            {/* Amazon Section */}
-            <div className="space-y-2">
+          <div className="pt-4 border-t">
+            {/* Amazon Section - Commented out: Amazon links often unavailable
+            <div className="space-y-2 mb-4">
               <div className="flex items-center gap-2">
                 <span className="font-semibold">Amazon:</span>
                 <span className="text-xl font-bold text-foreground">
@@ -248,41 +248,45 @@ export const ProductCard = ({
                 </a>
               </Button>
             </div>
+            */}
 
             {/* Flipkart Section */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">Flipkart:</span>
-                <span className="text-xl font-bold text-foreground">
-                  ₹{flipkartPrice.toLocaleString()}
-                </span>
-                {flipkartPriceChange && (
-                  <span
-                    className={`flex items-center text-sm ${
-                      flipkartPriceChange === "down"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {flipkartPriceChange === "down" ? (
-                      <TrendingDown className="w-4 h-4" />
-                    ) : (
-                      <TrendingUp className="w-4 h-4" />
-                    )}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-foreground">Flipkart:</span>
+                  <span className="text-2xl font-bold text-foreground">
+                    ₹{flipkartPrice.toLocaleString()}
                   </span>
+                  {flipkartPriceChange && (
+                    <span
+                      className={`flex items-center text-sm ${
+                        flipkartPriceChange === "down"
+                          ? "text-green-600"
+                          : "text-red-600"
+                      }`}
+                    >
+                      {flipkartPriceChange === "down" ? (
+                        <TrendingDown className="w-4 h-4" />
+                      ) : (
+                        <TrendingUp className="w-4 h-4" />
+                      )}
+                    </span>
+                  )}
+                </div>
+                {flipkartDiscount && (
+                  <Badge
+                    variant="secondary"
+                    className="bg-green-100 text-green-700"
+                  >
+                    {flipkartDiscount}% OFF
+                  </Badge>
                 )}
               </div>
-              {flipkartDiscount && (
-                <Badge
-                  variant="secondary"
-                  className="bg-green-100 text-green-700"
-                >
-                  {flipkartDiscount}% OFF
-                </Badge>
-              )}
               <Button
                 asChild
-                className="w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold transition-colors"
+                size="lg"
+                className="w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold transition-colors text-base"
               >
                 <a href={flipkartLink} target="_blank" rel="noopener noreferrer">
                   Check on Flipkart

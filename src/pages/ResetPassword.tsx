@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { KeyRound, Check } from 'lucide-react';
 import { toast } from 'sonner';
+import PasswordStrengthIndicator from '@/components/PasswordStrengthIndicator';
 
 const ResetPassword = () => {
   const [password, setPassword] = useState('');
@@ -79,6 +80,7 @@ const ResetPassword = () => {
                 required
                 minLength={6}
               />
+              <PasswordStrengthIndicator password={password} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password">Confirm Password</Label>

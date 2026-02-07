@@ -9,6 +9,7 @@ interface AuthContextType {
   session: Session | null;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
   signInWithMagicLink: (email: string) => Promise<{ error: any }>;
   resetPassword: (email: string) => Promise<{ error: any }>;
   updatePassword: (newPassword: string) => Promise<{ error: any }>;
@@ -81,6 +82,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { error: null };
   };
 
+  const signInWithGoogle = async () => {
+    const redirectUrl = `${window.location.origin}/`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: redirectUrl,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return { error };
+    }
+
+    return { error: null };
+  };
+
   const signInWithMagicLink = async (email: string) => {
     const redirectUrl = `${window.location.origin}/`;
     const { error } = await supabase.auth.signInWithOtp({
@@ -135,7 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signIn, signUp, signInWithMagicLink, resetPassword, updatePassword, signOut, loading }}>
+    <AuthContext.Provider value={{ user, session, signIn, signUp, signInWithGoogle, signInWithMagicLink, resetPassword, updatePassword, signOut, loading }}>
       {children}
     </AuthContext.Provider>
   );
