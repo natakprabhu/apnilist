@@ -46,7 +46,6 @@ def get_unprocessed_articles_from_supabase():
         url = f"{SUPABASE_URL}/rest/v1/articles"
         params = {
             "select": "slug",
-            "or": "(static_html_generated.is.null,static_html_generated.eq.false)",
             "order": "created_at.desc"
         }
         headers = {
