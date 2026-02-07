@@ -5,65 +5,84 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Confirm Your Email - ApniList</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#f4f4f5;padding:40px 0;">
+<body style="margin:0;padding:0;background-color:#fdfcf9;font-family:'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color:#fdfcf9;padding:40px 0;">
     <tr>
       <td align="center">
-        <table role="presentation" width="560" cellspacing="0" cellpadding="0" style="background-color:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <table role="presentation" width="560" cellspacing="0" cellpadding="0" style="background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.06);border:1px solid #f0ece6;">
           <!-- Header -->
           <tr>
-            <td style="background:linear-gradient(135deg,#d84727,#e85d3a);padding:32px 40px;text-align:center;">
-              <img src="https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/assets/logo.png" alt="ApniList" width="160" style="display:inline-block;" onerror="this.style.display='none'" />
-              <h1 style="color:#ffffff;font-size:24px;margin:16px 0 0;font-weight:700;letter-spacing:-0.5px;">Welcome to ApniList!</h1>
+            <td style="background:linear-gradient(135deg,#d84727 0%,#e85d3a 50%,#ff7750 100%);padding:36px 40px;text-align:center;">
+              <img src="https://alyidbbieegylgvdqmis.supabase.co/storage/v1/object/public/assets/logo.png" alt="ApniList" width="150" style="display:inline-block;" onerror="this.style.display='none'" />
+              <h1 style="color:#ffffff;font-size:26px;margin:18px 0 4px;font-weight:700;letter-spacing:-0.5px;">Welcome to ApniList!</h1>
+              <p style="color:rgba(255,255,255,0.85);font-size:14px;margin:0;">India's Smartest Price Tracker</p>
             </td>
           </tr>
           <!-- Body -->
           <tr>
             <td style="padding:40px;">
-              <p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 16px;">Hi there,</p>
-              <p style="color:#374151;font-size:16px;line-height:1.6;margin:0 0 24px;">
-                Thank you for signing up for <strong>ApniList</strong>. To get started with smart price tracking, daily deals, and expert product reviews, please confirm your email address.
+              <p style="color:#374151;font-size:16px;line-height:1.7;margin:0 0 16px;">Hi there 👋,</p>
+              <p style="color:#374151;font-size:16px;line-height:1.7;margin:0 0 24px;">
+                Thank you for signing up for <strong style="color:#d84727;">ApniList</strong>! To start tracking prices, getting deal alerts, and reading expert product reviews, please verify your email address.
               </p>
               <!-- CTA Button -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                 <tr>
                   <td align="center" style="padding:8px 0 32px;">
-                    <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#d84727,#e85d3a);color:#ffffff;font-size:16px;font-weight:600;text-decoration:none;padding:14px 40px;border-radius:8px;box-shadow:0 4px 12px rgba(216,71,39,0.3);">
-                      Confirm Email Address
+                    <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block;background:linear-gradient(135deg,#d84727,#e85d3a);color:#ffffff;font-size:16px;font-weight:600;text-decoration:none;padding:16px 48px;border-radius:10px;box-shadow:0 4px 14px rgba(216,71,39,0.35);letter-spacing:0.3px;">
+                      ✉️ Confirm Email Address
                     </a>
                   </td>
                 </tr>
               </table>
-              <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 16px;">
+              <!-- What's Next -->
+              <div style="background-color:#fef7f4;border:1px solid #fdddd4;border-radius:10px;padding:20px;margin-bottom:24px;">
+                <p style="color:#d84727;font-size:14px;font-weight:600;margin:0 0 12px;">🎉 What you'll unlock:</p>
+                <table role="presentation" cellspacing="0" cellpadding="4" style="width:100%;">
+                  <tr><td style="color:#374151;font-size:13px;line-height:1.6;">📊 Real-time price tracking across major retailers</td></tr>
+                  <tr><td style="color:#374151;font-size:13px;line-height:1.6;">🔔 Instant price drop & deal alerts</td></tr>
+                  <tr><td style="color:#374151;font-size:13px;line-height:1.6;">📝 Expert product reviews & buying guides</td></tr>
+                  <tr><td style="color:#374151;font-size:13px;line-height:1.6;">💰 Exclusive daily deals curated for you</td></tr>
+                </table>
+              </div>
+              <p style="color:#6b7280;font-size:14px;line-height:1.6;margin:0 0 12px;">
                 If the button doesn't work, copy and paste this link into your browser:
               </p>
-              <p style="color:#d84727;font-size:13px;line-height:1.6;margin:0 0 24px;word-break:break-all;">
+              <p style="color:#d84727;font-size:12px;line-height:1.6;margin:0 0 24px;word-break:break-all;background:#fef7f4;padding:12px;border-radius:6px;">
                 {{ .ConfirmationURL }}
               </p>
-              <hr style="border:none;border-top:1px solid #e5e7eb;margin:24px 0;" />
-              <p style="color:#9ca3af;font-size:13px;line-height:1.6;margin:0;">
+              <hr style="border:none;border-top:1px solid #f0ece6;margin:24px 0;" />
+              <p style="color:#9ca3af;font-size:12px;line-height:1.6;margin:0;">
                 If you didn't create an account with ApniList, you can safely ignore this email. This link will expire in 24 hours.
               </p>
             </td>
           </tr>
           <!-- Footer -->
           <tr>
-            <td style="background-color:#f9fafb;padding:24px 40px;border-top:1px solid #e5e7eb;">
+            <td style="background-color:#faf8f5;padding:28px 40px;border-top:1px solid #f0ece6;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                 <tr>
                   <td style="text-align:center;">
-                    <p style="color:#9ca3af;font-size:12px;margin:0 0 8px;">
+                    <!-- Social Links -->
+                    <p style="margin:0 0 16px;">
+                      <a href="https://t.me/apnilist" style="text-decoration:none;margin:0 8px;font-size:13px;color:#d84727;">Telegram</a>
+                      <span style="color:#d1d5db;">·</span>
+                      <a href="https://twitter.com/apnilist" style="text-decoration:none;margin:0 8px;font-size:13px;color:#d84727;">Twitter</a>
+                      <span style="color:#d1d5db;">·</span>
+                      <a href="https://instagram.com/apnilist" style="text-decoration:none;margin:0 8px;font-size:13px;color:#d84727;">Instagram</a>
+                    </p>
+                    <p style="color:#9ca3af;font-size:11px;margin:0 0 8px;">
                       © 2026 ApniList. All rights reserved.
                     </p>
-                    <p style="color:#9ca3af;font-size:12px;margin:0 0 8px;">
+                    <p style="color:#9ca3af;font-size:11px;margin:0 0 12px;">
                       Sector 14, Gurugram, Haryana, India
                     </p>
                     <p style="margin:0;">
-                      <a href="https://apnilist.com/privacy" style="color:#d84727;font-size:12px;text-decoration:none;">Privacy Policy</a>
-                      &nbsp;·&nbsp;
-                      <a href="https://apnilist.com/terms" style="color:#d84727;font-size:12px;text-decoration:none;">Terms of Service</a>
-                      &nbsp;·&nbsp;
-                      <a href="https://apnilist.com/contact" style="color:#d84727;font-size:12px;text-decoration:none;">Contact Us</a>
+                      <a href="https://apnilist.com/privacy" style="color:#d84727;font-size:11px;text-decoration:none;">Privacy Policy</a>
+                      <span style="color:#d1d5db;">&nbsp;·&nbsp;</span>
+                      <a href="https://apnilist.com/terms" style="color:#d84727;font-size:11px;text-decoration:none;">Terms of Service</a>
+                      <span style="color:#d1d5db;">&nbsp;·&nbsp;</span>
+                      <a href="https://apnilist.com/contact" style="color:#d84727;font-size:11px;text-decoration:none;">Contact Us</a>
                     </p>
                   </td>
                 </tr>
@@ -71,6 +90,10 @@
             </td>
           </tr>
         </table>
+        <!-- Unsubscribe -->
+        <p style="text-align:center;color:#9ca3af;font-size:11px;margin:16px 0 0;">
+          You're receiving this because you signed up at apnilist.com.
+        </p>
       </td>
     </tr>
   </table>

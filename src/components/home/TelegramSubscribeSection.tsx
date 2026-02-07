@@ -2,7 +2,7 @@ import { Send, Bell, Zap, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
-const TELEGRAM_CHANNEL_LINK = "https://t.me/apnilist"; // Replace with your actual Telegram channel link
+const TELEGRAM_CHANNEL_LINK = "https://t.me/apnilist";
 
 const TelegramSubscribeSection = () => {
   const features = [
@@ -12,18 +12,18 @@ const TelegramSubscribeSection = () => {
   ];
 
   return (
-    <section className="py-12 bg-gradient-to-r from-[#0088cc]/10 via-[#0088cc]/5 to-[#0088cc]/10">
+    <section className="py-12 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10">
       <div className="container mx-auto px-4">
-        <Card className="relative overflow-hidden border-[#0088cc]/30 bg-background/80 backdrop-blur">
+        <Card className="relative overflow-hidden border-primary/20 bg-background/80 backdrop-blur">
           {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#0088cc]/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-24 h-24 bg-[#0088cc]/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-secondary/10 rounded-full translate-y-1/2 -translate-x-1/2" />
           
           <div className="relative p-6 md:p-8 flex flex-col md:flex-row items-center gap-6 md:gap-8">
             {/* Telegram Icon */}
             <div className="flex-shrink-0">
-              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-[#0088cc] flex items-center justify-center shadow-lg shadow-[#0088cc]/30">
-                <Send className="w-10 h-10 md:w-12 md:h-12 text-white" />
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30">
+                <Send className="w-10 h-10 md:w-12 md:h-12 text-primary-foreground" />
               </div>
             </div>
 
@@ -43,7 +43,7 @@ const TelegramSubscribeSection = () => {
                     key={idx}
                     className="flex items-center gap-2 text-sm text-foreground bg-muted/50 px-3 py-1.5 rounded-full"
                   >
-                    <feature.icon className="w-4 h-4 text-[#0088cc]" />
+                    <feature.icon className="w-4 h-4 text-primary" />
                     <span>{feature.text}</span>
                   </div>
                 ))}
@@ -55,7 +55,7 @@ const TelegramSubscribeSection = () => {
               <Button 
                 asChild
                 size="lg"
-                className="bg-[#0088cc] hover:bg-[#0077b5] text-white font-semibold px-8 py-6 text-lg rounded-full shadow-lg shadow-[#0088cc]/30 transition-all hover:scale-105"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8 py-6 text-lg rounded-full shadow-lg shadow-primary/30 transition-all hover:scale-105"
               >
                 <a 
                   href={TELEGRAM_CHANNEL_LINK} 
