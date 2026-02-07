@@ -515,7 +515,7 @@ const SearchResults = () => {
                   className="hover:shadow-md transition-all duration-300 w-full rounded-xl border border-gray-200 bg-white overflow-hidden group"
                 >
                   <Link
-                    to={`/articles/${article.slug}`} // Make sure this route is correct
+                    to={`/draft/${article.slug}`} // Make sure this route is correct
                     className="flex flex-row gap-3 p-3 items-start"
                   >
                     {/* Featured Image */}
