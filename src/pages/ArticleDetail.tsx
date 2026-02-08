@@ -409,7 +409,7 @@ const ArticleDetail = () => {
       const formattedArticles: RelatedArticle[] = (data || []).map(article => ({
         id: article.id,
         title: article.title,
-        url: `/articles/${article.slug}`,
+        url: `/draft/${article.slug}`,
         slug: article.slug,
         featured_image: article.featured_image,
         excerpt: article.excerpt
@@ -1122,7 +1122,7 @@ const ArticleDetail = () => {
                 <ul className="space-y-3">
                   {relatedArticles.map((related) => (
                     <li key={related.id}>
-                      <Link to={`/articles/${related.slug}`} className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition">
+                      <Link to={`/draft/${related.slug}`} className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition">
                         <img
                           src={related.featured_image || getCategoryImage(article?.category)}
                           alt={related.title}
