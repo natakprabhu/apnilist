@@ -518,7 +518,7 @@ const ArticleDetail = () => {
       <SEO 
         title={article.title}
         description={article.excerpt || article.title}
-        canonical={`/articles/${article.slug}`}
+        canonical={`/draft/${article.slug}`}
         image={article.featured_image || undefined}
         type="article"
         article={{
@@ -528,6 +528,126 @@ const ArticleDetail = () => {
           tags: article.tags || undefined,
         }}
       />
+      
+      {/* JSON-LD Structured Data for Article */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: article.title,
+            description: article.excerpt || article.title,
+            image: article.featured_image || "https://apnilist.in/logo.png",
+            author: {
+              "@type": "Person",
+              name: article.author || "ApniList Team",
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "ApniList",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://apnilist.in/logo.png",
+              },
+            },
+            datePublished: article.created_at,
+            dateModified: article.created_at,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": `https://apnilist.in/draft/${article.slug}`,
+            },
+            ...(article.tags && article.tags.length > 0
+              ? { keywords: article.tags.join(", ") }
+              : {}),
+          }),
+        }}
+      />
+
+      {/* JSON-LD BreadcrumbList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://apnilist.in",
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Articles",
+                item: "https://apnilist.in/articles",
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: article.title,
+                item: `https://apnilist.in/draft/${article.slug}`,
+              },
+            ],
+          }),
+        }}
+      />
+
+      {/* JSON-LD Product structured data for each product */}
+      {displayProducts.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              name: article.title,
+              numberOfItems: displayProducts.length,
+              itemListElement: displayProducts.map((item, index) => {
+                const price = getBestPrice(
+                  item.latestPrice?.amazon_price || null,
+                  item.latestPrice?.flipkart_price || null
+                );
+                return {
+                  "@type": "ListItem",
+                  position: index + 1,
+                  item: {
+                    "@type": "Product",
+                    name: item.product.name,
+                    image: item.product.image || "https://apnilist.in/logo.png",
+                    description: item.product.short_description || item.product.name,
+                    ...(item.product.rating
+                      ? {
+                          aggregateRating: {
+                            "@type": "AggregateRating",
+                            ratingValue: item.product.rating,
+                            bestRating: 5,
+                            worstRating: 1,
+                            ratingCount: 1,
+                          },
+                        }
+                      : {}),
+                    ...(price > 0
+                      ? {
+                          offers: {
+                            "@type": "Offer",
+                            priceCurrency: "INR",
+                            price: price,
+                            availability: "https://schema.org/InStock",
+                            url: item.product.flipkart_link || item.product.amazon_link || `https://apnilist.in/draft/${article.slug}`,
+                          },
+                        }
+                      : {}),
+                  },
+                };
+              }),
+            }),
+          }}
+        />
+      )}
+
       <Header />
 
       <main className="flex-1 py-12">
@@ -875,7 +995,8 @@ const ArticleDetail = () => {
                               )}
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-4">
+                              {/* Amazon Section - Commented out: Amazon links often unavailable
                               {product.amazon_link && amazonPrice > 0 ? (
                                 <a 
                                   href={product.amazon_link} 
@@ -895,23 +1016,24 @@ const ArticleDetail = () => {
                                   Amazon Unavailable
                                 </Button>
                               )}
+                              */}
                               
                               {product.flipkart_link && flipkartPrice > 0 ? (
                                 <a 
                                   href={product.flipkart_link} 
                                   target="_blank" 
                                   rel="noopener noreferrer" 
-                                  className="group relative flex items-center justify-center gap-3 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-6 py-4 rounded-lg transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                                  className="group relative flex items-center justify-center gap-3 bg-[#2874F0] hover:bg-[#2874F0]/90 text-white px-6 py-5 rounded-lg transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 text-lg"
                                 >
                                   <ShoppingCart className="h-5 w-5" /> 
                                   <div className="flex flex-col items-start leading-none">
                                     <span className="text-xs font-medium opacity-90">Buy on Flipkart</span>
-                                    <span className="text-lg font-bold">₹{flipkartPrice.toLocaleString()}</span>
+                                    <span className="text-xl font-bold">₹{flipkartPrice.toLocaleString()}</span>
                                   </div>
                                   <ExternalLink className="h-4 w-4 absolute right-4 opacity-50 group-hover:opacity-100 transition-opacity" />
                                 </a>
                               ) : (
-                                <Button disabled className="bg-muted text-muted-foreground py-6">
+                                <Button disabled className="bg-muted text-muted-foreground py-6 w-full">
                                   Flipkart Unavailable
                                 </Button>
                               )}
