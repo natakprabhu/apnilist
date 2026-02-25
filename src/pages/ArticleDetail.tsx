@@ -409,7 +409,7 @@ const ArticleDetail = () => {
       const formattedArticles: RelatedArticle[] = (data || []).map(article => ({
         id: article.id,
         title: article.title,
-        url: `/draft/${article.slug}`,
+        url: `/articles/${article.slug}`,
         slug: article.slug,
         featured_image: article.featured_image,
         excerpt: article.excerpt
@@ -518,7 +518,7 @@ const ArticleDetail = () => {
       <SEO 
         title={article.title}
         description={article.excerpt || article.title}
-        canonical={`/draft/${article.slug}`}
+        canonical={`/articles/${article.slug}`}
         image={article.featured_image || undefined}
         type="article"
         article={{
@@ -555,7 +555,7 @@ const ArticleDetail = () => {
             dateModified: article.created_at,
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://apnilist.in/draft/${article.slug}`,
+              "@id": `https://apnilist.in/articles/${article.slug}`,
             },
             ...(article.tags && article.tags.length > 0
               ? { keywords: article.tags.join(", ") }
@@ -588,7 +588,7 @@ const ArticleDetail = () => {
                 "@type": "ListItem",
                 position: 3,
                 name: article.title,
-                item: `https://apnilist.in/draft/${article.slug}`,
+                item: `https://apnilist.in/articles/${article.slug}`,
               },
             ],
           }),
@@ -636,7 +636,7 @@ const ArticleDetail = () => {
                             priceCurrency: "INR",
                             price: price,
                             availability: "https://schema.org/InStock",
-                            url: item.product.flipkart_link || item.product.amazon_link || `https://apnilist.in/draft/${article.slug}`,
+                            url: item.product.flipkart_link || item.product.amazon_link || `https://apnilist.in/articles/${article.slug}`,
                           },
                         }
                       : {}),
@@ -1122,7 +1122,7 @@ const ArticleDetail = () => {
                 <ul className="space-y-3">
                   {relatedArticles.map((related) => (
                     <li key={related.id}>
-                      <Link to={`/draft/${related.slug}`} className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition">
+                      <Link to={`/articles/${related.slug}`} className="flex items-center gap-3 hover:bg-muted p-2 rounded-md transition">
                         <img
                           src={related.featured_image || getCategoryImage(article?.category)}
                           alt={related.title}
