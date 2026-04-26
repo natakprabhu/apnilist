@@ -14,9 +14,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # --- CONFIGURATION ---
-# RECOMMENDATION: Run 'npm start' locally and use http://localhost:5173 (or 3000/8080)
-# This prevents Vercel from serving you a broken cached file while you try to generate a new one.
-BASE_URL = "https://www.apnilist.co.in"
+# Use localhost when running the dev server locally (npm run dev → port 8080).
+# Switch to production URL only if you must regenerate from the live site.
+BASE_URL = os.environ.get("BASE_URL", "http://localhost:8080")
 
 # Supabase Configuration
 SUPABASE_URL = "https://alyidbbieegylgvdqmis.supabase.co"
@@ -225,19 +225,18 @@ def generate_sitemap_xml(slugs):
 
 
 def setup_driver():
-    print("🔧 Setting up Browser (Visible Mode)...")
+    headless = os.environ.get("HEADLESS", "1") != "0"
+    print(f"🔧 Setting up Browser ({'Headless' if headless else 'Visible'} Mode)...")
     chrome_options = Options()
-    # chrome_options.add_argument("--headless") # Disabled for debugging
+    if headless:
+        chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    # Added stability options to prevent crashes
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--ignore-certificate-errors")
-    
-    # Fake being a desktop user to get the full layout
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
-    
+
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     return driver
 
@@ -255,11 +254,16 @@ def generate_static_file(driver, slug):
         element = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.TAG_NAME, "h1"))
         )
-        
-        # Optional: Print the title found to confirm it's real content
         print(f"   Found Title: {element.text}")
-        
-        time.sleep(5) # Increased buffer for images/scripts
+
+        # Wait for product cards to load (indicates Supabase data fetched)
+        try:
+            WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "[data-product-card], .product-card, h2"))
+            )
+        except Exception:
+            pass  # proceed even if selector not found
+        time.sleep(2)  # brief final settle for images
 
         full_html = driver.page_source
 

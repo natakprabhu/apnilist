@@ -22,6 +22,7 @@ import Admin from "./pages/Admin";
 import Products from "./pages/Products";
 import NotFound from "./pages/NotFound";
 import DoremonPage from "./pages/Doremon";
+import CategoryPage from "./pages/CategoryPage";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -34,6 +35,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/articles" element={<Articles />} />
+            <Route path="/category/:category" element={<CategoryPage />} />
             <Route path="/draft/:slug" element={<ArticleDetail />} />
             <Route path="/articles/:slug" element={<StaticArticleLoader />} />
             <Route path="/search" element={<SearchResults />} />

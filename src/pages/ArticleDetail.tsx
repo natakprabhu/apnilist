@@ -17,6 +17,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, LabelList } 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCategoryImage } from "@/lib/categoryImages";
+import { resolveCleanSlug } from "@/lib/slugMap";
 import PriceHistoryChart from "@/components/PriceHistoryChart";
 import { Progress } from "@/components/ui/progress"; // Make sure to have this component or use standard HTML progress
 
@@ -409,8 +410,8 @@ const ArticleDetail = () => {
       const formattedArticles: RelatedArticle[] = (data || []).map(article => ({
         id: article.id,
         title: article.title,
-        url: `/articles/${article.slug}`,
-        slug: article.slug,
+        url: `/articles/${resolveCleanSlug(article.slug)}`,
+        slug: resolveCleanSlug(article.slug),
         featured_image: article.featured_image,
         excerpt: article.excerpt
       }));
@@ -518,7 +519,7 @@ const ArticleDetail = () => {
       <SEO 
         title={article.title}
         description={article.excerpt || article.title}
-        canonical={`/articles/${article.slug}`}
+        canonical={`/articles/${resolveCleanSlug(article.slug)}`}
         image={article.featured_image || displayProducts[0]?.product?.image || undefined}
         type="article"
         article={{
