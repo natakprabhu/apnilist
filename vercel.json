@@ -1,4 +1,209 @@
 {
+  "redirects": [
+    {
+      "source": "/articles/air-purifier-19-12-2025",
+      "destination": "/articles/best-hepa-air-purifier",
+      "permanent": true
+    },
+    {
+      "source": "/articles/air-purifier-20-12-2025",
+      "destination": "/articles/best-car-air-purifier",
+      "permanent": true
+    },
+    {
+      "source": "/articles/airfrier-25-02-2026",
+      "destination": "/articles/best-air-fryer",
+      "permanent": true
+    },
+    {
+      "source": "/articles/alkaline-water-purifier-29-01-2026",
+      "destination": "/articles/best-alkaline-water-purifier",
+      "permanent": true
+    },
+    {
+      "source": "/articles/chimney-19-12-2025",
+      "destination": "/articles/best-auto-clean-chimney",
+      "permanent": true
+    },
+    {
+      "source": "/articles/chimney-20-12-2025",
+      "destination": "/articles/best-filterless-chimney",
+      "permanent": true
+    },
+    {
+      "source": "/articles/coffee-maker-19-12-2025",
+      "destination": "/articles/best-espresso-machine",
+      "permanent": true
+    },
+    {
+      "source": "/articles/coffee-maker-20-12-2025",
+      "destination": "/articles/best-bean-to-cup-coffee-maker",
+      "permanent": true
+    },
+    {
+      "source": "/articles/dishwasher-06-02-2026",
+      "destination": "/articles/best-dishwasher",
+      "permanent": true
+    },
+    {
+      "source": "/articles/foldable-mobile-20-12-2025",
+      "destination": "/articles/best-foldable-phone",
+      "permanent": true
+    },
+    {
+      "source": "/articles/juicer-19-12-2025",
+      "destination": "/articles/best-cold-press-juicer",
+      "permanent": true
+    },
+    {
+      "source": "/articles/juicer-20-12-2025",
+      "destination": "/articles/best-centrifugal-juicer",
+      "permanent": true
+    },
+    {
+      "source": "/articles/laptop-19-12-2025",
+      "destination": "/articles/best-gaming-laptop",
+      "permanent": true
+    },
+    {
+      "source": "/articles/laptop-20-12-2025",
+      "destination": "/articles/best-ultrabook-laptop",
+      "permanent": true
+    },
+    {
+      "source": "/articles/laptop-under-50k-21-12-2025",
+      "destination": "/articles/best-laptop-under-40000",
+      "permanent": true
+    },
+    {
+      "source": "/articles/lipstick-06-02-2026",
+      "destination": "/articles/best-matte-lipstick",
+      "permanent": true
+    },
+    {
+      "source": "/articles/microwave-19-12-2025",
+      "destination": "/articles/best-convection-microwave",
+      "permanent": true
+    },
+    {
+      "source": "/articles/microwave-20-12-2025",
+      "destination": "/articles/best-microwave-oven",
+      "permanent": true
+    },
+    {
+      "source": "/articles/mobile-19-12-2025",
+      "destination": "/articles/best-camera-phone",
+      "permanent": true
+    },
+    {
+      "source": "/articles/mobile-20-12-2025",
+      "destination": "/articles/best-gaming-phone",
+      "permanent": true
+    },
+    {
+      "source": "/articles/projectors-21-12-2025",
+      "destination": "/articles/best-smart-projector",
+      "permanent": true
+    },
+    {
+      "source": "/articles/refrigerator-19-12-2025",
+      "destination": "/articles/best-convertible-refrigerator",
+      "permanent": true
+    },
+    {
+      "source": "/articles/refrigerator-20-12-2025",
+      "destination": "/articles/best-side-by-side-refrigerator",
+      "permanent": true
+    },
+    {
+      "source": "/articles/semi-autonatic-washing-machine-21-12-2025",
+      "destination": "/articles/best-semi-automatic-washing-machine",
+      "permanent": true
+    },
+    {
+      "source": "/articles/smart-washing-machine-21-12-2025",
+      "destination": "/articles/best-smart-washing-machine",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tv-19-12-2025",
+      "destination": "/articles/best-oled-qled-tv",
+      "permanent": true
+    },
+    {
+      "source": "/articles/tv-20-12-2025",
+      "destination": "/articles/best-budget-4k-tv",
+      "permanent": true
+    },
+    {
+      "source": "/articles/vaccum-cleaner-19-12-2025",
+      "destination": "/articles/best-robot-vacuum-cleaner",
+      "permanent": true
+    },
+    {
+      "source": "/articles/vaccum-cleaner-20-12-2025",
+      "destination": "/articles/best-cordless-vacuum-cleaner",
+      "permanent": true
+    },
+    {
+      "source": "/articles/vaccum-cleaner-wet-dry-20-12-2025",
+      "destination": "/articles/best-wet-dry-vacuum-cleaner",
+      "permanent": true
+    },
+    {
+      "source": "/articles/washing-machine-20-12-2025",
+      "destination": "/articles/best-front-load-washing-machine",
+      "permanent": true
+    },
+    {
+      "source": "/articles/washing-machine-21-12-2025",
+      "destination": "/articles/best-fully-automatic-washing-machine",
+      "permanent": true
+    },
+    {
+      "source": "/articles/watch-07-02-2026",
+      "destination": "/articles/best-automatic-watch",
+      "permanent": true
+    },
+    {
+      "source": "/articles/water-purifier-29-01-2026",
+      "destination": "/articles/best-water-purifier-under-15000",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "apnilist.in"
+        }
+      ],
+      "destination": "https://www.apnilist.co.in/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.apnilist.in"
+        }
+      ],
+      "destination": "https://www.apnilist.co.in/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "apnilist.co.in"
+        }
+      ],
+      "destination": "https://www.apnilist.co.in/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",

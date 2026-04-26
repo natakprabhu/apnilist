@@ -519,7 +519,7 @@ const ArticleDetail = () => {
         title={article.title}
         description={article.excerpt || article.title}
         canonical={`/articles/${article.slug}`}
-        image={article.featured_image || undefined}
+        image={article.featured_image || displayProducts[0]?.product?.image || undefined}
         type="article"
         article={{
           publishedTime: article.created_at,
@@ -538,7 +538,7 @@ const ArticleDetail = () => {
             "@type": "Article",
             headline: article.title,
             description: article.excerpt || article.title,
-            image: article.featured_image || "https://apnilist.in/logo.png",
+            image: article.featured_image || "https://www.apnilist.co.in/logo.png",
             author: {
               "@type": "Person",
               name: article.author || "ApniList Team",
@@ -548,14 +548,14 @@ const ArticleDetail = () => {
               name: "ApniList",
               logo: {
                 "@type": "ImageObject",
-                url: "https://apnilist.in/logo.png",
+                url: "https://www.apnilist.co.in/logo.png",
               },
             },
             datePublished: article.created_at,
             dateModified: article.created_at,
             mainEntityOfPage: {
               "@type": "WebPage",
-              "@id": `https://apnilist.in/articles/${article.slug}`,
+              "@id": `https://www.apnilist.co.in/articles/${article.slug}`,
             },
             ...(article.tags && article.tags.length > 0
               ? { keywords: article.tags.join(", ") }
@@ -576,19 +576,19 @@ const ArticleDetail = () => {
                 "@type": "ListItem",
                 position: 1,
                 name: "Home",
-                item: "https://apnilist.in",
+                item: "https://www.apnilist.co.in",
               },
               {
                 "@type": "ListItem",
                 position: 2,
                 name: "Articles",
-                item: "https://apnilist.in/articles",
+                item: "https://www.apnilist.co.in/articles",
               },
               {
                 "@type": "ListItem",
                 position: 3,
                 name: article.title,
-                item: `https://apnilist.in/articles/${article.slug}`,
+                item: `https://www.apnilist.co.in/articles/${article.slug}`,
               },
             ],
           }),
@@ -616,7 +616,7 @@ const ArticleDetail = () => {
                   item: {
                     "@type": "Product",
                     name: item.product.name,
-                    image: item.product.image || "https://apnilist.in/logo.png",
+                    image: item.product.image || "https://www.apnilist.co.in/logo.png",
                     description: item.product.short_description || item.product.name,
                     ...(item.product.rating
                       ? {
@@ -636,13 +636,87 @@ const ArticleDetail = () => {
                             priceCurrency: "INR",
                             price: price,
                             availability: "https://schema.org/InStock",
-                            url: item.product.flipkart_link || item.product.amazon_link || `https://apnilist.in/articles/${article.slug}`,
+                            url: item.product.flipkart_link || item.product.amazon_link || `https://www.apnilist.co.in/articles/${article.slug}`,
                           },
                         }
                       : {}),
                   },
                 };
               }),
+            }),
+          }}
+        />
+      )}
+
+      {/* FAQPage schema — boosts AI citation (ChatGPT, Perplexity, AI Overviews) */}
+      {displayProducts.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: `What is the best ${article.category || article.title.replace(/^Top \d+\s*/i, "").replace(/\s*\|.*$/, "")} to buy in India?`,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: smartPick?.recommendation ||
+                      `Based on our research, ${displayProducts[0]?.product?.name} is a top-rated choice. ${displayProducts[0]?.product?.short_description || ""}`.trim(),
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: `What is the price range for ${article.title.replace(/^Top \d+\s*/i, "").replace(/\s*\|.*$/, "")} in India?`,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: (() => {
+                      const prices = displayProducts
+                        .map(p => getBestPrice(p.latestPrice?.amazon_price ?? null, p.latestPrice?.flipkart_price ?? null))
+                        .filter(p => p > 0);
+                      if (prices.length === 0) return "Prices vary by model. Check Amazon and Flipkart for current pricing.";
+                      const min = Math.min(...prices);
+                      const max = Math.max(...prices);
+                      return `Prices range from ₹${min.toLocaleString("en-IN")} to ₹${max.toLocaleString("en-IN")} on Amazon and Flipkart. Use ApniList to track price drops and set alerts.`;
+                    })(),
+                  },
+                },
+                ...(displayProducts[0]?.product?.pros?.length > 0
+                  ? [{
+                      "@type": "Question",
+                      name: `What are the pros and cons of ${displayProducts[0].product.name}?`,
+                      acceptedAnswer: {
+                        "@type": "Answer",
+                        text: [
+                          displayProducts[0].product.pros?.length > 0
+                            ? `Pros: ${displayProducts[0].product.pros.join(", ")}.`
+                            : "",
+                          displayProducts[0].product.cons?.length > 0
+                            ? `Cons: ${displayProducts[0].product.cons.join(", ")}.`
+                            : "",
+                        ].filter(Boolean).join(" "),
+                      },
+                    }]
+                  : []),
+                {
+                  "@type": "Question",
+                  name: `Where can I buy ${article.title.replace(/^Top \d+\s*/i, "").replace(/\s*\|.*$/, "")} at the best price?`,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: `You can buy these products on Amazon India and Flipkart. ApniList (www.apnilist.co.in) tracks prices on both platforms in real time, so you can compare deals and set price drop alerts to never overpay.`,
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: `How do I choose the right ${article.title.replace(/^Top \d+\s*/i, "").replace(/\s*\|.*$/, "")}?`,
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: article.excerpt ||
+                      `Consider your budget, required features, and brand reliability. Our detailed comparison covers price history, user ratings, pros and cons, and expert recommendations to help you make the right decision.`,
+                  },
+                },
+              ],
             }),
           }}
         />

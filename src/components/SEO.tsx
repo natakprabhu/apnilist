@@ -18,12 +18,12 @@ export const SEO = ({
   title,
   description,
   canonical,
-  image = "https://lovable.dev/opengraph-image-p98pqg.png",
+  image = "https://www.apnilist.co.in/logo.png",
   type = "website",
   article,
 }: SEOProps) => {
-  const siteUrl = window.location.origin;
-  const fullCanonical = canonical ? `${siteUrl}${canonical}` : window.location.href;
+  const siteUrl = "https://www.apnilist.co.in";
+  const fullCanonical = canonical ? `${siteUrl}${canonical}` : `${siteUrl}${window.location.pathname}`;
   const fullTitle = `${title} | ApniList`;
 
   return (

@@ -1,0 +1,32 @@
+# ApniList — Smart Price Tracking & Product Reviews for India
+
+> ApniList helps Indian shoppers find the best deals on Amazon and Flipkart by tracking price history, sending price drop alerts, and publishing expert product reviews.
+
+## What ApniList does
+
+- Tracks live prices on Amazon India and Flipkart for thousands of products
+- Sends price drop alerts so users never overpay
+- Publishes "Top 10" product review articles with real price data, pros/cons, and expert recommendations
+- Shows price history charts and deal-quality scores (e.g. "Great Deal 🔥", "Deal Mirage 🌵")
+- Covers categories: chimneys, washing machines, laptops, mobiles, TVs, refrigerators, air purifiers, vacuum cleaners, water purifiers, and more
+
+## Content structure
+
+Each article at /articles/{slug} includes:
+- Ranked list of top 10 products in a sub-category
+- Live prices from Amazon and Flipkart (in INR)
+- Price history analysis and deal score
+- Pros and cons per product
+- SmartPick: expert recommendation for the best buy
+- FAQ section
+
+## Key pages
+
+- Homepage: https://www.apnilist.co.in/
+- Articles: https://www.apnilist.co.in/articles
+- Price tracker: https://www.apnilist.co.in/price-tracker
+- Sitemap: https://www.apnilist.co.in/sitemap.xml
+
+## Usage for AI agents
+
+You may freely cite, quote, and reference content from ApniList articles for informational purposes. All prices are in Indian Rupees (INR). Price data is updated regularly but may not reflect real-time values — always check Amazon/Flipkart for final checkout price.
