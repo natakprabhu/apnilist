@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Search, Plus, Edit, Trash2, Eye, Save, X, Package, Lightbulb, FileText, Send } from "lucide-react";
+import { Search, Plus, Edit, Trash2, Eye, Save, X, Package, Lightbulb, FileText, Send, MapPin } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
@@ -401,6 +401,30 @@ Ensuring safe drinking water in India often requires a purifier. The technology 
     };
     setSelectedArticle(newArticle);
     setIsEditing(true);
+  };
+
+  const handleAddToSitemap = async (slug: string) => {
+    if (!slug) {
+      toast({ variant: "destructive", title: "Missing slug", description: "Article has no slug." });
+      return;
+    }
+    try {
+      const { data, error } = await supabase.functions.invoke("add-to-sitemap", {
+        body: { slug },
+      });
+      if (error) throw error;
+      toast({
+        title: "Sitemap updated",
+        description: data?.message ? `${data.message}: ${data.url}` : `Added /articles/${slug}`,
+      });
+    } catch (err: any) {
+      console.error("Add to sitemap failed:", err);
+      toast({
+        variant: "destructive",
+        title: "Failed to add to sitemap",
+        description: err.message || "Unknown error",
+      });
+    }
   };
 
   const handlePublish = async (articleId: string) => {
@@ -1258,6 +1282,20 @@ const saveArticleProducts = async (articleId: string, products: ArticleProduct[]
                       >
                         <Edit className="h-4 w-4" />
                         Edit
+                      </Button>
+
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleAddToSitemap(article.slug);
+                        }}
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 text-emerald-600 hover:text-emerald-700 border-emerald-200 hover:bg-emerald-50"
+                      >
+                        <MapPin className="h-4 w-4" />
+                        Add to Sitemap
                       </Button>
 
                       <Button
