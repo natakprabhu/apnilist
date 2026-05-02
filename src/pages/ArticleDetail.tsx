@@ -1071,8 +1071,8 @@ const ArticleDetail = () => {
                             </div>
 
                             <div className="grid grid-cols-1 gap-4">
-                              {/* Amazon Section - Commented out: Amazon links often unavailable
-                              {product.amazon_link && amazonPrice > 0 ? (
+                              {/* Amazon Section - shown when an Amazon link is available */}
+                              {product.amazon_link && amazonPrice > 0 && (
                                 <a 
                                   href={product.amazon_link} 
                                   target="_blank" 
@@ -1086,12 +1086,7 @@ const ArticleDetail = () => {
                                   </div>
                                   <ExternalLink className="h-4 w-4 absolute right-4 opacity-50 group-hover:opacity-100 transition-opacity" />
                                 </a>
-                              ) : (
-                                <Button disabled className="bg-muted text-muted-foreground py-6">
-                                  Amazon Unavailable
-                                </Button>
                               )}
-                              */}
                               
                               {product.flipkart_link && flipkartPrice > 0 ? (
                                 <a 
