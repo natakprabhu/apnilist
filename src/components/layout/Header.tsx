@@ -137,7 +137,7 @@ const Header = () => {
                         <Link to="/doremon">Admin Dashboard</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/products">
+                        <Link to="/doremon/products">
                           <Settings className="mr-2 h-4 w-4" />
                           Manage Products
                         </Link>
@@ -260,7 +260,7 @@ const Header = () => {
                       Admin Dashboard
                     </Link>
                     <Link
-                      to="/products"
+                      to="/doremon/products"
                       className="block text-sm font-medium hover:text-primary transition-colors"
                       onClick={() => setIsMenuOpen(false)}
                     >
