@@ -254,50 +254,52 @@ export const ProductCard = ({
               </div>
             )}
 
-            {/* Flipkart Section */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-foreground">Flipkart:</span>
-                  <span className="text-2xl font-bold text-foreground">
-                    ₹{flipkartPrice.toLocaleString()}
-                  </span>
-                  {flipkartPriceChange && (
-                    <span
-                      className={`flex items-center text-sm ${
-                        flipkartPriceChange === "down"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {flipkartPriceChange === "down" ? (
-                        <TrendingDown className="w-4 h-4" />
-                      ) : (
-                        <TrendingUp className="w-4 h-4" />
-                      )}
+            {/* Flipkart Section - shown only when a Flipkart link is available */}
+            {flipkartLink && flipkartPrice > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-foreground">Flipkart:</span>
+                    <span className="text-2xl font-bold text-foreground">
+                      ₹{flipkartPrice.toLocaleString()}
                     </span>
+                    {flipkartPriceChange && (
+                      <span
+                        className={`flex items-center text-sm ${
+                          flipkartPriceChange === "down"
+                            ? "text-green-600"
+                            : "text-red-600"
+                        }`}
+                      >
+                        {flipkartPriceChange === "down" ? (
+                          <TrendingDown className="w-4 h-4" />
+                        ) : (
+                          <TrendingUp className="w-4 h-4" />
+                        )}
+                      </span>
+                    )}
+                  </div>
+                  {flipkartDiscount && (
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-100 text-green-700"
+                    >
+                      {flipkartDiscount}% OFF
+                    </Badge>
                   )}
                 </div>
-                {flipkartDiscount && (
-                  <Badge
-                    variant="secondary"
-                    className="bg-green-100 text-green-700"
-                  >
-                    {flipkartDiscount}% OFF
-                  </Badge>
-                )}
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold transition-colors text-base"
+                >
+                  <a href={flipkartLink} target="_blank" rel="noopener noreferrer">
+                    Check on Flipkart
+                    <ExternalLink className="ml-2 w-4 h-4" />
+                  </a>
+                </Button>
               </div>
-              <Button
-                asChild
-                size="lg"
-                className="w-full bg-[#2874F0] hover:bg-[#1f5fcc] text-white font-semibold transition-colors text-base"
-              >
-                <a href={flipkartLink} target="_blank" rel="noopener noreferrer">
-                  Check on Flipkart
-                  <ExternalLink className="ml-2 w-4 h-4" />
-                </a>
-              </Button>
-            </div>
+            )}
           </div>
         </div>
       </div>
