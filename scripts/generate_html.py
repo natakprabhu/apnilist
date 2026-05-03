@@ -22,6 +22,23 @@ BASE_URL = os.environ.get("BASE_URL", "http://localhost:8080")
 SUPABASE_URL = "https://alyidbbieegylgvdqmis.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFseWlkYmJpZWVneWxndmRxbWlzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxNTg2MzIsImV4cCI6MjA3NTczNDYzMn0.uCnn2HpE9_peSiLAyTmpoKWRKMPTPs-bE_sR3Mo5c24"
 
+# Static routes that should always be in the sitemap
+STATIC_ROUTES = [
+    {"path": "/", "changefreq": "daily", "priority": "1.0"},
+    {"path": "/articles", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/price-tracker", "changefreq": "weekly", "priority": "0.8"},
+    {"path": "/deals", "changefreq": "daily", "priority": "0.9"},
+    {"path": "/products", "changefreq": "weekly", "priority": "0.7"},
+    {"path": "/category/chimney", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/washing-machine", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/laptop", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/mobile", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/tv", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/refrigerator", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/air-purifier", "changefreq": "weekly", "priority": "0.9"},
+    {"path": "/category/vacuum-cleaner", "changefreq": "weekly", "priority": "0.9"},
+]
+
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(SCRIPT_DIR, ".."))
 
@@ -32,6 +49,16 @@ SITEMAP_URL = f"{SUPABASE_URL}/storage/v1/object/public/sitemaps/sitemap.xml"
 # Output directories
 OUTPUT_DIR = os.path.join(PROJECT_ROOT, "public", "articles")
 SITEMAP_OUTPUT_PATH = os.path.join(PROJECT_ROOT, "public", "sitemap.xml")
+
+
+def is_server_running():
+    """Checks if the dev server is accessible."""
+    print(f"📡 Checking if server is running at {BASE_URL}...")
+    try:
+        response = requests.get(BASE_URL, timeout=5)
+        return response.status_code == 200
+    except requests.RequestException:
+        return False
 
 
 def get_unprocessed_articles_from_supabase():
@@ -46,8 +73,14 @@ def get_unprocessed_articles_from_supabase():
         url = f"{SUPABASE_URL}/rest/v1/articles"
         params = {
             "select": "slug",
+            "static_html_generated": "is.null",
             "order": "created_at.desc"
         }
+        # Note: We can't easily do OR in simple rest params for (null OR false)
+        # but usually it's null by default. If it's false, we can add another query or use or=...
+        # Let's try to use the 'or' syntax: or=(static_html_generated.is.null,static_html_generated.eq.false)
+        params["or"] = "(static_html_generated.is.null,static_html_generated.eq.false)"
+        del params["static_html_generated"]
         headers = {
             "apikey": SUPABASE_ANON_KEY,
             "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
@@ -193,11 +226,12 @@ def generate_sitemap_xml(slugs):
     # Root element
     urlset = ET.Element("urlset", xmlns=xmlns)
     
-    # Add Homepage (Static)
-    home_url = ET.SubElement(urlset, "url")
-    ET.SubElement(home_url, "loc").text = "https://www.apnilist.co.in/"
-    ET.SubElement(home_url, "changefreq").text = "daily"
-    ET.SubElement(home_url, "priority").text = "1.0"
+    # Add Static Routes
+    for route in STATIC_ROUTES:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"https://www.apnilist.co.in{route['path']}"
+        ET.SubElement(url_elem, "changefreq").text = route["changefreq"]
+        ET.SubElement(url_elem, "priority").text = route["priority"]
     
     # Add Articles
     for slug in slugs:
@@ -245,6 +279,10 @@ def generate_static_file(driver, slug):
     url = f"{BASE_URL}/draft/{slug}"
     output_path = os.path.join(OUTPUT_DIR, f"{slug}.html")
     
+    if os.path.exists(output_path):
+        print(f"⏩ Skipping {slug}: File already exists.")
+        return True
+        
     try:
         print(f"🌍 Processing: {url}")
         driver.get(url)
@@ -287,45 +325,28 @@ def generate_static_file(driver, slug):
 
 def get_all_processed_slugs():
     """
-    Fetches all articles that have been processed (for sitemap generation).
+    Fetches all articles that have been processed.
+    Uses public/articles/*.html as the source of truth.
     """
-    print("📋 Fetching all processed articles for sitemap...")
-    
-    try:
-        url = f"{SUPABASE_URL}/rest/v1/articles"
-        params = {
-            "select": "slug",
-            "status": "eq.published",
-            "static_html_generated": "eq.true",
-            "order": "created_at.desc"
-        }
-        headers = {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
-            "Content-Type": "application/json"
-        }
-        
-        response = requests.get(url, params=params, headers=headers)
-        
-        if response.status_code != 200:
-            print(f"⚠ Could not fetch processed articles: {response.status_code}")
-            return []
-        
-        articles = response.json()
-        slugs = [article["slug"] for article in articles if article.get("slug")]
-        
-        print(f"✅ Found {len(slugs)} processed articles for sitemap.")
-        return slugs
-        
-    except Exception as e:
-        print(f"⚠ Error fetching processed articles: {e}")
+    print("📋 Listing generated HTML files for sitemap...")
+    if not os.path.exists(OUTPUT_DIR):
         return []
+        
+    slugs = [f[:-5] for f in os.listdir(OUTPUT_DIR) if f.endswith(".html")]
+    print(f"✅ Found {len(slugs)} generated articles.")
+    return slugs
 
 
 def main():
     if not os.path.exists(OUTPUT_DIR):
         print(f"📁 Creating directory: {OUTPUT_DIR}")
         os.makedirs(OUTPUT_DIR)
+
+    # 0. Check if server is running
+    if not is_server_running():
+        print(f"❌ ERROR: Dev server not found at {BASE_URL}")
+        print(f"👉 Please run 'npm run dev' in a separate terminal first.")
+        return
 
     # 1. Fetch unprocessed articles from Supabase
     slugs = get_unprocessed_articles_from_supabase()
@@ -365,10 +386,9 @@ def main():
     finally:
         driver.quit()
         
-    # 6. Generate Sitemap with ALL processed articles
+    # 6. Generate Sitemap with ALL processed articles (from files)
     all_processed = get_all_processed_slugs()
-    if all_processed:
-        generate_sitemap_xml(all_processed)
+    generate_sitemap_xml(all_processed)
     
     print(f"\n✨ Batch Generation Complete.")
     print(f"   Processed: {len(processed_slugs)} articles")
