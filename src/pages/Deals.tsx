@@ -28,7 +28,7 @@ import { TrackButton } from "@/components/TrackButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 type Category = {
   id: string;
@@ -39,6 +39,7 @@ type Category = {
 type Product = {
   id: string;
   name: string;
+  slug?: string | null;
   image: string | null;
   category_id: string | null;
   amazon_link: string | null;
@@ -107,7 +108,7 @@ const Deals = () => {
         // Fetch all products with their details
         const { data: productsData, error } = await supabase
           .from("products")
-          .select("id, name, image, category_id, amazon_link, flipkart_link, rating")
+          .select("id, name, slug, image, category_id, amazon_link, flipkart_link, rating")
           .order("created_at", { ascending: false });
 
         if (error) throw error;
