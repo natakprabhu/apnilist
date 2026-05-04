@@ -60,11 +60,11 @@ const ProductDetail = () => {
     const load = async () => {
       if (!slug) return;
       setLoading(true);
-      const { data: p, error } = await supabase
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+      const query = supabase
         .from("products")
-        .select("id, name, slug, image, amazon_link, flipkart_link, rating, pros, cons, short_description, badge")
-        .eq("slug", slug)
-        .maybeSingle();
+        .select("id, name, slug, image, amazon_link, flipkart_link, rating, pros, cons, short_description, badge");
+      const { data: p, error } = await (isUuid ? query.eq("id", slug) : query.eq("slug", slug)).maybeSingle();
 
       if (error || !p) {
         setLoading(false);
