@@ -28,7 +28,7 @@ import { TrackButton } from "@/components/TrackButton";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 type Category = {
   id: string;
@@ -39,6 +39,7 @@ type Category = {
 type Product = {
   id: string;
   name: string;
+  slug?: string | null;
   image: string | null;
   category_id: string | null;
   amazon_link: string | null;
@@ -107,7 +108,7 @@ const Deals = () => {
         // Fetch all products with their details
         const { data: productsData, error } = await supabase
           .from("products")
-          .select("id, name, image, category_id, amazon_link, flipkart_link, rating")
+          .select("id, name, slug, image, category_id, amazon_link, flipkart_link, rating")
           .order("created_at", { ascending: false });
 
         if (error) throw error;
@@ -494,30 +495,32 @@ const Deals = () => {
                         </div>
                       )}
                       <CardContent className="p-4">
-                        <div className="relative mb-4">
-                          <img
-                            src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"}
-                            alt={product.name}
-                            className="w-full h-48 object-contain rounded-lg bg-muted/30"
-                          />
-                          {/* Prominent Discount Badge */}
-                          {maxDiscount > 0 && (
-                            <Badge className={`absolute top-2 left-2 text-sm font-bold px-2 py-1 ${
-                              isHotDeal 
-                                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 animate-pulse' 
-                                : 'bg-green-600 text-white'
-                            }`}>
-                              {maxDiscount}% OFF
-                            </Badge>
-                          )}
-                          {product.rating && (
-                            <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
-                              ⭐ {product.rating}
-                            </Badge>
-                          )}
-                        </div>
-                        
-                        <h3 className="font-semibold text-sm mb-3 line-clamp-2 min-h-[40px]">{product.name}</h3>
+                        <Link to={`/product/${product.slug || product.id}`} className="block">
+                          <div className="relative mb-4">
+                            <img
+                              src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"}
+                              alt={product.name}
+                              className="w-full h-48 object-contain rounded-lg bg-muted/30 group-hover:scale-105 transition-transform"
+                            />
+                            {/* Prominent Discount Badge */}
+                            {maxDiscount > 0 && (
+                              <Badge className={`absolute top-2 left-2 text-sm font-bold px-2 py-1 ${
+                                isHotDeal 
+                                  ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 animate-pulse' 
+                                  : 'bg-green-600 text-white'
+                              }`}>
+                                {maxDiscount}% OFF
+                              </Badge>
+                            )}
+                            {product.rating && (
+                              <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
+                                ⭐ {product.rating}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <h3 className="font-semibold text-sm mb-3 line-clamp-2 min-h-[40px] hover:text-primary transition-colors">{product.name}</h3>
+                        </Link>
                         
                         {/* Price Display */}
                         {lowestPrice && (
