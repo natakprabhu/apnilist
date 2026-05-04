@@ -495,30 +495,32 @@ const Deals = () => {
                         </div>
                       )}
                       <CardContent className="p-4">
-                        <div className="relative mb-4">
-                          <img
-                            src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"}
-                            alt={product.name}
-                            className="w-full h-48 object-contain rounded-lg bg-muted/30"
-                          />
-                          {/* Prominent Discount Badge */}
-                          {maxDiscount > 0 && (
-                            <Badge className={`absolute top-2 left-2 text-sm font-bold px-2 py-1 ${
-                              isHotDeal 
-                                ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 animate-pulse' 
-                                : 'bg-green-600 text-white'
-                            }`}>
-                              {maxDiscount}% OFF
-                            </Badge>
-                          )}
-                          {product.rating && (
-                            <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
-                              ⭐ {product.rating}
-                            </Badge>
-                          )}
-                        </div>
-                        
-                        <h3 className="font-semibold text-sm mb-3 line-clamp-2 min-h-[40px]">{product.name}</h3>
+                        <Link to={`/product/${product.slug || product.id}`} className="block">
+                          <div className="relative mb-4">
+                            <img
+                              src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"}
+                              alt={product.name}
+                              className="w-full h-48 object-contain rounded-lg bg-muted/30 group-hover:scale-105 transition-transform"
+                            />
+                            {/* Prominent Discount Badge */}
+                            {maxDiscount > 0 && (
+                              <Badge className={`absolute top-2 left-2 text-sm font-bold px-2 py-1 ${
+                                isHotDeal 
+                                  ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 animate-pulse' 
+                                  : 'bg-green-600 text-white'
+                              }`}>
+                                {maxDiscount}% OFF
+                              </Badge>
+                            )}
+                            {product.rating && (
+                              <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
+                                ⭐ {product.rating}
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          <h3 className="font-semibold text-sm mb-3 line-clamp-2 min-h-[40px] hover:text-primary transition-colors">{product.name}</h3>
+                        </Link>
                         
                         {/* Price Display */}
                         {lowestPrice && (
