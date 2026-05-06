@@ -89,14 +89,27 @@ const ProductDetail = () => {
         return;
       }
       setProduct(p as Product);
+      setActiveImage(p.image);
 
-      const { data: hist } = await supabase
-        .from("product_price_history")
-        .select("created_at, amazon_price, flipkart_price, amazon_discount, flipkart_discount")
-        .eq("product_id", p.id)
-        .order("created_at", { ascending: true })
-        .limit(90);
+      const [{ data: hist }, { data: pd }] = await Promise.all([
+        supabase
+          .from("product_price_history")
+          .select("created_at, amazon_price, flipkart_price, amazon_discount, flipkart_discount")
+          .eq("product_id", p.id)
+          .order("created_at", { ascending: true })
+          .limit(90),
+        (supabase as any)
+          .from("product_details")
+          .select("*")
+          .eq("product_id", p.id)
+          .maybeSingle(),
+      ]);
       setHistory((hist as PriceRow[]) || []);
+      if (pd) {
+        setDetails(pd as ProductDetails);
+        const gal = (pd as any).gallery as string[] | undefined;
+        if (gal && gal.length > 0) setActiveImage(gal[0]);
+      }
 
       if (user) {
         const { data: w } = await supabase
@@ -106,6 +119,14 @@ const ProductDetail = () => {
           .eq("product_id", p.id)
           .maybeSingle();
         setIsTracked(!!w);
+
+        const { data: roleRow } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+        setIsAdmin(!!roleRow);
       }
       setLoading(false);
     };
