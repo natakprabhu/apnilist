@@ -353,11 +353,114 @@ const ProductDetail = () => {
                 </Button>
               </div>
 
-              {product.short_description && (
+              {isAdmin && (
+                <Button variant="secondary" size="sm" onClick={handleEnrich} disabled={enriching}>
+                  {enriching ? "Enriching..." : details ? "Re-enrich with AI" : "Enrich with AI"}
+                </Button>
+              )}
+
+              {details?.review_summary && (
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <p className="text-sm">{details.review_summary}</p>
+                  {(details.avg_rating || details.total_ratings) && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {details.avg_rating && `⭐ ${details.avg_rating}`}
+                      {details.total_ratings && ` · ${details.total_ratings.toLocaleString()} ratings`}
+                      {details.total_reviews && ` · ${details.total_reviews.toLocaleString()} reviews`}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {details?.highlights && details.highlights.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-2">Highlights</h3>
+                  <ul className="space-y-1.5">
+                    {details.highlights.map((h, i) => (
+                      <li key={i} className="text-sm flex gap-2"><span className="text-primary">•</span>{h}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {product.short_description && !details?.description && (
                 <p className="text-sm text-muted-foreground">{product.short_description}</p>
               )}
             </div>
           </div>
+
+          {/* Description */}
+          {details?.description && (
+            <Card className="mt-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-3">About this product</h2>
+                <div className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                  {details.description}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Specifications */}
+          {details?.specs && Object.keys(details.specs).length > 0 && (
+            <Card className="mt-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-4">Specifications</h2>
+                <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                  {Object.entries(details.specs).map(([k, v]) => (
+                    <div key={k} className="flex justify-between border-b py-2 text-sm">
+                      <dt className="text-muted-foreground capitalize">{k}</dt>
+                      <dd className="font-medium text-right">{String(v)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Offers */}
+          {((details?.offers_amazon?.length ?? 0) > 0 || (details?.offers_flipkart?.length ?? 0) > 0) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              {details!.offers_amazon.length > 0 && (
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-3 text-[#FF9900]">Amazon Offers</h3>
+                    <ul className="space-y-2">
+                      {details!.offers_amazon.map((o, i) => (
+                        <li key={i} className="text-sm flex gap-2"><span>🏷️</span>{o}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+              {details!.offers_flipkart.length > 0 && (
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-3 text-[#2874F0]">Flipkart Offers</h3>
+                    <ul className="space-y-2">
+                      {details!.offers_flipkart.map((o, i) => (
+                        <li key={i} className="text-sm flex gap-2"><span>🏷️</span>{o}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* What's in the box */}
+          {details?.whats_in_box && details.whats_in_box.length > 0 && (
+            <Card className="mt-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-3">What's in the box</h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {details.whats_in_box.map((item, i) => (
+                    <li key={i} className="text-sm flex gap-2"><span>📦</span>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Price history */}
           {history.length > 1 && (
