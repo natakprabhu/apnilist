@@ -39,6 +39,20 @@ type PriceRow = {
   flipkart_discount: number | null;
 };
 
+type ProductDetails = {
+  specs: Record<string, string>;
+  highlights: string[];
+  description: string | null;
+  whats_in_box: string[];
+  gallery: string[];
+  offers_amazon: string[];
+  offers_flipkart: string[];
+  avg_rating: number | null;
+  total_ratings: number | null;
+  total_reviews: number | null;
+  review_summary: string | null;
+};
+
 const toArray = (v: any): string[] => Array.isArray(v) ? v : (typeof v === "string" ? [v] : []);
 
 const ProductDetail = () => {
@@ -49,8 +63,12 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [history, setHistory] = useState<PriceRow[]>([]);
+  const [details, setDetails] = useState<ProductDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isTracked, setIsTracked] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [enriching, setEnriching] = useState(false);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [targetPrice, setTargetPrice] = useState("");
@@ -71,14 +89,27 @@ const ProductDetail = () => {
         return;
       }
       setProduct(p as Product);
+      setActiveImage(p.image);
 
-      const { data: hist } = await supabase
-        .from("product_price_history")
-        .select("created_at, amazon_price, flipkart_price, amazon_discount, flipkart_discount")
-        .eq("product_id", p.id)
-        .order("created_at", { ascending: true })
-        .limit(90);
+      const [{ data: hist }, { data: pd }] = await Promise.all([
+        supabase
+          .from("product_price_history")
+          .select("created_at, amazon_price, flipkart_price, amazon_discount, flipkart_discount")
+          .eq("product_id", p.id)
+          .order("created_at", { ascending: true })
+          .limit(90),
+        (supabase as any)
+          .from("product_details")
+          .select("*")
+          .eq("product_id", p.id)
+          .maybeSingle(),
+      ]);
       setHistory((hist as PriceRow[]) || []);
+      if (pd) {
+        setDetails(pd as ProductDetails);
+        const gal = (pd as any).gallery as string[] | undefined;
+        if (gal && gal.length > 0) setActiveImage(gal[0]);
+      }
 
       if (user) {
         const { data: w } = await supabase
@@ -88,6 +119,14 @@ const ProductDetail = () => {
           .eq("product_id", p.id)
           .maybeSingle();
         setIsTracked(!!w);
+
+        const { data: roleRow } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+        setIsAdmin(!!roleRow);
       }
       setLoading(false);
     };
@@ -146,6 +185,25 @@ const ProductDetail = () => {
     }
   };
 
+  const handleEnrich = async () => {
+    if (!product) return;
+    setEnriching(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("enrich-product-details", {
+        body: { product_id: product.id },
+      });
+      if (error) throw error;
+      toast({ title: "Enriched", description: "Product details generated." });
+      const { data: pd } = await (supabase as any)
+        .from("product_details").select("*").eq("product_id", product.id).maybeSingle();
+      if (pd) setDetails(pd as ProductDetails);
+    } catch (e: any) {
+      toast({ title: "Enrich failed", description: e.message || "Try again", variant: "destructive" });
+    } finally {
+      setEnriching(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -191,16 +249,31 @@ const ProductDetail = () => {
           </Button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Image */}
-            <Card>
-              <CardContent className="p-6 flex items-center justify-center bg-muted/20 min-h-[400px]">
-                <img
-                  src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"}
-                  alt={product.name}
-                  className="max-h-[450px] w-auto object-contain"
-                />
-              </CardContent>
-            </Card>
+            {/* Image + gallery */}
+            <div>
+              <Card>
+                <CardContent className="p-6 flex items-center justify-center bg-muted/20 min-h-[400px]">
+                  <img
+                    src={activeImage || product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"}
+                    alt={product.name}
+                    className="max-h-[450px] w-auto object-contain"
+                  />
+                </CardContent>
+              </Card>
+              {details?.gallery && details.gallery.length > 1 && (
+                <div className="flex gap-2 mt-3 overflow-x-auto">
+                  {details.gallery.slice(0, 8).map((url, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImage(url)}
+                      className={`flex-shrink-0 w-16 h-16 border rounded-md overflow-hidden bg-muted/20 ${activeImage === url ? "ring-2 ring-primary" : ""}`}
+                    >
+                      <img src={url} alt={`thumb ${i + 1}`} className="w-full h-full object-contain" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Details */}
             <div className="space-y-5">
@@ -280,11 +353,114 @@ const ProductDetail = () => {
                 </Button>
               </div>
 
-              {product.short_description && (
+              {isAdmin && (
+                <Button variant="secondary" size="sm" onClick={handleEnrich} disabled={enriching}>
+                  {enriching ? "Enriching..." : details ? "Re-enrich with AI" : "Enrich with AI"}
+                </Button>
+              )}
+
+              {details?.review_summary && (
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <p className="text-sm">{details.review_summary}</p>
+                  {(details.avg_rating || details.total_ratings) && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {details.avg_rating && `⭐ ${details.avg_rating}`}
+                      {details.total_ratings && ` · ${details.total_ratings.toLocaleString()} ratings`}
+                      {details.total_reviews && ` · ${details.total_reviews.toLocaleString()} reviews`}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {details?.highlights && details.highlights.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-2">Highlights</h3>
+                  <ul className="space-y-1.5">
+                    {details.highlights.map((h, i) => (
+                      <li key={i} className="text-sm flex gap-2"><span className="text-primary">•</span>{h}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {product.short_description && !details?.description && (
                 <p className="text-sm text-muted-foreground">{product.short_description}</p>
               )}
             </div>
           </div>
+
+          {/* Description */}
+          {details?.description && (
+            <Card className="mt-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-3">About this product</h2>
+                <div className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                  {details.description}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Specifications */}
+          {details?.specs && Object.keys(details.specs).length > 0 && (
+            <Card className="mt-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-4">Specifications</h2>
+                <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                  {Object.entries(details.specs).map(([k, v]) => (
+                    <div key={k} className="flex justify-between border-b py-2 text-sm">
+                      <dt className="text-muted-foreground capitalize">{k}</dt>
+                      <dd className="font-medium text-right">{String(v)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Offers */}
+          {((details?.offers_amazon?.length ?? 0) > 0 || (details?.offers_flipkart?.length ?? 0) > 0) && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+              {details!.offers_amazon.length > 0 && (
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-3 text-[#FF9900]">Amazon Offers</h3>
+                    <ul className="space-y-2">
+                      {details!.offers_amazon.map((o, i) => (
+                        <li key={i} className="text-sm flex gap-2"><span>🏷️</span>{o}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+              {details!.offers_flipkart.length > 0 && (
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-3 text-[#2874F0]">Flipkart Offers</h3>
+                    <ul className="space-y-2">
+                      {details!.offers_flipkart.map((o, i) => (
+                        <li key={i} className="text-sm flex gap-2"><span>🏷️</span>{o}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          {/* What's in the box */}
+          {details?.whats_in_box && details.whats_in_box.length > 0 && (
+            <Card className="mt-8">
+              <CardContent className="p-6">
+                <h2 className="text-xl font-bold mb-3">What's in the box</h2>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {details.whats_in_box.map((item, i) => (
+                    <li key={i} className="text-sm flex gap-2"><span>📦</span>{item}</li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Price history */}
           {history.length > 1 && (

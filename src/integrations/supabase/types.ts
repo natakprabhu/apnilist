@@ -231,6 +231,74 @@ export type Database = {
           },
         ]
       }
+      product_details: {
+        Row: {
+          avg_rating: number | null
+          created_at: string
+          description: string | null
+          enriched_at: string
+          gallery: Json
+          highlights: Json
+          id: string
+          offers_amazon: Json
+          offers_flipkart: Json
+          product_id: string
+          review_summary: string | null
+          source: string
+          specs: Json
+          total_ratings: number | null
+          total_reviews: number | null
+          updated_at: string
+          whats_in_box: Json
+        }
+        Insert: {
+          avg_rating?: number | null
+          created_at?: string
+          description?: string | null
+          enriched_at?: string
+          gallery?: Json
+          highlights?: Json
+          id?: string
+          offers_amazon?: Json
+          offers_flipkart?: Json
+          product_id: string
+          review_summary?: string | null
+          source?: string
+          specs?: Json
+          total_ratings?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          whats_in_box?: Json
+        }
+        Update: {
+          avg_rating?: number | null
+          created_at?: string
+          description?: string | null
+          enriched_at?: string
+          gallery?: Json
+          highlights?: Json
+          id?: string
+          offers_amazon?: Json
+          offers_flipkart?: Json
+          product_id?: string
+          review_summary?: string | null
+          source?: string
+          specs?: Json
+          total_ratings?: number | null
+          total_reviews?: number | null
+          updated_at?: string
+          whats_in_box?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_details_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: true
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_price_history: {
         Row: {
           amazon_discount: number | null
