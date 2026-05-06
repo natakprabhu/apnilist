@@ -185,7 +185,24 @@ const ProductDetail = () => {
     }
   };
 
-  if (loading) {
+  const handleEnrich = async () => {
+    if (!product) return;
+    setEnriching(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("enrich-product-details", {
+        body: { product_id: product.id },
+      });
+      if (error) throw error;
+      toast({ title: "Enriched", description: "Product details generated." });
+      const { data: pd } = await (supabase as any)
+        .from("product_details").select("*").eq("product_id", product.id).maybeSingle();
+      if (pd) setDetails(pd as ProductDetails);
+    } catch (e: any) {
+      toast({ title: "Enrich failed", description: e.message || "Try again", variant: "destructive" });
+    } finally {
+      setEnriching(false);
+    }
+  };
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
