@@ -249,16 +249,31 @@ const ProductDetail = () => {
           </Button>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Image */}
-            <Card>
-              <CardContent className="p-6 flex items-center justify-center bg-muted/20 min-h-[400px]">
-                <img
-                  src={product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"}
-                  alt={product.name}
-                  className="max-h-[450px] w-auto object-contain"
-                />
-              </CardContent>
-            </Card>
+            {/* Image + gallery */}
+            <div>
+              <Card>
+                <CardContent className="p-6 flex items-center justify-center bg-muted/20 min-h-[400px]">
+                  <img
+                    src={activeImage || product.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800"}
+                    alt={product.name}
+                    className="max-h-[450px] w-auto object-contain"
+                  />
+                </CardContent>
+              </Card>
+              {details?.gallery && details.gallery.length > 1 && (
+                <div className="flex gap-2 mt-3 overflow-x-auto">
+                  {details.gallery.slice(0, 8).map((url, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImage(url)}
+                      className={`flex-shrink-0 w-16 h-16 border rounded-md overflow-hidden bg-muted/20 ${activeImage === url ? "ring-2 ring-primary" : ""}`}
+                    >
+                      <img src={url} alt={`thumb ${i + 1}`} className="w-full h-full object-contain" />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Details */}
             <div className="space-y-5">
