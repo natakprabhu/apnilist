@@ -39,6 +39,20 @@ type PriceRow = {
   flipkart_discount: number | null;
 };
 
+type ProductDetails = {
+  specs: Record<string, string>;
+  highlights: string[];
+  description: string | null;
+  whats_in_box: string[];
+  gallery: string[];
+  offers_amazon: string[];
+  offers_flipkart: string[];
+  avg_rating: number | null;
+  total_ratings: number | null;
+  total_reviews: number | null;
+  review_summary: string | null;
+};
+
 const toArray = (v: any): string[] => Array.isArray(v) ? v : (typeof v === "string" ? [v] : []);
 
 const ProductDetail = () => {
