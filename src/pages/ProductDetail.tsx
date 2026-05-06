@@ -63,8 +63,12 @@ const ProductDetail = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [history, setHistory] = useState<PriceRow[]>([]);
+  const [details, setDetails] = useState<ProductDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isTracked, setIsTracked] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [enriching, setEnriching] = useState(false);
+  const [activeImage, setActiveImage] = useState<string | null>(null);
 
   const [alertOpen, setAlertOpen] = useState(false);
   const [targetPrice, setTargetPrice] = useState("");
